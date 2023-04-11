@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+logging:
+  level:
+    org:
+      zalando:
+        logbook: trace
+logbook:
+  filter:
+    form-request-mode: off
+  format:
+    style: http
+chatgpt:
+  api-key: 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 #api-key. It can be generated in this link https://platform.openai.com/account/api-keys
+# some properties as below have default values. For descriptions of these fields, please refer to https://platform.openai.com/docs/api-reference/completions/create and https://platform.openai.com/docs/api-reference/chat/create
+#  url: https://api.openai.com/v1/completions
+#  model: text-davinci-003
+#  max-tokens: 500
+#  temperature: 1.0
+#  top-p: 1.0
+#  multi:
+#    url: https://api.openai.com/v1/chat/completions
+#    model: gpt-3.5-turbo
+#    max-tokens: 500
+#    temperature: 1.0
+#    top-p: 1.0
+#  image:
+#    url: https://api.openai.com/v1/images/generations
