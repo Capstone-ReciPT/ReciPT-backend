@@ -1,4 +1,4 @@
-package samdasu.recipt.service.dto;
+package samdasu.recipt.controller.dto;
 
 import samdasu.recipt.entity.Review;
 
@@ -11,7 +11,7 @@ public class ReviewDto {
 
     public ReviewDto(Review review) {
         userName = review.getUser().getUserName();
-        imageId = review.getImageFile().getId();
+        imageId = review.getImageFile().getImageId();
         comment = review.getComment();
         review_grade = review.getReview_grade();
     }

@@ -1,4 +1,4 @@
-package samdasu.recipt.service.dto;
+package samdasu.recipt.controller.dto;
 
 import lombok.Getter;
 import samdasu.recipt.entity.AllergyInfo;
@@ -9,7 +9,7 @@ public class AllergyInfoDto {
     private String category;
 
     public AllergyInfoDto(AllergyInfo allergyInfo) {
-        userAllergy = allergyInfo.getUser().getUserAllergy();
-        category = allergyInfo.getCategory();
+        this.userAllergy = allergyInfo.getUser().getUserAllergy();
+        this.category = allergyInfo.getCategory();
     }
 }

@@ -1,4 +1,4 @@
-package samdasu.recipt.service.dto;
+package samdasu.recipt.controller.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +25,7 @@ public class UserResponseDto {
     private List<ReviewDto> reviews;
 
     public UserResponseDto(User user) {
-        this.id = user.getId();
+        this.id = user.getUserId();
         this.username = user.getUserName();
         this.loginId = user.getLoginId();
         this.password = user.getPassword();
