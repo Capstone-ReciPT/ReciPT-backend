@@ -15,7 +15,7 @@ public class ImageFile {
     @Id
     @GeneratedValue
     @Column(name = "image_id")
-    private Long id;
+    private Long ImageId;
 
     private String filename;
     private String fileOriginName;

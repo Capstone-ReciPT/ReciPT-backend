@@ -16,7 +16,7 @@ public class GptRecipe {
     @Id
     @GeneratedValue
     @Column(name = "gpt_id")
-    private Long id;
+    private Long GptRecipeId;
 
     private String gptIngredient;
     private String gptHowToCook;

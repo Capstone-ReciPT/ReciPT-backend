@@ -16,7 +16,7 @@ public class Allergy {
     @Id
     @GeneratedValue
     @Column(name = "allergy_id")
-    private Long id;
+    private Long allergyId;
 
     private String causedIngredient;
 

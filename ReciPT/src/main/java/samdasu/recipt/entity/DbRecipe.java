@@ -16,7 +16,7 @@ public class DbRecipe {
     @Id
     @GeneratedValue
     @Column(name = "recipe_id")
-    private Long id;
+    private Long DbRecipeId;
 
     private String howToCook;
     private String thumbnailImage; //url

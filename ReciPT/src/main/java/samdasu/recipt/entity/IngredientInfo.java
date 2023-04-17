@@ -15,7 +15,7 @@ public class IngredientInfo {
     @Id
     @GeneratedValue
     @Column(name = "ingredient_info_id")
-    private Long id;
+    private Long ingredientInfoId;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "recipe_id")

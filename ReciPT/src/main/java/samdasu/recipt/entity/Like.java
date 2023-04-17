@@ -16,7 +16,7 @@ public class Like {
     @Id
     @GeneratedValue
     @Column(name = "like_id")
-    private Long id;
+    private Long likeId;
 
     private int count;
 
