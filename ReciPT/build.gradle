@@ -24,6 +24,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.testng:testng:7.1.0'
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -34,8 +36,15 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 
+    //JUnit4 추가
+//    testImplementation("org.junit.vintage:junit-vintage-engine") {
+//        exclude group: "org.hamcrest", module: "hamcrest-core"
+//    }
+
 //    Spring Security 적용
     implementation "org.springframework.boot:spring-boot-starter-security"
+    testImplementation 'org.springframework.security:spring-security-test'
+    
 //    STT & TTS
     implementation platform('com.google.cloud:libraries-bom:26.1.4')
     implementation 'com.google.cloud:google-cloud-speech'
