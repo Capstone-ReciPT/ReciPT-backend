@@ -36,11 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable() //csrf토큰 비활성화(테스트시 걸어두는게 좋음) 시큐리티는 csrf토큰이 있어야 접근가능함
-                .authorizeRequests() //인가 요청이 오면
+                .authorizeRequests()//인가 요청이 오면
                 .antMatchers("/", "/home", "/login/**", "/css/**", "/signup/**") //해당 경로들은
                 .permitAll() //접근 허용
                 .anyRequest() //다른 모든 요청은
                 .authenticated() //인증이 되야 들어갈 수 있다.
+
                 .and()
                 .formLogin() //로그인 폼은
                 .usernameParameter("loginId") //로그인 페이지를 우리가 만든 페이지로 등록한다.
@@ -49,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login/action") //스프링 시큐리티가 해당 주소로 요청오는 로그인을 가로채서 대신 로그인해줌 (서비스의 loadUserByName로 알아서)
                 .successHandler(authSuccessHandler)
                 .failureHandler(authFailureHandler)
+
                 .and()
                 .logout() //로그아웃
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -56,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
+
                 .and()
                 .sessionManagement() //중복 로그인
                 .maximumSessions(1)  //세션 최대 허용 수
