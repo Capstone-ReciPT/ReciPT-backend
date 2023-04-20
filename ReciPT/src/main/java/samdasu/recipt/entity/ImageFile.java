@@ -15,17 +15,20 @@ public class ImageFile {
     @Id
     @GeneratedValue
     @Column(name = "image_id")
-    private Long id;
+    private Long imageId;
 
-    private String filename;
-    private String fileOriginName;
+    private String filename; //사용자가 임의로 만든 파일 명
+    private String fileOriginName; //원본 파일 명(filename은 겹칠 수도 있음)
     private String fileUrl;
 
-    @OneToOne(mappedBy = "imageFile", fetch = LAZY) //Cascade
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
     private Review reviews;
 
-    public void addImageFile(Review review) {
+    //== 연관관계 편의 메서드 ==//
+    public void changeImageFile(Review review) {
         this.reviews = review;
+        reviews.getImageFiles().add(this);
     }
 
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
