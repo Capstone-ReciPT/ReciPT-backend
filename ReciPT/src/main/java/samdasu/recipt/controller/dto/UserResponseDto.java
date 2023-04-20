@@ -12,29 +12,24 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 public class UserResponseDto {
-    private Long id;
-    private String username;
+    private Long userId;
+    private String userName;
     private String loginId;
     private String password;
     private String userAllergy;
 
-    private List<AllergyInfoDto> allergyInfos;
-
-    private List<LikeDto> likes;
-
+    private List<HeartDto> hearts;
     private List<ReviewDto> reviews;
 
     public UserResponseDto(User user) {
-        this.id = user.getUserId();
-        this.username = user.getUserName();
-        this.loginId = user.getLoginId();
-        this.password = user.getPassword();
-        this.userAllergy = user.getUserAllergy();
-        allergyInfos = user.getAllergyInfos().stream()
-                .map(allergyInfo -> new AllergyInfoDto(allergyInfo))
-                .collect(Collectors.toList());
-        likes = user.getLikes().stream()
-                .map(like -> new LikeDto(like))
+        userId = user.getUserId();
+        userName = user.getUserName();
+        loginId = user.getLoginId();
+        password = user.getPassword();
+        userAllergy = user.getUserAllergy();
+
+        user.getHearts().stream()
+                .map(heart -> new HeartDto(heart))
                 .collect(Collectors.toList());
         reviews = user.getReviews().stream()
                 .map(review -> new ReviewDto(review))

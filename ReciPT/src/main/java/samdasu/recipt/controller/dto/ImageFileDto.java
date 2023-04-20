@@ -1,4 +1,4 @@
-package samdasu.recipt.controller.dto.Init;
+package samdasu.recipt.controller.dto;
 
 import samdasu.recipt.entity.ImageFile;
 import samdasu.recipt.entity.Review;
