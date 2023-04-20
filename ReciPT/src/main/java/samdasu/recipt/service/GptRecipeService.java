@@ -3,37 +3,54 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.DbDto;
-import samdasu.recipt.entity.DbRecipe;
+import samdasu.recipt.controller.dto.GptDto;
+import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.repository.DbRecipeRepository;
+import samdasu.recipt.repository.GptRecipeRepository;
 
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class DbRecipeService {
-    private final DbRecipeRepository dbRecipeRepository;
+public class GptRecipeService {
+    private final GptRecipeRepository gptRecipeRepository;
 
-    public DbDto findById(Long dbRecipeId) {
-        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
-        return new DbDto(dbRecipe);
+    /**
+     * gpt 레시피 저장
+     * - gpt Api 응답을 gptDto에 담고 저장하기
+     */
+    @Transactional
+    public Long gptSave(Long gptRecipeId) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+        GptRecipe gptRecipeSave = gptRecipeRepository.save(gptRecipe);
+        return gptRecipeSave.getGptRecipeId();
     }
 
-    public DbDto findByFoodName(String dbFoodName) {
-        DbRecipe dbRecipe = dbRecipeRepository.findByDbFoodName(dbFoodName)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
-        return new DbDto(dbRecipe);
+    /**
+     * 평점 순 탑 10 조회
+     */
+    public void findTop10RatingScore() {
+        List<GptRecipe> top10ViewCount = gptRecipeRepository.findTop10ViewCountBy();
     }
 
-    public void findTop10ViewCount() {
-        List<DbRecipe> top10ViewCount = dbRecipeRepository.findTop10ViewCountBy();
+
+    public GptDto findById(Long gptRecipeId) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+        return new GptDto(gptRecipe);
     }
 
-    public List<DbRecipe> findAll() {
-        return dbRecipeRepository.findAll();
+    public GptDto findByFoodName(String gptFoodName) {
+        GptRecipe gptRecipe = gptRecipeRepository.findByGptFoodName(gptFoodName)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+        return new GptDto(gptRecipe);
+    }
+
+
+    public List<GptRecipe> findAll() {
+        return gptRecipeRepository.findAll();
     }
 
 }
