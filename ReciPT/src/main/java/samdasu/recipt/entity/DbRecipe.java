@@ -5,9 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -16,38 +15,34 @@ public class DbRecipe {
     @Id
     @GeneratedValue
     @Column(name = "recipe_id")
-    private Long DbRecipeId;
+    private Long dbRecipeId;
 
+    private String dbFoodName;
+    private String dbIngredient;
     private String howToCook;
-    private String thumbnailImage; //url
-    private String recipeContext;
-    private String recipeImage; //url
+    private String thumbnailImage; //url형식
+    private String dbContext;
+    private String dbImage; //url형식
+
+    private float dbRatingScore;
+
+    private int dbRatingCount;
+
+    private int dbLikeCount;
+
+    @Embedded
+    private Allergy allergy;
+
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
 
     @OneToMany(mappedBy = "dbRecipe")
-    private List<Allergy> allergies;
+    private List<Heart> hearts = new ArrayList<>();
 
     @OneToMany(mappedBy = "dbRecipe")
-    private List<IngredientInfo> ingredientInfos;
+    private List<Review> review = new ArrayList<>();
 
-    @OneToOne(mappedBy = "dbRecipe", fetch = LAZY)
-    private Food food;
+    //==비지니스 로직==//
 
-    @OneToOne(mappedBy = "dbRecipe", fetch = LAZY)
-    private Review review;
-
-    public void addDbReview(Review review) {
-        this.review = review;
-    }
-
-    public void addFood(Food food) {
-        this.food = food;
-    }
-
-    //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
-    public DbRecipe(String howToCook, String thumbnailImage, String recipeContext, String recipeImage) {
-        this.howToCook = howToCook;
-        this.thumbnailImage = thumbnailImage;
-        this.recipeContext = recipeContext;
-        this.recipeImage = recipeImage;
-    }
+  
 }
