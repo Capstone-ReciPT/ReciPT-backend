@@ -19,7 +19,7 @@ public class UserResponseDto {
     private String userAllergy;
 
     private List<HeartDto> hearts;
-    private List<ReviewDto> reviews;
+    private List<ReviewRequestDto> reviews;
 
     public UserResponseDto(User user) {
         userId = user.getUserId();
@@ -32,7 +32,7 @@ public class UserResponseDto {
                 .map(heart -> new HeartDto(heart))
                 .collect(Collectors.toList());
         reviews = user.getReviews().stream()
-                .map(review -> new ReviewDto(review))
+                .map(review -> new ReviewRequestDto(review))
                 .collect(Collectors.toList());
     }
 }

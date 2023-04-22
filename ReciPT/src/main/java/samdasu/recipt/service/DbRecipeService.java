@@ -6,25 +6,38 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.DbDto;
 import samdasu.recipt.entity.DbRecipe;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.repository.DbRecipeRepository;
+import samdasu.recipt.repository.DBRecipeRepository;
 
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class DbRecipeService {
-    private final DbRecipeRepository dbRecipeRepository;
+public class GptRecipeRepository {
+    private final DBRecipeRepository dbRecipeRepository;
 
     /**
      * 평점 계산
      */
 
     /**
-     * 평점 순 조회 탑 10 조회
+     * DB 레시피는 init 넣고 터치 X
+     * - 필요없는 함수임!
      */
-    public void findTop10RatingScore() {
-        List<DbRecipe> top10RatingScore = dbRecipeRepository.findTop10RatingScoreBy();
+    @Transactional
+    public Long dbSave(Long dbRecipeId) {
+        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
+
+        DbRecipe gptRecipeSave = dbRecipeRepository.save(dbRecipe);
+        return gptRecipeSave.getDbRecipeId();
+    }
+
+    /**
+     * 조회 수 탑 10 조회
+     */
+    public List<DbRecipe> findTop10ViewCount(DbRecipe dbRecipe) {
+        return dbRecipeRepository.Top10DbRecipeLike(dbRecipe);
     }
 
     public DbDto findById(Long dbRecipeId) {
@@ -42,5 +55,4 @@ public class DbRecipeService {
     public List<DbRecipe> findAll() {
         return dbRecipeRepository.findAll();
     }
-
 }
