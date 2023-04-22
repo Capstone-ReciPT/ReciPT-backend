@@ -3,6 +3,7 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
 
@@ -11,7 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ImageFile {
+public class ImageFile extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "image_id")
@@ -25,16 +26,16 @@ public class ImageFile {
     @JoinColumn(name = "review_id")
     private Review reviews;
 
-    //== 연관관계 편의 메서드 ==//
-    public void changeImageFile(Review review) {
-        this.reviews = review;
-        reviews.getImageFiles().add(this);
-    }
 
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
-    public ImageFile(String filename, String fileOriginName, String fileUrl) {
+    public ImageFile(String filename, String fileOriginName, String fileUrl, Review reviews) {
         this.filename = filename;
         this.fileOriginName = fileOriginName;
         this.fileUrl = fileUrl;
+//        addImageFile(reviews);
+    }
+
+    public void setReview(Review reviews) {
+        this.reviews = reviews;
     }
 }

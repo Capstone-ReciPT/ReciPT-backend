@@ -3,6 +3,7 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
 
@@ -12,7 +13,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "heart")
-public class Heart {
+public class Heart extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "heart_id")
@@ -45,5 +46,26 @@ public class Heart {
     public void changeGptRecipe(GptRecipe gptRecipe) {
         this.gptRecipe = gptRecipe;
         gptRecipe.getHearts().add(this);
+    }
+
+    //==생성 메서드==//
+
+    public Heart(User user, DbRecipe dbRecipe) {
+        changeUser(user);
+        changeDbRecipe(dbRecipe);
+    }
+
+    public Heart(User user, GptRecipe gptRecipe) {
+        changeUser(user);
+        changeGptRecipe(gptRecipe);
+    }
+    
+
+    public static Heart createDbHeart(User user, DbRecipe dbRecipe) {
+        return new Heart(user, dbRecipe);
+    }
+
+    public static Heart createGptHeart(User user, GptRecipe gptRecipe) {
+        return new Heart(user, gptRecipe);
     }
 }

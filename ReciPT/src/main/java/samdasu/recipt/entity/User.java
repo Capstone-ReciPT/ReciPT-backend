@@ -3,7 +3,8 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.controller.dto.UserUpdateRequestDto;
+import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
+import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
-public class User {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "user_id")
@@ -40,8 +41,6 @@ public class User {
         this.loginId = loginId;
         this.password = password;
         this.userAllergy = userAllergy;
-        this.hearts = hearts;
-        this.reviews = reviews;
     }
 
     public static User createUser(String userName, String loginId, String password, String userAllergy) {
@@ -49,9 +48,9 @@ public class User {
     }
 
     //==비지니스 로직==//
-    public void update(UserUpdateRequestDto requestDto) {
-        this.password = requestDto.getPassword();
-        this.userAllergy = requestDto.getUserAllergy();
+    public void updateUserInfo(UserUpdateRequestDto requestDto) {
+        password = requestDto.getPassword();
+        userAllergy = requestDto.getUserAllergy();
     }
 
 }
