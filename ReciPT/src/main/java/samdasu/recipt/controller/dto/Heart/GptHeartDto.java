@@ -6,25 +6,22 @@ import samdasu.recipt.entity.Heart;
 
 @Getter
 @Setter
-public class DbHeartDto {
+public class GptHeartDto {
 
     private Long userId;
-    private Long dbRecipeId;
-
     private Long gptRecipeId;
 
-    public DbHeartDto(Long userId, Long dbRecipeId) {
+    public GptHeartDto(Long userId, Long gptRecipeId) {
         this.userId = userId;
-        this.dbRecipeId = dbRecipeId;
+        this.gptRecipeId = gptRecipeId;
     }
 
-    public static DbHeartDto createDbHeart(Long userId, Long dbRecipeId) {
-        return new DbHeartDto(userId, dbRecipeId);
+    public static GptHeartDto createGptHeartDto(Long userId, Long gptRecipeId) {
+        return new GptHeartDto(userId, gptRecipeId);
     }
 
-    public DbHeartDto(Heart heart) {
+    public GptHeartDto(Heart heart) {
         userId = heart.getUser().getUserId();
-        dbRecipeId = heart.getDbRecipe().getDbRecipeId();
         gptRecipeId = heart.getGptRecipe().getGptRecipeId();
     }
 }

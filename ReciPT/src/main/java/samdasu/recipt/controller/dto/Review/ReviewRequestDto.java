@@ -1,7 +1,8 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.Review;
 
 import lombok.Getter;
 import lombok.Setter;
+import samdasu.recipt.controller.dto.ImageFileDto;
 import samdasu.recipt.entity.DbRecipe;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;

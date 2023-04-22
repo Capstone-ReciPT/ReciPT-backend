@@ -1,7 +1,8 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.Review;
 
 import lombok.Getter;
 import lombok.Setter;
+import samdasu.recipt.controller.dto.ImageFileDto;
 import samdasu.recipt.entity.DbRecipe;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReviewRequestDto {
+public class ReviewResponseDto {
     private User user;
     private Long reviewId;
     private String userName;
@@ -23,7 +24,7 @@ public class ReviewRequestDto {
     private DbRecipe dbRecipe;
     private List<ImageFileDto> imageFiles;
 
-    public ReviewRequestDto(Review review) {
+    public ReviewResponseDto(Review review) {
         reviewId = review.getReviewId();
         user = review.getUser();
         userName = review.getUser().getUserName();

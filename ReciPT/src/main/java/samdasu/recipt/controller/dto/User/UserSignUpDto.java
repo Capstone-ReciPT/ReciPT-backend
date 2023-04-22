@@ -1,4 +1,4 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.User;
 
 import lombok.Getter;
 import lombok.Setter;
