@@ -36,15 +36,53 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    //JUnit4 추가
+    //    SQL 로그 확인
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
+
+    //    Spring Security 적용
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    //Mapper
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    // queryDSL 설정
+    implementation "com.querydsl:querydsl-jpa"
+    implementation "com.querydsl:querydsl-core"
+    implementation "com.querydsl:querydsl-collections"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+    // querydsl JPAAnnotationProcessor 사용 지정
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
+    //JUnit4 추가(Junit5 사용해서 테스트 돌리는 중)
 //    testImplementation("org.junit.vintage:junit-vintage-engine") {
 //        exclude group: "org.hamcrest", module: "hamcrest-core"
 //    }
 
-//    Spring Security 적용
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    testImplementation 'org.springframework.security:spring-security-test'
-    
+
+// Querydsl 설정부
+    def generated = 'src/main/generated'
+
+// querydsl QClass 파일 생성 위치를 지정
+    tasks.withType(JavaCompile) {
+        options.getGeneratedSourceOutputDirectory().set(file(generated))
+    }
+
+// java source set 에 querydsl QClass 위치 추가
+    sourceSets {
+        main.java.srcDirs += [generated]
+    }
+
+// gradle clean 시에 QClass 디렉토리 삭제
+    clean {
+        delete file(generated)
+    }
+
+
 //    STT & TTS
     implementation platform('com.google.cloud:libraries-bom:26.1.4')
     implementation 'com.google.cloud:google-cloud-speech'
@@ -54,9 +92,6 @@ dependencies {
 
 //    형태소 분석
     implementation 'com.github.shin285:KOMORAN:3.3.4'
-
-//    SQL 로그 확인
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 }
 
 tasks.named('test') {

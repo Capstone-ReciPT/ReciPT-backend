@@ -9,7 +9,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.UserSignUpDto;
+import samdasu.recipt.controller.dto.User.UserResponseDto;
+import samdasu.recipt.controller.dto.User.UserSignUpDto;
+import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.repository.UserRepository;
 
@@ -83,5 +85,41 @@ public class UserServiceTest {
 
         // then
         assertThat(exception.getMessage()).isEqualTo("Fail: Already Exist ID!");
+    }
+
+    @Test
+    public void 유저_회원정보_조회() {
+        //given
+        User user = User.createUser("tester1", "testId", "test1234", "shrimp");
+        User savedUser = userRepository.save(user);
+        UserResponseDto userResponseDto = new UserResponseDto(savedUser);
+
+        //when
+        UserResponseDto findUser = userService.findById(userResponseDto.getUserId());
+
+        //then
+        assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
+        assertThat(findUser.getUserName()).isEqualTo(user.getUserName());
+        assertThat(findUser.getLoginId()).isEqualTo(user.getLoginId());
+    }
+
+    @Test
+    public void 유저_업데이트() {
+        //given
+        User user = User.createUser("tester1", "testId", "test1234", "shrimp");
+        User savedUser = userRepository.save(user);
+        UserResponseDto userResponseDto = new UserResponseDto(savedUser);
+
+        //when
+        //change password & Allergy Info
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.createUpdateUserInfo("changePassword", "changeAllergy");
+        Long updateUserInfo = userService.update(userResponseDto.getUserId(), userUpdateRequestDto);
+
+
+        //then
+        assertThat(updateUserInfo).isEqualTo(userResponseDto.getUserId());
+        UserResponseDto updateUser = userService.findById(updateUserInfo);
+        assertThat(updateUser.getPassword()).isEqualTo(userUpdateRequestDto.getPassword());
+        assertThat(updateUser.getUserAllergy()).isEqualTo(userUpdateRequestDto.getUserAllergy());
     }
 }

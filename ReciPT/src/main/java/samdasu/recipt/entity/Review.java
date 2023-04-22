@@ -3,6 +3,8 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.global.BaseEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "review_id")
@@ -21,8 +23,8 @@ public class Review {
 
     private String title;
     private String comment;
-    private Long viewCount; //조회 수
-
+    private Integer viewCount; //조회 수
+    private Integer likeCount; //리뷰 좋아요 개수
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -38,6 +40,7 @@ public class Review {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "recipe_id")
     private DbRecipe dbRecipe;
+
 
     //== 연관관계 편의 메서드 ==//
     public void changeUser(User user) {
@@ -55,12 +58,37 @@ public class Review {
         dbRecipe.getReview().add(this);
     }
 
+    public void addImageFile(ImageFile imageFile) {
+        imageFiles.add(imageFile);
+        imageFile.setReview(this);
+    }
+
+    public Review(String title, String comment, Integer viewCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe, ImageFile... imageFiles) {
+        this.title = title;
+        this.comment = comment;
+        this.viewCount = viewCount;
+        changeUser(user);
+        for (ImageFile imageFile : imageFiles) {
+            addImageFile(imageFile);
+        }
+        changeGptRecipe(gptRecipe);
+        changeDbRecipe(dbRecipe);
+    }
+
+    public static Review createReview(String title, String comment, Integer viewCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe) {
+        return new Review(title, comment, viewCount, user, gptRecipe, dbRecipe);
+    }
+
 
     //==비지니스 로직==//
-
-    public void addViewCount() {
-        this.viewCount += 1;
+    public void addViewCount(Review review) {
+        review.viewCount++;
     }
-    
 
+
+    public void updateReviewInfo(ReviewRequestDto reviewRequestDto) {
+        this.title = reviewRequestDto.getTitle();
+        this.comment = reviewRequestDto.getComment();
+//        this.imageFiles = reviewRequestDto.getImageFiles();
+    }
 }

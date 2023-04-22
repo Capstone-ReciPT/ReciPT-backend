@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.UserResponseDto;
-import samdasu.recipt.controller.dto.UserSignUpDto;
-import samdasu.recipt.controller.dto.UserUpdateRequestDto;
+import samdasu.recipt.controller.dto.User.UserResponseDto;
+import samdasu.recipt.controller.dto.User.UserSignUpDto;
+import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.UserRepository;
@@ -37,16 +37,16 @@ public class UserService {
 
     public UserResponseDto findById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No User Info"));
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
         return new UserResponseDto(user);
     }
 
     @Transactional
-    public Long update(Long userId, UserUpdateRequestDto requestDto) {
+    public Long update(Long userId, UserUpdateRequestDto updateRequestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
 
-        user.update(requestDto);
+        user.updateUserInfo(updateRequestDto);
         return userId;
     }
 

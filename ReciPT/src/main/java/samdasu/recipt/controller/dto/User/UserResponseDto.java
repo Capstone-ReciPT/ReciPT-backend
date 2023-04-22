@@ -1,8 +1,11 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.User;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import samdasu.recipt.controller.dto.Heart.DbHeartDto;
+import samdasu.recipt.controller.dto.Heart.GptHeartDto;
+import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.User;
 
 import java.util.List;
@@ -18,8 +21,9 @@ public class UserResponseDto {
     private String password;
     private String userAllergy;
 
-    private List<HeartDto> hearts;
-    private List<ReviewDto> reviews;
+    private List<DbHeartDto> dbHeartDto;
+    private List<GptHeartDto> gptHeartDto;
+    private List<ReviewRequestDto> reviews;
 
     public UserResponseDto(User user) {
         userId = user.getUserId();
@@ -28,11 +32,14 @@ public class UserResponseDto {
         password = user.getPassword();
         userAllergy = user.getUserAllergy();
 
-        user.getHearts().stream()
-                .map(heart -> new HeartDto(heart))
+        dbHeartDto = user.getHearts().stream()
+                .map(heart -> new DbHeartDto(heart))
+                .collect(Collectors.toList());
+        gptHeartDto = user.getHearts().stream()
+                .map(heart -> new GptHeartDto(heart))
                 .collect(Collectors.toList());
         reviews = user.getReviews().stream()
-                .map(review -> new ReviewDto(review))
+                .map(review -> new ReviewRequestDto(review))
                 .collect(Collectors.toList());
     }
 }

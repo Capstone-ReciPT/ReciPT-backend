@@ -1,4 +1,4 @@
-package samdasu.recipt.config;
+package samdasu.recipt.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import samdasu.recipt.handler.AuthFailureHandler;
 import samdasu.recipt.handler.AuthSuccessHandler;
-import samdasu.recipt.service.UserLoginServiceImpl;
 
 @RequiredArgsConstructor
 @EnableWebSecurity //시큐리티 필터가 등록

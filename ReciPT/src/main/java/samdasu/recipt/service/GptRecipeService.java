@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.GptDto;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.repository.GptRecipeRepository;
+import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 
 import java.util.List;
 
@@ -21,20 +21,17 @@ public class GptRecipeService {
      * - gpt Api 응답을 gptDto에 담고 저장하기
      */
     @Transactional
-    public Long gptSave(Long gptRecipeId) {
-        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
-        GptRecipe gptRecipeSave = gptRecipeRepository.save(gptRecipe);
-        return gptRecipeSave.getGptRecipeId();
+    public Long gptSave(GptDto gptDto) {
+        GptRecipe gptRecipe = GptRecipe.createGptRecipe(gptDto.getGptFoodName(), gptDto.getGptIngredient(), gptDto.getGptHowToCook(), gptDto.getGptTip(), gptDto.getGptLikeCount(), gptDto.getGptViewCount(), gptDto.getAllergy());
+        return gptRecipeRepository.save(gptRecipe).getGptRecipeId();
     }
 
     /**
-     * 평점 순 탑 10 조회
+     * 조회 수 탑 10 조회
      */
-    public void findTop10RatingScore() {
-        List<GptRecipe> top10ViewCount = gptRecipeRepository.findTop10ViewCountBy();
+    public List<GptRecipe> findTop10ViewCount(GptRecipe gptRecipe) {
+        return gptRecipeRepository.Top10GptRecipeLike(gptRecipe);
     }
-
 
     public GptDto findById(Long gptRecipeId) {
         GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
@@ -48,9 +45,7 @@ public class GptRecipeService {
         return new GptDto(gptRecipe);
     }
 
-
     public List<GptRecipe> findAll() {
         return gptRecipeRepository.findAll();
     }
-
 }

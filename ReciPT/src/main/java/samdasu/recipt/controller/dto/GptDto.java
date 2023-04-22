@@ -1,13 +1,17 @@
 package samdasu.recipt.controller.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import samdasu.recipt.controller.dto.Heart.GptHeartDto;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.GptRecipe;
-import samdasu.recipt.entity.Rating;
 import samdasu.recipt.entity.Review;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class GptDto {
 
     private Long gptRecipeId;
@@ -15,13 +19,12 @@ public class GptDto {
     private String gptIngredient;
     private String gptHowToCook;
     private String gptTip;
-    private float gptRatingScore;
-    private int gptRatingCount;
-    private int gptLikeCount;
+    private Integer gptViewCount; //조회 수
+
+    private Integer gptLikeCount; //레시피 좋아요
     private Allergy allergy;
-    private Rating rating;
     private Review review;
-    private List<HeartDto> hearts;
+    private List<GptHeartDto> hearts;
 
     public GptDto(GptRecipe gptRecipe) {
         gptRecipeId = gptRecipe.getGptRecipeId();
@@ -29,14 +32,32 @@ public class GptDto {
         gptIngredient = gptRecipe.getGptIngredient();
         gptHowToCook = gptRecipe.getGptHowToCook();
         gptTip = gptRecipe.getGptTip();
-        gptRatingScore = gptRecipe.getGptRatingScore();
-        gptRatingCount = gptRecipe.getGptRatingCount();
-        gptLikeCount = gptRecipe.getGptLikeCount();
+//        gptLikeCount = gptRecipe.getGptLikeCount();
         allergy = gptRecipe.getAllergy();
-        rating = gptRecipe.getRating();
         review = gptRecipe.getReview();
         hearts = gptRecipe.getHearts().stream()
-                .map(heart -> new HeartDto(heart))
+                .map(heart -> new GptHeartDto(heart))
                 .collect(Collectors.toList());
     }
+
+    public GptDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy, Integer gptLikeCount, Integer gptViewCount) {
+        this.gptFoodName = gptFoodName;
+        this.gptIngredient = gptIngredient;
+        this.gptHowToCook = gptHowToCook;
+        this.gptTip = gptTip;
+        this.allergy = allergy;
+        this.gptLikeCount = gptLikeCount;
+        this.gptViewCount = gptViewCount;
+        this.review = review;
+        this.hearts = hearts;
+    }
+
+    public static GptDto createGptDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy, Integer gptLikeCount, Integer gptViewCount) {
+        return new GptDto(gptFoodName, gptIngredient, gptHowToCook, gptTip, allergy, gptLikeCount, gptViewCount);
+    }
+
+    public static GptDto createGptDto(GptRecipe gptRecipe) {
+        return new GptDto(gptRecipe.getGptFoodName(), gptRecipe.getGptIngredient(), gptRecipe.getGptHowToCook(), gptRecipe.getGptTip(), gptRecipe.getAllergy(), gptRecipe.getGptLikeCount(), gptRecipe.getGptViewCount());
+    }
+
 }

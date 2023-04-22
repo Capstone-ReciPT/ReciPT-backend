@@ -1,4 +1,4 @@
-package samdasu.recipt.entity;
+package samdasu.recipt.global;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;

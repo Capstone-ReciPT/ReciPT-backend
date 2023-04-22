@@ -1,4 +1,4 @@
-package samdasu.recipt.config.auth;
+package samdasu.recipt.config.security;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
