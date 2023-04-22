@@ -3,8 +3,12 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.Review;
+import samdasu.recipt.exception.ResourceNotFoundException;
+import samdasu.recipt.mapper.ReviewRequestMapper;
 import samdasu.recipt.repository.ReviewRepository;
+import samdasu.recipt.repository.UserRepository;
 
 import java.util.List;
 
@@ -14,20 +18,69 @@ import java.util.List;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final ReviewRequestMapper reviewRequestMapper;
 
     /**
      * 조회 수 증가
      */
     @Transactional
     public void IncreaseViewCount(Long reviewId) {
-        Review review = reviewRepository.findOne(reviewId);
-        review.addViewCount();
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+        review.addViewCount(review);
     }
 
-    /**
-     * 조회 수 탑 10 조회
-     */
     public void findTop10ViewCount() {
         List<Review> top10ViewCount = reviewRepository.findTop10ViewCountBy();
     }
+
+    public List<Review> findAll() {
+        return reviewRepository.findAll();
+    }
+
+    @Transactional
+    public Long addReview(ReviewRequestDto reviewRequestDto) {
+        validateReview(reviewRequestDto);
+        Review review = Review.createReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), reviewRequestDto.getViewCount(), reviewRequestDto.getUser(), reviewRequestDto.getGptRecipe(), reviewRequestDto.getDbRecipe());
+        return reviewRepository.save(review).getReviewId();
+        /**
+         * mapper 써서 리뷰 저장하는 방식
+         * - test 돌려보고 결과 안 좋으면 사용할 것!
+         */
+//        User user = userRepository.findById(reviewRequestDto.getUser().getUserId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+//
+//        Review review = reviewRequestMapper.toEntity(reviewRequestDto);
+//        review.updateUser();
+    }
+
+    private void validateReview(ReviewRequestDto reviewRequestDto) {
+        reviewRepository.findById(reviewRequestDto.getReviewId())
+                .ifPresent(review -> {
+                    throw new IllegalArgumentException("Fail: Already Exist Review!");
+                });
+    }
+
+    @Transactional
+    public Long update(Long reviewId, ReviewRequestDto reviewRequestDto) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+        review.updateReviewInfo(reviewRequestDto);
+        return reviewId;
+    }
+
+    @Transactional
+    public Review delete(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+        reviewRepository.delete(review);
+        return review;
+    }
+
+    @Transactional(readOnly = true)
+    public Review findReviewByTitle(String title) {
+        return reviewRepository.findByTitle(title);
+    }
+    
 }

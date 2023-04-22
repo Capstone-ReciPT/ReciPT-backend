@@ -6,15 +6,15 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.DbDto;
 import samdasu.recipt.entity.DbRecipe;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.repository.DBRecipeRepository;
+import samdasu.recipt.repository.DbRecipe.DbRecipeRepository;
 
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class GptRecipeRepository {
-    private final DBRecipeRepository dbRecipeRepository;
+public class DbRecipeService {
+    private final DbRecipeRepository dbRecipeRepository;
 
     /**
      * 평점 계산
@@ -25,12 +25,9 @@ public class GptRecipeRepository {
      * - 필요없는 함수임!
      */
     @Transactional
-    public Long dbSave(Long dbRecipeId) {
-        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
-
-        DbRecipe gptRecipeSave = dbRecipeRepository.save(dbRecipe);
-        return gptRecipeSave.getDbRecipeId();
+    public Long dbSave(DbDto dbDto) {
+        DbRecipe dbRecipe = DbRecipe.createDbRecipe(dbDto.getDbFoodName(), dbDto.getDbIngredient(), dbDto.getHowToCook(), dbDto.getThumbnailImage(), dbDto.getDbContext(), dbDto.getDbImage(), dbDto.getDbLikeCount(), dbDto.getDbViewCount(), dbDto.getAllergy());
+        return dbRecipeRepository.save(dbRecipe).getDbRecipeId();
     }
 
     /**

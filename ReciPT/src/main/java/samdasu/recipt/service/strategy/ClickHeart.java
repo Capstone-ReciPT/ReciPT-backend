@@ -1,2 +1,5 @@
-package samdasu.recipt.service.strategy;public interface ClickHeart {
+package samdasu.recipt.service.strategy;
+
+public interface ClickHeart {
+    void call();
 }
