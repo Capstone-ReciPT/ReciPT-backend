@@ -4,18 +4,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.GptRecipe;
+import samdasu.recipt.entity.QDbRecipe;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
-import static samdasu.recipt.entity.QGptRecipe.gptRecipe;
 
 @Repository
 @RequiredArgsConstructor
-public class RecipeRepositoryImpl implements RecipeCustomRepository {
-    private final EntityManager em;
+public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<DbRecipe> findAllByQuerydsl() {
@@ -32,13 +29,6 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
                 .execute();
     }
 
-    @Override
-    public void addGptLikeCount(GptRecipe selectedGptRecipe) {
-        queryFactory.update(gptRecipe)
-                .set(gptRecipe.gptLikeCount, gptRecipe.gptLikeCount.add(1))
-                .where(gptRecipe.eq(selectedGptRecipe))
-                .execute();
-    }
 
     @Override
     public void subDbLikeCount(DbRecipe selectedDbRecipe) {
@@ -49,12 +39,15 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
     @Override
-    public void subGptLikeCount(GptRecipe selectedGptRecipe) {
-        queryFactory.update(gptRecipe)
-                .set(gptRecipe.gptLikeCount, gptRecipe.gptLikeCount.subtract(1))
-                .where(gptRecipe.eq(selectedGptRecipe))
-                .execute();
+    public List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe) {
+        List<DbRecipe> top10Like = queryFactory
+                .selectFrom(QDbRecipe.dbRecipe)
+                .orderBy(QDbRecipe.dbRecipe.dbViewCount.desc())
+                .limit(10)
+                .fetch();
+        return top10Like;
     }
+
 
     /**
      * DB 레시피 평점 평균 구하기

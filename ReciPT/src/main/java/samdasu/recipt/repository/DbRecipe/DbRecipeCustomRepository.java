@@ -1,14 +1,13 @@
 package samdasu.recipt.repository.DbRecipe;
 
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.GptRecipe;
 
-public interface RecipeCustomRepository {
+import java.util.List;
+
+public interface DbRecipeCustomRepository {
     void addDbLikeCount(DbRecipe dbRecipe);
-
-    void addGptLikeCount(GptRecipe gptRecipe);
 
     void subDbLikeCount(DbRecipe dbRecipe);
 
-    void subGptLikeCount(GptRecipe gptRecipe);
+    List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe);
 }
