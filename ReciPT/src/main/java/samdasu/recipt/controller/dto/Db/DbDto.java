@@ -1,4 +1,4 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.Db;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class DbDto {
     private Integer dbLikeCount;
     private Integer dbViewCount;
     private Double dbRatingScore;
-
+    private Integer dbRatingPeople;
     private Allergy allergy;
 
     private List<DbHeartDto> hearts;
@@ -50,6 +50,7 @@ public class DbDto {
         dbLikeCount = dbRecipe.getDbLikeCount();
         dbViewCount = dbRecipe.getDbViewCount();
         dbRatingScore = dbRecipe.getDbRatingScore();
+        dbRatingPeople = dbRecipe.getDbRatingPeople();
         allergy = dbRecipe.getAllergy();
         hearts = dbRecipe.getHearts().stream()
                 .map(heart -> new DbHeartDto(heart))
@@ -57,5 +58,10 @@ public class DbDto {
         reviews = dbRecipe.getReview().stream()
                 .map(review -> new ReviewRequestDto(review))
                 .collect(Collectors.toList());
+    }
+
+    public Double calcDbRatingScore(DbRecipe dbRecipe) {
+        double ratingPoint = Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
+        return ratingPoint;
     }
 }
