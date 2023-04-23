@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.controller.dto.Review.ReviewResponseDto;
 import samdasu.recipt.entity.Review;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.mapper.ReviewRequestMapper;
-import samdasu.recipt.repository.ReviewRepository;
-import samdasu.recipt.repository.UserRepository;
+import samdasu.recipt.repository.Review.ReviewRepository;
 
 import java.util.List;
 
@@ -18,12 +17,8 @@ import java.util.List;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
-    private final ReviewRequestMapper reviewRequestMapper;
+    private final ImageFileService imageFileService;
 
-    /**
-     * 조회 수 증가
-     */
     @Transactional
     public void IncreaseViewCount(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
@@ -31,18 +26,24 @@ public class ReviewService {
         review.addViewCount(review);
     }
 
-    public void findTop10ViewCount() {
-        List<Review> top10ViewCount = reviewRepository.findTop10ViewCountBy();
-    }
-
-    public List<Review> findAll() {
-        return reviewRepository.findAll();
+    @Transactional
+    public void IncreaseReviewLike(ReviewRequestDto reviewRequestDto) {
+        Review review = reviewRepository.findById(reviewRequestDto.getReviewId())
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+        review.addReviewLike(review);
     }
 
     @Transactional
-    public Long addReview(ReviewRequestDto reviewRequestDto) {
+    public void DecreaseReviewLike(ReviewRequestDto reviewRequestDto) {
+        Review review = reviewRepository.findById(reviewRequestDto.getReviewId())
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+        review.subReviewLike(review);
+    }
+
+    @Transactional
+    public Long saveReview(ReviewRequestDto reviewRequestDto) {
         validateReview(reviewRequestDto);
-        Review review = Review.createReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), reviewRequestDto.getViewCount(), reviewRequestDto.getUser(), reviewRequestDto.getGptRecipe(), reviewRequestDto.getDbRecipe());
+        Review review = Review.createReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), reviewRequestDto.getViewCount(), reviewRequestDto.getLikeCount(), reviewRequestDto.getUser(), reviewRequestDto.getGptRecipe(), reviewRequestDto.getDbRecipe());
         return reviewRepository.save(review).getReviewId();
         /**
          * mapper 써서 리뷰 저장하는 방식
@@ -78,9 +79,43 @@ public class ReviewService {
         return review;
     }
 
+
+    /**
+     * 조회 수 탑 10 조회
+     */
+    @Transactional(readOnly = true)
+    public List<Review> findTop10ViewCount(Review review) {
+        return reviewRepository.Top10ReviewView(review);
+    }
+
+    /**
+     * 좋아요 탑 10 조회
+     */
+    @Transactional(readOnly = true)
+    public List<Review> findTop10LikeCount(Review review) {
+        return reviewRepository.Top10ReviewLike(review);
+    }
+
     @Transactional(readOnly = true)
     public Review findReviewByTitle(String title) {
         return reviewRepository.findByTitle(title);
     }
-    
+
+    @Transactional(readOnly = true)
+    public List<Review> findReviewByWriter(String username) {
+        List<Review> review = reviewRepository.findReviewByWriter(username);
+        return review;
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewResponseDto findById(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No Review Info"));
+        return new ReviewResponseDto(review);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Review> findAll() {
+        return reviewRepository.findAll();
+    }
 }
