@@ -4,12 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import samdasu.recipt.entity.User;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 public class UserSignUpDto {
+    @NotNull
     private String userName;
+    @NotNull
     private String loginId;
+    @NotNull
     private String password;
+    @NotNull
     private String passwordConfirm;
     private String userAllergy;
 

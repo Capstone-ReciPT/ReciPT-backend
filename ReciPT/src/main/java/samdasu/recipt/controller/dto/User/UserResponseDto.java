@@ -8,6 +8,8 @@ import samdasu.recipt.controller.dto.Heart.GptHeartDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,9 +17,13 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 public class UserResponseDto {
+    @NotBlank
     private Long userId;
+    @NotNull
     private String userName;
+    @NotNull
     private String loginId;
+    @NotNull
     private String password;
     private String userAllergy;
 
