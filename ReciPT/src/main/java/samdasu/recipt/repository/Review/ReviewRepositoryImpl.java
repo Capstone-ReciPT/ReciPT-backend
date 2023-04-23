@@ -1,87 +1,67 @@
-package samdasu.recipt.repository.DbRecipe;
+package samdasu.recipt.repository.Review;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.Heart;
-import samdasu.recipt.entity.QDbRecipe;
+import samdasu.recipt.entity.QReview;
+import samdasu.recipt.entity.Review;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
-import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
+import static samdasu.recipt.entity.QReview.review;
+import static samdasu.recipt.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
-public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
+public class ReviewRepositoryImpl implements ReviewCustomRepository {
     private final JPAQueryFactory queryFactory;
 
-    public List<DbRecipe> findAllByQuerydsl() {
-        return queryFactory
-                .selectFrom(dbRecipe)
-                .fetch();
-    }
-
     @Override
-    public void addDbLikeCount(DbRecipe selectedDbRecipe) {
-        queryFactory.update(dbRecipe)
-                .set(dbRecipe.dbLikeCount, dbRecipe.dbLikeCount.add(1))
-                .where(dbRecipe.eq(selectedDbRecipe))
+    public void addReviewLikeCount(Review selectedReview) {
+        queryFactory.update(review)
+                .set(review.likeCount, review.likeCount.add(1))
+                .where(review.eq(selectedReview))
                 .execute();
     }
 
 
     @Override
-    public void subDbLikeCount(DbRecipe selectedDbRecipe) {
-        queryFactory.update(dbRecipe)
-                .set(dbRecipe.dbLikeCount, dbRecipe.dbLikeCount.subtract(1))
-                .where(dbRecipe.eq(selectedDbRecipe))
+    public void subReviewLikeCount(Review selectedReview) {
+        queryFactory.update(review)
+                .set(review.likeCount, review.likeCount.subtract(1))
+                .where(review.eq(selectedReview))
                 .execute();
     }
 
     @Override
-    public List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe) {
-        List<DbRecipe> top10View = queryFactory
-                .selectFrom(QDbRecipe.dbRecipe)
-                .orderBy(QDbRecipe.dbRecipe.dbViewCount.desc())
+    public List<Review> Top10ReviewView(Review review) {
+        List<Review> top10View = queryFactory
+                .selectFrom(QReview.review)
+                .orderBy(QReview.review.viewCount.desc())
                 .limit(10)
                 .fetch();
         return top10View;
     }
 
     @Override
-    public List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe) {
-        List<DbRecipe> top10Like = queryFactory
-                .selectFrom(QDbRecipe.dbRecipe)
-                .orderBy(QDbRecipe.dbRecipe.dbLikeCount.desc())
+    public List<Review> Top10ReviewLike(Review review) {
+        List<Review> top10Like = queryFactory
+                .selectFrom(QReview.review)
+                .orderBy(QReview.review.likeCount.desc())
                 .limit(10)
                 .fetch();
         return top10Like;
     }
 
-    private final EntityManager em;
-
     @Override
-    public List<Heart> Top10AllRecipeLike() {
-        return em.createQuery(
-                        "select h.dbRecipe.dbFoodName, h.gptRecipe.gptFoodName from Heart h" +
-                                " join h.dbRecipe db" +
-                                " join h.gptRecipe gpt", Heart.class)
-                .getResultList();
+    public List<Review> findReviewByWriter(String userName) {
+        List<Review> result = queryFactory
+                .select(review)
+                .from(review)
+                .join(review.user, user)
+                .fetch();
+        return result;
     }
 
 
-    /**
-     * DB 레시피 평점 평균 구하기
-     * -
-     */
-//    public List<DbRecipe> searchAverageRatingScore() {
-//        List<Tuple> result = queryFactory
-//                .select(dbRecipe.dbFoodName)
-//                .from(dbRecipe)
-//                .groupBy(dbRecipe.dbRecipeId)
-//                .fetch();
-//        return null;
-//    }
 }

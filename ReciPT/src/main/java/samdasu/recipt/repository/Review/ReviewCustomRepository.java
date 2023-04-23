@@ -1,18 +1,18 @@
-package samdasu.recipt.repository.DbRecipe;
+package samdasu.recipt.repository.Review;
 
-import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.Heart;
+import samdasu.recipt.entity.Review;
 
 import java.util.List;
 
-public interface DbRecipeCustomRepository {
-    void addDbLikeCount(DbRecipe dbRecipe);
+public interface ReviewCustomRepository {
+    void addReviewLikeCount(Review review); //음식 종류에 상관없이 좋아요
 
-    void subDbLikeCount(DbRecipe dbRecipe);
+    void subReviewLikeCount(Review review);
 
-    List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe);
+    List<Review> Top10ReviewView(Review review);
 
-    List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe);
+    List<Review> Top10ReviewLike(Review review);
 
-    List<Heart> Top10AllRecipeLike();
+    List<Review> findReviewByWriter(String userName);//글쓴이 조회
+
 }
