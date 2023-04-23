@@ -1,20 +1,20 @@
-package samdasu.recipt.controller.dto.Db;
+package samdasu.recipt.controller.dto.Gpt;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class DbUpdateRatingScoreDto {
-    private Double dbRatingScore;
-    private Integer dbRatingPeople;
+public class GptUpdateRatingScoreDto {
+    private Double gptRatingScore;
+    private Integer gptRatingPeople;
 
-    public DbUpdateRatingScoreDto(Double dbRatingScore, Integer dbRatingPeople) {
-        this.dbRatingScore = dbRatingScore;
-        this.dbRatingPeople = dbRatingPeople;
+    public GptUpdateRatingScoreDto(Double gptRatingScore, Integer gptRatingPeople) {
+        this.gptRatingScore = gptRatingScore;
+        this.gptRatingPeople = gptRatingPeople;
     }
 
-    public static DbUpdateRatingScoreDto creatDbUpdateRatingScoreDto(Double dbRatingScore, Integer dbRatingPeople) {
-        return new DbUpdateRatingScoreDto(dbRatingScore, dbRatingPeople);
+    public static GptUpdateRatingScoreDto createGptUpdateRatingScoreDto(Double gptRatingScore, Integer gptRatingPeople) {
+        return new GptUpdateRatingScoreDto(gptRatingScore, gptRatingPeople);
     }
 }

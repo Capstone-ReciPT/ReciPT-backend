@@ -1,11 +1,11 @@
-package samdasu.recipt.controller.dto.Db;
+package samdasu.recipt.controller.dto.Gpt;
 
 import lombok.Getter;
 import lombok.Setter;
-import samdasu.recipt.controller.dto.Heart.DbHeartDto;
-import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.controller.dto.Heart.GptHeartDto;
 import samdasu.recipt.entity.Allergy;
-import samdasu.recipt.entity.DbRecipe;
+import samdasu.recipt.entity.GptRecipe;
+import samdasu.recipt.entity.Review;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -14,53 +14,44 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class DbResponseDto {
+public class GptResponseDto {
+
     @NotEmpty
-    private Long dbRecipeId;
+    private Long gptRecipeId;
     @NotNull
-    private String dbFoodName;
+    private String gptFoodName;
     @NotNull
-    private String dbIngredient;
+    private String gptIngredient;
     @NotNull
-    private String howToCook;
-    @NotNull
-    private String thumbnailImage;
-    @NotNull
-    private String dbContext;
-    @NotNull
-    private String dbImage;
-    private Integer dbLikeCount;
-    private Integer dbViewCount;
-    private Double dbRatingRating;
+    private String gptHowToCook;
+    private String gptTip;
+    private Integer gptViewCount; //조회 수
+    private Integer gptLikeCount; //레시피 좋아요
     private Double dbRatingResult;
     private Allergy allergy;
-    private List<DbHeartDto> hearts;
-    private List<ReviewRequestDto> reviews;
+    private Review review;
+    private List<GptHeartDto> hearts;
 
-    public DbResponseDto(DbRecipe dbRecipe) {
-        dbRecipeId = dbRecipe.getDbRecipeId();
-        dbFoodName = dbRecipe.getDbFoodName();
-        dbIngredient = dbRecipe.getDbIngredient();
-        howToCook = dbRecipe.getHowToCook();
-        thumbnailImage = dbRecipe.getThumbnailImage();
-        dbContext = dbRecipe.getDbContext();
-        dbImage = dbRecipe.getDbImage();
-        dbLikeCount = dbRecipe.getDbLikeCount();
-        dbViewCount = dbRecipe.getDbViewCount();
-        allergy = dbRecipe.getAllergy();
-        hearts = dbRecipe.getHearts().stream()
-                .map(heart -> new DbHeartDto(heart))
-                .collect(Collectors.toList());
-        reviews = dbRecipe.getReview().stream()
-                .map(review -> new ReviewRequestDto(review))
+    public GptResponseDto(GptRecipe gptRecipe) {
+        gptRecipeId = gptRecipe.getGptRecipeId();
+        gptFoodName = gptRecipe.getGptFoodName();
+        gptIngredient = gptRecipe.getGptIngredient();
+        gptHowToCook = gptRecipe.getGptHowToCook();
+        gptTip = gptRecipe.getGptTip();
+        gptViewCount = gptRecipe.getGptViewCount();
+        gptLikeCount = gptRecipe.getGptLikeCount();
+        allergy = gptRecipe.getAllergy();
+        review = gptRecipe.getReview();
+        hearts = gptRecipe.getHearts().stream()
+                .map(heart -> new GptHeartDto(heart))
                 .collect(Collectors.toList());
     }
 
     /**
      * DB 평점 계산
      */
-    public Double calcDbRatingScore(DbRecipe dbRecipe) {
-        double ratingPoint = Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
+    public Double calcGptRatingScore(GptRecipe gptRecipe) {
+        double ratingPoint = Math.round(gptRecipe.getGptRatingScore() / gptRecipe.getGptRatingPeople() * 100) / 100.0;
         return ratingPoint;
     }
 }
