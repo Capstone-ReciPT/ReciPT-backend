@@ -40,25 +40,22 @@ public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
     }
 
     @Override
-    public List<GptRecipe> Top10GptRecipeLike(GptRecipe gptRecipe) {
-        List<GptRecipe> top10Like = queryFactory
+    public List<GptRecipe> Top10GptRecipeView(GptRecipe gptRecipe) {
+        List<GptRecipe> top10View = queryFactory
                 .selectFrom(QGptRecipe.gptRecipe)
                 .orderBy(QGptRecipe.gptRecipe.gptViewCount.desc())
                 .limit(10)
                 .fetch();
-        return top10Like;
+        return top10View;
     }
 
-    /**
-     * Gpt 레시피 평점 평균 구하기
-     * -
-     */
-//    public List<DbRecipe> searchAverageRatingScore() {
-//        List<Tuple> result = queryFactory
-//                .select(dbRecipe.dbFoodName)
-//                .from(dbRecipe)
-//                .groupBy(dbRecipe.dbRecipeId)
-//                .fetch();
-//        return null;
-//    }
+    @Override
+    public List<GptRecipe> Top10GptRecipeLike(GptRecipe gptRecipe) {
+        List<GptRecipe> top10Like = queryFactory
+                .selectFrom(QGptRecipe.gptRecipe)
+                .orderBy(QGptRecipe.gptRecipe.gptLikeCount.desc())
+                .limit(10)
+                .fetch();
+        return top10Like;
+    }
 }
