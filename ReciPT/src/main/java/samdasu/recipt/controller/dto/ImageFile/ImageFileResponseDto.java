@@ -12,6 +12,8 @@ import javax.validation.constraints.NotEmpty;
 public class ImageFileResponseDto {
     @NotEmpty
     private Long imageId;
+    private String originalFilename;
+    private String storeFilename;
     private Review review;
 
     public ImageFileResponseDto(ImageFile imageFile) {
