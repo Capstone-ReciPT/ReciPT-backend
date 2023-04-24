@@ -3,13 +3,16 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import samdasu.recipt.controller.dto.Review.DbReviewResponseDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
-import samdasu.recipt.controller.dto.Review.ReviewResponseDto;
 import samdasu.recipt.entity.Review;
+import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.Review.ReviewRepository;
+import samdasu.recipt.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,24 +21,25 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ImageFileService imageFileService;
+    private final UserRepository userRepository;
 
     @Transactional
-    public void IncreaseViewCount(Long reviewId) {
+    public void increaseViewCount(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
         review.addViewCount(review);
     }
 
     @Transactional
-    public void IncreaseReviewLike(ReviewRequestDto reviewRequestDto) {
-        Review review = reviewRepository.findById(reviewRequestDto.getReviewId())
+    public void increaseReviewLike(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
         review.addReviewLike(review);
     }
 
     @Transactional
-    public void DecreaseReviewLike(ReviewRequestDto reviewRequestDto) {
-        Review review = reviewRepository.findById(reviewRequestDto.getReviewId())
+    public void decreaseReviewLike(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
         review.subReviewLike(review);
     }
@@ -43,21 +47,20 @@ public class ReviewService {
     @Transactional
     public Long saveReview(ReviewRequestDto reviewRequestDto) {
         validateReview(reviewRequestDto);
-        Review review = Review.createReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), reviewRequestDto.getViewCount(), reviewRequestDto.getLikeCount(), reviewRequestDto.getUser(), reviewRequestDto.getGptRecipe(), reviewRequestDto.getDbRecipe());
+        Review review = null;
+        User user = userRepository.findByUserName(reviewRequestDto.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+
+        if (reviewRequestDto.getDbRecipe().getDbRecipeId() == null) {
+            review = Review.createDbReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getDbRecipe());
+        } else if (reviewRequestDto.getGptRecipe().getGptRecipeId() == null) {
+            review = Review.createGptReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getGptRecipe());
+        }
         return reviewRepository.save(review).getReviewId();
-        /**
-         * mapper 써서 리뷰 저장하는 방식
-         * - test 돌려보고 결과 안 좋으면 사용할 것!
-         */
-//        User user = userRepository.findById(reviewRequestDto.getUser().getUserId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
-//
-//        Review review = reviewRequestMapper.toEntity(reviewRequestDto);
-//        review.updateUser();
     }
 
     private void validateReview(ReviewRequestDto reviewRequestDto) {
-        reviewRepository.findById(reviewRequestDto.getReviewId())
+        reviewRepository.findByTitle(reviewRequestDto.getTitle())
                 .ifPresent(review -> {
                     throw new IllegalArgumentException("Fail: Already Exist Review!");
                 });
@@ -97,8 +100,9 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Review findReviewByTitle(String title) {
+    public Optional<Review> findReviewByTitle(String title) {
         return reviewRepository.findByTitle(title);
+
     }
 
     @Transactional(readOnly = true)
@@ -108,10 +112,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewResponseDto findById(Long reviewId) {
+    public DbReviewResponseDto findById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No Review Info"));
-        return new ReviewResponseDto(review);
+        return new DbReviewResponseDto(review);
     }
 
     @Transactional(readOnly = true)

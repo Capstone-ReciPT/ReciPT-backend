@@ -1,11 +1,11 @@
 package samdasu.recipt.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import samdasu.recipt.controller.dto.ImageFile.ImageFileDto;
-import samdasu.recipt.controller.dto.ImageFile.ImageFileRequestDto;
+import samdasu.recipt.controller.dto.ImageFile.ImageFileResponseDto;
 import samdasu.recipt.entity.ImageFile;
 import samdasu.recipt.repository.Review.ReviewRepository;
 
@@ -23,17 +23,19 @@ public class ImageFileService {
      * 고민: review 저장시 image파일도 같이 @transactional 걸어야할거 같은데... reviewservice에서 저장시키는게 맞을까?
      * 아님 controller에서 직접 저장시키고 review 따로 저장?
      */
+
+    @Value("${file.dir}")
+    private String fileDir;
     private final ReviewRepository reviewRepository;
-    private final ImageFileRequestDto imageFileRequestDto;
 
     public String getFullPath(String filename) {
-        return imageFileRequestDto.getFileDir() + filename;
+        return filename + filename;
     }
 
     /**
      * 여러개 업로드
      */
-    public List<ImageFile> saveFiles(ImageFileDto imageFileDto, List<MultipartFile> multipartFiles) throws IOException {
+    public List<ImageFile> saveFiles(ImageFileResponseDto imageFileDto, List<MultipartFile> multipartFiles) throws IOException {
         List<ImageFile> storeFileResult = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             if (!multipartFile.isEmpty()) {
@@ -50,8 +52,8 @@ public class ImageFileService {
 
         String originalFilename = multipartFile.getOriginalFilename();
         String storeFileName = createStoreFileName(originalFilename); //업로드 파일 명
-        multipartFile.transferTo(new File(getFullPath(imageFileRequestDto.getFileDir()), storeFileName)); //파일 저장
-        return ImageFile.createImageFile(imageFileRequestDto.getFileDir(), originalFilename, storeFileName);
+        multipartFile.transferTo(new File(getFullPath(storeFileName))); //파일 저장
+        return ImageFile.createImageFile(originalFilename, storeFileName);
     }
 
     private String createStoreFileName(String originalFilename) {

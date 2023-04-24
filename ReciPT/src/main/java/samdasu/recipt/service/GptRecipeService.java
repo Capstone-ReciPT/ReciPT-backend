@@ -3,8 +3,7 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.Db.DbDto;
-import samdasu.recipt.controller.dto.Gpt.GptDto;
+import samdasu.recipt.controller.dto.Gpt.GptRequestDto;
 import samdasu.recipt.controller.dto.Gpt.GptResponseDto;
 import samdasu.recipt.controller.dto.Gpt.GptUpdateRatingScoreDto;
 import samdasu.recipt.entity.GptRecipe;
@@ -19,14 +18,12 @@ import java.util.List;
 public class GptRecipeService {
     private final GptRecipeRepository gptRecipeRepository;
 
-    private final GptResponseDto gptResponseDto;
-
     /**
      * 평점 추가: 평점 & 평점 준 사람 더하기
      */
     @Transactional
-    public void gptUpdateRatingScore(DbDto dbDto, GptUpdateRatingScoreDto gptUpdateRatingScoreDto) {
-        GptRecipe gptRecipe = gptRecipeRepository.findById(dbDto.getDbRecipeId())
+    public void gptUpdateRatingScore(Long gptRecipeId, GptUpdateRatingScoreDto gptUpdateRatingScoreDto) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
         GptUpdateRatingScoreDto gptUpdateRatingScore = gptUpdateRatingScoreDto.createGptUpdateRatingScoreDto(gptUpdateRatingScoreDto.getGptRatingScore(), gptUpdateRatingScoreDto.getGptRatingPeople());
         gptRecipe.updateRating(gptUpdateRatingScore);
@@ -39,7 +36,9 @@ public class GptRecipeService {
     public GptResponseDto calcGptRatingScore(GptRecipe gptRecipe) {
         GptRecipe findGptRecipe = gptRecipeRepository.findById(gptRecipe.getGptRecipeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
-        Double avgDbRatingScore = gptResponseDto.calcGptRatingScore(findGptRecipe);
+        Double avgDbRatingScore = gptRecipe.calcGptRatingScore(findGptRecipe);
+
+        GptResponseDto gptResponseDto = GptResponseDto.createGptResponseDto(findGptRecipe);
         gptResponseDto.setDbRatingResult(avgDbRatingScore);
         return gptResponseDto;
     }
@@ -49,8 +48,8 @@ public class GptRecipeService {
      * - gpt Api 응답을 gptDto에 담고 저장하기
      */
     @Transactional
-    public Long gptSave(GptDto gptDto) {
-        GptRecipe gptRecipe = GptRecipe.createGptRecipe(gptDto.getGptFoodName(), gptDto.getGptIngredient(), gptDto.getGptHowToCook(), gptDto.getGptTip(), gptDto.getGptLikeCount(), gptDto.getGptViewCount(), gptDto.getGptRatingScore(), gptDto.getGptRatingPeople(), gptDto.getAllergy());
+    public Long gptSave(GptRequestDto gptRequestDto) {
+        GptRecipe gptRecipe = GptRecipe.createGptRecipe(gptRequestDto.getGptFoodName(), gptRequestDto.getGptIngredient(), gptRequestDto.getGptHowToCook(), gptRequestDto.getGptTip(), 0, 0, 0.0, 0, gptRequestDto.getAllergy());
         return gptRecipeRepository.save(gptRecipe).getGptRecipeId();
     }
 
@@ -71,17 +70,17 @@ public class GptRecipeService {
     }
 
     @Transactional(readOnly = true)
-    public GptDto findById(Long gptRecipeId) {
+    public GptRequestDto findById(Long gptRecipeId) {
         GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
-        return new GptDto(gptRecipe);
+        return new GptRequestDto(gptRecipe);
     }
 
     @Transactional(readOnly = true)
-    public GptDto findByFoodName(String gptFoodName) {
+    public GptRequestDto findByFoodName(String gptFoodName) {
         GptRecipe gptRecipe = gptRecipeRepository.findByGptFoodName(gptFoodName)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
-        return new GptDto(gptRecipe);
+        return new GptRequestDto(gptRecipe);
     }
 
     @Transactional(readOnly = true)
