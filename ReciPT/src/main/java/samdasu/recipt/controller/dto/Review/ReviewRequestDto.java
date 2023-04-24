@@ -2,13 +2,11 @@ package samdasu.recipt.controller.dto.Review;
 
 import lombok.Getter;
 import lombok.Setter;
-import samdasu.recipt.controller.dto.ImageFile.ImageFileDto;
+import samdasu.recipt.controller.dto.ImageFile.ImageFileResponseDto;
 import samdasu.recipt.entity.DbRecipe;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;
-import samdasu.recipt.entity.User;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,37 +14,48 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class ReviewRequestDto {
-    @NotBlank
-    private User user;
     @NotNull
-    private Long reviewId;
-    @NotNull
-    private String userName;
+    private String username;
     @NotNull
     private String title;
     @NotNull
     private String comment;
-    @NotNull
-    private Integer viewCount;
-    @NotNull
-    private Integer likeCount;
     private GptRecipe gptRecipe;
     private DbRecipe dbRecipe;
-    private List<ImageFileDto> imageFiles;
+    private List<ImageFileResponseDto> imageFiles;
 
     public ReviewRequestDto(Review review) {
-        reviewId = review.getReviewId();
-        user = review.getUser();
-        userName = review.getUser().getUserName();
         title = review.getTitle();
         comment = review.getComment();
-        viewCount = review.getViewCount();
-        likeCount = review.getLikeCount();
         gptRecipe = review.getGptRecipe();
         dbRecipe = review.getDbRecipe();
         imageFiles = review.getImageFiles().stream()
-                .map(imageFile -> new ImageFileDto(imageFile))
+                .map(ImageFileResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public ReviewRequestDto(String username, String title, String comment, DbRecipe dbRecipe, List<ImageFileResponseDto> imageFiles) {
+        this.username = username;
+        this.title = title;
+        this.comment = comment;
+        this.dbRecipe = dbRecipe;
+        this.imageFiles = imageFiles;
+    }
+
+    public ReviewRequestDto(String username, String title, String comment, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        this.username = username;
+        this.title = title;
+        this.comment = comment;
+        this.gptRecipe = gptRecipe;
+        this.imageFiles = imageFiles;
+    }
+
+    public static ReviewRequestDto createDbReviewRequestDto(String username, String title, String comment, DbRecipe dbRecipe, List<ImageFileResponseDto> imageFiles) {
+        return new ReviewRequestDto(username, title, comment, dbRecipe, imageFiles);
+    }
+
+    public static ReviewRequestDto createGptReviewRequestDto(String username, String title, String comment, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        return new ReviewRequestDto(username, title, comment, gptRecipe, imageFiles);
     }
 
 }

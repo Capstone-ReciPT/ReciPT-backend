@@ -6,22 +6,26 @@ import samdasu.recipt.entity.ImageFile;
 import samdasu.recipt.entity.Review;
 
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
-public class ImageFileDto {
+public class ImageFileResponseDto {
     @NotEmpty
     private Long imageId;
-    private Review reviews;
+    private Review review;
 
-    public ImageFileDto(ImageFile imageFile) {
+    public ImageFileResponseDto(ImageFile imageFile) {
         imageId = imageFile.getImageId();
-        reviews = imageFile.getReviews();
+        review = imageFile.getReview();
     }
 
-    public static List<ImageFileDto> createImageFileDto(ImageFile imageFile) {
-        return new ArrayList<>(imageFile);
+    public ImageFileResponseDto(Long imageId, Review review) {
+        this.imageId = imageId;
+        this.review = review;
     }
+
+    public static ImageFileResponseDto createImageFileResponseDto(Long imageId, Review review) {
+        return new ImageFileResponseDto(imageId, review);
+    }
+
 }

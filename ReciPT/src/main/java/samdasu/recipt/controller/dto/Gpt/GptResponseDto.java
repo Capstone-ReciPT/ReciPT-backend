@@ -47,11 +47,9 @@ public class GptResponseDto {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * DB 평점 계산
-     */
-    public Double calcGptRatingScore(GptRecipe gptRecipe) {
-        double ratingPoint = Math.round(gptRecipe.getGptRatingScore() / gptRecipe.getGptRatingPeople() * 100) / 100.0;
-        return ratingPoint;
+    public static GptResponseDto createGptResponseDto(GptRecipe gptRecipe) {
+        return new GptResponseDto(gptRecipe);
     }
+
+
 }

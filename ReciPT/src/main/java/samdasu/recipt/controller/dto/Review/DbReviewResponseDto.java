@@ -2,23 +2,19 @@ package samdasu.recipt.controller.dto.Review;
 
 import lombok.Getter;
 import lombok.Setter;
-import samdasu.recipt.controller.dto.ImageFile.ImageFileDto;
+import samdasu.recipt.controller.dto.ImageFile.ImageFileResponseDto;
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;
-import samdasu.recipt.entity.User;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReviewResponseDto {
-    @NotBlank
-    private User user;
-    @NotNull
+public class DbReviewResponseDto {
+    @NotEmpty
     private Long reviewId;
     @NotNull
     private String userName;
@@ -27,21 +23,20 @@ public class ReviewResponseDto {
     @NotNull
     private String comment;
     private Integer viewCount;
-    private GptRecipe gptRecipe;
+    private Integer likeCount;
     private DbRecipe dbRecipe;
-    private List<ImageFileDto> imageFiles;
+    private List<ImageFileResponseDto> imageFiles;
 
-    public ReviewResponseDto(Review review) {
+    public DbReviewResponseDto(Review review) {
         reviewId = review.getReviewId();
-        user = review.getUser();
         userName = review.getUser().getUserName();
         title = review.getTitle();
         comment = review.getComment();
         viewCount = review.getViewCount();
-        gptRecipe = review.getGptRecipe();
+        likeCount = review.getLikeCount();
         dbRecipe = review.getDbRecipe();
         imageFiles = review.getImageFiles().stream()
-                .map(imageFile -> new ImageFileDto(imageFile))
+                .map(imageFile -> new ImageFileResponseDto(imageFile))
                 .collect(Collectors.toList());
     }
 
