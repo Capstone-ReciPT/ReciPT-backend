@@ -39,3 +39,6 @@ out/
 
 ### gpt ###
 gpt/logs/
+
+### Querydsl
+/src/main/generated

@@ -10,6 +10,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewCus
 
     Optional<Review> findById(Long reviewId);
 
-    Review findByTitle(String title); //제목 조회
-    
+    Optional<Review> findByTitle(String title); //제목 조회
+
 }

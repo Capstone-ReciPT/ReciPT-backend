@@ -64,7 +64,19 @@ public class Review extends BaseEntity {
         imageFile.setReview(this);
     }
 
-    public Review(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe, ImageFile... imageFiles) {
+    public Review(String title, String comment, Integer viewCount, Integer likeCount, User user, DbRecipe dbRecipe, ImageFile... imageFiles) {
+        this.title = title;
+        this.comment = comment;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        changeUser(user);
+        for (ImageFile imageFile : imageFiles) {
+            addImageFile(imageFile);
+        }
+        changeDbRecipe(dbRecipe);
+    }
+
+    public Review(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe, ImageFile... imageFiles) {
         this.title = title;
         this.comment = comment;
         this.viewCount = viewCount;
@@ -74,16 +86,16 @@ public class Review extends BaseEntity {
             addImageFile(imageFile);
         }
         changeGptRecipe(gptRecipe);
-        changeDbRecipe(dbRecipe);
     }
 
-    public static Review createReview(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe) {
-        return new Review(title, comment, viewCount, likeCount, user, gptRecipe, dbRecipe);
+    public static Review createDbReview(String title, String comment, Integer viewCount, Integer likeCount, User user, DbRecipe dbRecipe) {
+        return new Review(title, comment, viewCount, likeCount, user, dbRecipe);
     }
 
-    public static Review createReview(ReviewRequestDto reviewRequestDto) {
-        return new Review();
+    public static Review createGptReview(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe) {
+        return new Review(title, comment, viewCount, likeCount, user, gptRecipe);
     }
+
 
     //==비지니스 로직==//
     public void addViewCount(Review review) {

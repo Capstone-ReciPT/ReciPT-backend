@@ -7,17 +7,13 @@ import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class GptResponseDto {
-
-    @NotEmpty
-    private Long gptRecipeId;
+public class GptRequestDto {
     @NotNull
     private String gptFoodName;
     @NotNull
@@ -25,21 +21,15 @@ public class GptResponseDto {
     @NotNull
     private String gptHowToCook;
     private String gptTip;
-    private Integer gptViewCount; //조회 수
-    private Integer gptLikeCount; //레시피 좋아요
-    private Double dbRatingResult;
     private Allergy allergy;
     private Review review;
     private List<GptHeartDto> hearts;
 
-    public GptResponseDto(GptRecipe gptRecipe) {
-        gptRecipeId = gptRecipe.getGptRecipeId();
+    public GptRequestDto(GptRecipe gptRecipe) {
         gptFoodName = gptRecipe.getGptFoodName();
         gptIngredient = gptRecipe.getGptIngredient();
         gptHowToCook = gptRecipe.getGptHowToCook();
         gptTip = gptRecipe.getGptTip();
-        gptViewCount = gptRecipe.getGptViewCount();
-        gptLikeCount = gptRecipe.getGptLikeCount();
         allergy = gptRecipe.getAllergy();
         review = gptRecipe.getReview();
         hearts = gptRecipe.getHearts().stream()
@@ -47,9 +37,22 @@ public class GptResponseDto {
                 .collect(Collectors.toList());
     }
 
-    public static GptResponseDto createGptResponseDto(GptRecipe gptRecipe) {
-        return new GptResponseDto(gptRecipe);
+    public GptRequestDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy) {
+        this.gptFoodName = gptFoodName;
+        this.gptIngredient = gptIngredient;
+        this.gptHowToCook = gptHowToCook;
+        this.gptTip = gptTip;
+        this.allergy = allergy;
+        this.review = review;
+        this.hearts = hearts;
     }
 
+    public static GptRequestDto createGptDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy) {
+        return new GptRequestDto(gptFoodName, gptIngredient, gptHowToCook, gptTip, allergy);
+    }
+
+    public static GptRequestDto createGptDto(GptRecipe gptRecipe) {
+        return new GptRequestDto(gptRecipe.getGptFoodName(), gptRecipe.getGptIngredient(), gptRecipe.getGptHowToCook(), gptRecipe.getGptTip(), gptRecipe.getAllergy());
+    }
 
 }

@@ -1,13 +1,10 @@
 package samdasu.recipt.service;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.entity.Allergy;
@@ -19,8 +16,6 @@ import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,27 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DbRecipeServiceTest {
-    private final DbRecipeRepository dbRecipeRepository;
-    private final DbRecipeService dbRecipeService;
-    private final DataSource dataSource;
-    private final GptRecipeRepository gptRecipeRepository;
-
     @Autowired
-    public DbRecipeServiceTest(DbRecipeRepository dbRecipeRepository, DbRecipeService dbRecipeService, DataSource dataSource, GptRecipeRepository gptRecipeRepository) {
-        this.dbRecipeRepository = dbRecipeRepository;
-        this.dbRecipeService = dbRecipeService;
-        this.dataSource = dataSource;
-        this.gptRecipeRepository = gptRecipeRepository;
-    }
+    DbRecipeRepository dbRecipeRepository;
+    @Autowired
+    DbRecipeService dbRecipeService;
+    @Autowired
+    GptRecipeRepository gptRecipeRepository;
 
-    @BeforeAll
-    public void init() {
-        try (Connection conn = dataSource.getConnection()) {
-            ScriptUtils.executeSqlScript(conn, new ClassPathResource("/db/h2/data.sql"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 //    @Test
 //    @Rollback(value = false)

@@ -1,12 +1,9 @@
 package samdasu.recipt.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Heart.DbHeartDto;
@@ -19,46 +16,26 @@ import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 import samdasu.recipt.repository.HeartRepository;
 import samdasu.recipt.repository.UserRepository;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HeartServiceTest {
-    private final HeartRepository heartRepository;
-    private final HeartService heartService;
-    private final DbRecipeRepository dbRecipeRepository;
-    private final DbRecipeService dbRecipeService;
-    private final GptRecipeRepository gptRecipeRepository;
-    private final samdasu.recipt.service.GptRecipeService gptRecipeService;
-
-    private final DataSource dataSource;
     @Autowired
-    private UserRepository userRepository;
-
+    HeartRepository heartRepository;
     @Autowired
-    public HeartServiceTest(HeartRepository heartRepository, HeartService heartService, DbRecipeRepository dbRecipeRepository, DbRecipeService dbRecipeService, GptRecipeRepository gptRecipeRepository, samdasu.recipt.service.GptRecipeService gptRecipeService, DataSource dataSource) {
-        this.heartRepository = heartRepository;
-        this.heartService = heartService;
-        this.dbRecipeRepository = dbRecipeRepository;
-        this.dbRecipeService = dbRecipeService;
-        this.gptRecipeRepository = gptRecipeRepository;
-        this.gptRecipeService = gptRecipeService;
-        this.dataSource = dataSource;
-    }
-
-
-    @BeforeAll
-    public void init() {
-        try (Connection conn = dataSource.getConnection()) {
-            ScriptUtils.executeSqlScript(conn, new ClassPathResource("/db/h2/data.sql"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    HeartService heartService;
+    @Autowired
+    DbRecipeRepository dbRecipeRepository;
+    @Autowired
+    DbRecipeService dbRecipeService;
+    @Autowired
+    GptRecipeRepository gptRecipeRepository;
+    @Autowired
+    GptRecipeService gptRecipeService;
+    @Autowired
+    UserRepository userRepository;
 
     @Rollback(value = false)
     @Test

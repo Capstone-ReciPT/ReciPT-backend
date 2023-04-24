@@ -3,7 +3,7 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.Db.DbDto;
+import samdasu.recipt.controller.dto.Db.DbRequestDto;
 import samdasu.recipt.controller.dto.Db.DbResponseDto;
 import samdasu.recipt.controller.dto.Db.DbUpdateRatingScoreDto;
 import samdasu.recipt.entity.DbRecipe;
@@ -17,14 +17,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DbRecipeService {
     private final DbRecipeRepository dbRecipeRepository;
-    private final DbResponseDto dbResponseDto;
 
     /**
      * 평점 추가: 평점 & 평점 준 사람 더하기
      */
     @Transactional
-    public void dbUpdateRatingScore(DbDto dbDto, DbUpdateRatingScoreDto dbUpdateRatingScoreDto) {
-        DbRecipe dbRecipe = dbRecipeRepository.findById(dbDto.getDbRecipeId())
+    public void dbUpdateRatingScore(Long dbRecipeId, DbUpdateRatingScoreDto dbUpdateRatingScoreDto) {
+        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
         DbUpdateRatingScoreDto dbUpdateRatingScore = dbUpdateRatingScoreDto.createDbUpdateRatingScoreDto(dbUpdateRatingScoreDto.getDbRatingScore(), dbUpdateRatingScoreDto.getDbRatingPeople());
         dbRecipe.updateRating(dbUpdateRatingScore);
@@ -37,7 +36,9 @@ public class DbRecipeService {
     public DbResponseDto calcDbRatingScore(DbRecipe dbRecipe) {
         DbRecipe findDbRecipe = dbRecipeRepository.findById(dbRecipe.getDbRecipeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
-        Double avgDbRatingScore = dbResponseDto.calcDbRatingScore(findDbRecipe);
+        Double avgDbRatingScore = dbRecipe.calcDbRatingScore(findDbRecipe);
+
+        DbResponseDto dbResponseDto = DbResponseDto.createDbResponseDto(findDbRecipe);
         dbResponseDto.setDbRatingResult(avgDbRatingScore);
         return dbResponseDto;
     }
@@ -47,8 +48,8 @@ public class DbRecipeService {
      * DB 레시피 저장 + (평점)
      */
     @Transactional
-    public Long dbSave(DbDto dbDto) {
-        DbRecipe dbRecipe = DbRecipe.createDbRecipe(dbDto.getDbFoodName(), dbDto.getDbIngredient(), dbDto.getHowToCook(), dbDto.getThumbnailImage(), dbDto.getDbContext(), dbDto.getDbImage(), dbDto.getDbLikeCount(), dbDto.getDbViewCount(), dbDto.getDbRatingScore(), dbDto.getDbRatingPeople(), dbDto.getAllergy());
+    public Long dbSave(DbRequestDto dbRequestDto) {
+        DbRecipe dbRecipe = DbRecipe.createDbRecipe(dbRequestDto.getDbFoodName(), dbRequestDto.getDbIngredient(), dbRequestDto.getHowToCook(), dbRequestDto.getThumbnailImage(), dbRequestDto.getDbContext(), dbRequestDto.getDbImage(), 0, 0, 0.0, 0, dbRequestDto.getAllergy());
         return dbRecipeRepository.save(dbRecipe).getDbRecipeId();
     }
 

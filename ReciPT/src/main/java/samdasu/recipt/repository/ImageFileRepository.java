@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ImageFileRepository extends JpaRepository<ImageFile, Long> {
-    Optional<ImageFile> findImageFileById(Long ImageFileId);
+    Optional<ImageFile> findByImageId(Long ImageFileId);
 
-    List<ImageFile> findImageFilesByFileOriginName(String fileOriginName);
+    List<ImageFile> findImageFilesByOriginalFilename(String originalFilename);
 }

@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.Gpt.GptDto;
+import samdasu.recipt.controller.dto.Gpt.GptRequestDto;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,17 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GptRecipeServiceTest {
-    private final GptRecipeService gptRecipeService;
-    private final GptRecipeRepository gptRecipeRepository;
-    private final DataSource dataSource;
-
     @Autowired
-    public GptRecipeServiceTest(GptRecipeService gptRecipeService, GptRecipeRepository gptRecipeRepository, DataSource dataSource) {
-        this.gptRecipeService = gptRecipeService;
-        this.gptRecipeRepository = gptRecipeRepository;
-        this.dataSource = dataSource;
-    }
-
+    GptRecipeService gptRecipeService;
+    @Autowired
+    GptRecipeRepository gptRecipeRepository;
 
     @Test
     @Rollback(value = false)
@@ -42,7 +34,7 @@ class GptRecipeServiceTest {
         //when
         for (int i = 0; i < 20; i++) {
             GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, i, 0.0, 0, allergy);
-            GptDto gptDto = GptDto.createGptDto(gptRecipe);
+            GptRequestDto gptDto = GptRequestDto.createGptDto(gptRecipe);
             gptRecipeService.gptSave(gptDto);
         }
         //then
@@ -75,7 +67,7 @@ class GptRecipeServiceTest {
         gptRecipeRepository.save(gptRecipe);
 
         //when
-        GptDto result = gptRecipeService.findById(gptRecipe.getGptRecipeId());
+        GptRequestDto result = gptRecipeService.findById(gptRecipe.getGptRecipeId());
 
         //then
         assertThat(result.getGptFoodName()).isEqualTo(gptRecipe.getGptFoodName());
@@ -89,7 +81,7 @@ class GptRecipeServiceTest {
         gptRecipeRepository.save(gptRecipe);
 
         //when
-        GptDto result = gptRecipeService.findByFoodName(gptRecipe.getGptFoodName());
+        GptRequestDto result = gptRecipeService.findByFoodName(gptRecipe.getGptFoodName());
 
         //then
         assertThat(result.getGptFoodName()).isEqualTo(gptRecipe.getGptFoodName());
