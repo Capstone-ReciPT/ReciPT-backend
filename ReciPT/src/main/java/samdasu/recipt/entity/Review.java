@@ -31,7 +31,7 @@ public class Review extends BaseEntity {
     private User user;
 
 
-    @OneToMany(mappedBy = "reviews", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ImageFile> imageFiles = new ArrayList<>();
 
     @OneToOne(fetch = LAZY)
