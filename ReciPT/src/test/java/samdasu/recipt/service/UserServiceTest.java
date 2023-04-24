@@ -1,12 +1,9 @@
 package samdasu.recipt.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
@@ -14,9 +11,6 @@ import samdasu.recipt.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.repository.UserRepository;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,28 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserServiceTest {
 
-    private final UserRepository userRepository;
-    private final UserService userService;
-
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final DataSource dataSource;
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
-    public UserServiceTest(UserRepository userRepository, UserService userService, BCryptPasswordEncoder passwordEncoder, DataSource dataSource) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-        this.dataSource = dataSource;
-    }
+    UserService userService;
 
-    @BeforeAll
-    public void init() {
-        try (Connection conn = dataSource.getConnection()) {
-            ScriptUtils.executeSqlScript(conn, new ClassPathResource("/db/h2/data.sql"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
     @Test
     public void 유저_회원가입() {
