@@ -19,8 +19,11 @@ public class User extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "user_id")
     private Long userId;
+    @Column(nullable = false)
     private String userName;
+    @Column(nullable = false, length = 255)
     private String loginId;
+    @Column(nullable = false, length = 255)
     private String password;
     private String userAllergy;
 

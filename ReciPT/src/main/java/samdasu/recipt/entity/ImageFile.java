@@ -3,6 +3,7 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -17,25 +18,32 @@ public class ImageFile extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "image_id")
     private Long imageId;
-
-    private String filename; //사용자가 임의로 만든 파일 명
-    private String fileOriginName; //원본 파일 명(filename은 겹칠 수도 있음)
-    private String fileUrl;
+    @Value("${file.dir}")
+    private String fileDir;
+    private String originalFilename; //원본 파일 명(유저가 업로드한 이미지의 원본 파일명)
+    private String storeFilename; //서버에 저장된 파일명
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "review_id")
     private Review reviews;
 
-
-    //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
-    public ImageFile(String filename, String fileOriginName, String fileUrl, Review reviews) {
-        this.filename = filename;
-        this.fileOriginName = fileOriginName;
-        this.fileUrl = fileUrl;
-//        addImageFile(reviews);
-    }
-
     public void setReview(Review reviews) {
         this.reviews = reviews;
     }
+
+    //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
+    public ImageFile(String fileDir, String originalFilename, String storeFilename) {
+        this.fileDir = fileDir;
+        this.originalFilename = originalFilename;
+        this.storeFilename = storeFilename;
+    }
+
+    public static ImageFile createImageFile(String fileDir, String originalFilename, String storeFilename) {
+        return new ImageFile(fileDir, originalFilename, storeFilename);
+    }
+
+
+    //==비지니스 로직==//
+
+
 }

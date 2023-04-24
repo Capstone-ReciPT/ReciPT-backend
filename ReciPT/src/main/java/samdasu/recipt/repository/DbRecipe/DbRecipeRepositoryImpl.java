@@ -4,8 +4,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.entity.DbRecipe;
+import samdasu.recipt.entity.Heart;
 import samdasu.recipt.entity.QDbRecipe;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
@@ -14,12 +16,6 @@ import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
 @RequiredArgsConstructor
 public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
     private final JPAQueryFactory queryFactory;
-
-    public List<DbRecipe> findAllByQuerydsl() {
-        return queryFactory
-                .selectFrom(dbRecipe)
-                .fetch();
-    }
 
     @Override
     public void addDbLikeCount(DbRecipe selectedDbRecipe) {
@@ -39,13 +35,34 @@ public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
     }
 
     @Override
-    public List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe) {
-        List<DbRecipe> top10Like = queryFactory
+    public List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe) {
+        List<DbRecipe> top10View = queryFactory
                 .selectFrom(QDbRecipe.dbRecipe)
                 .orderBy(QDbRecipe.dbRecipe.dbViewCount.desc())
                 .limit(10)
                 .fetch();
+        return top10View;
+    }
+
+    @Override
+    public List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe) {
+        List<DbRecipe> top10Like = queryFactory
+                .selectFrom(QDbRecipe.dbRecipe)
+                .orderBy(QDbRecipe.dbRecipe.dbLikeCount.desc())
+                .limit(10)
+                .fetch();
         return top10Like;
+    }
+
+    private final EntityManager em;
+
+    @Override
+    public List<Heart> Top10AllRecipeLike() {
+        return em.createQuery(
+                        "select h.dbRecipe.dbFoodName, h.gptRecipe.gptFoodName from Heart h" +
+                                " join h.dbRecipe db" +
+                                " join h.gptRecipe gpt", Heart.class)
+                .getResultList();
     }
 
 

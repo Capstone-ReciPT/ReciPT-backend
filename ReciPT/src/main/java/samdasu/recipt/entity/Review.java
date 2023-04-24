@@ -20,8 +20,9 @@ public class Review extends BaseEntity {
     @GeneratedValue
     @Column(name = "review_id")
     private Long reviewId;
-
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String comment;
     private Integer viewCount; //조회 수
     private Integer likeCount; //리뷰 좋아요 개수
@@ -63,10 +64,11 @@ public class Review extends BaseEntity {
         imageFile.setReview(this);
     }
 
-    public Review(String title, String comment, Integer viewCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe, ImageFile... imageFiles) {
+    public Review(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe, ImageFile... imageFiles) {
         this.title = title;
         this.comment = comment;
         this.viewCount = viewCount;
+        this.likeCount = likeCount;
         changeUser(user);
         for (ImageFile imageFile : imageFiles) {
             addImageFile(imageFile);
@@ -75,20 +77,31 @@ public class Review extends BaseEntity {
         changeDbRecipe(dbRecipe);
     }
 
-    public static Review createReview(String title, String comment, Integer viewCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe) {
-        return new Review(title, comment, viewCount, user, gptRecipe, dbRecipe);
+    public static Review createReview(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe, DbRecipe dbRecipe) {
+        return new Review(title, comment, viewCount, likeCount, user, gptRecipe, dbRecipe);
     }
 
+    public static Review createReview(ReviewRequestDto reviewRequestDto) {
+        return new Review();
+    }
 
     //==비지니스 로직==//
     public void addViewCount(Review review) {
         review.viewCount++;
     }
 
+    public void addReviewLike(Review review) {
+        review.likeCount++;
+    }
+
+    public void subReviewLike(Review review) {
+        review.likeCount--;
+    }
 
     public void updateReviewInfo(ReviewRequestDto reviewRequestDto) {
         this.title = reviewRequestDto.getTitle();
         this.comment = reviewRequestDto.getComment();
 //        this.imageFiles = reviewRequestDto.getImageFiles();
     }
+
 }

@@ -4,11 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import samdasu.recipt.entity.Heart;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 public class DbHeartDto {
 
+    @NotBlank
     private Long userId;
+
+    @NotBlank
     private Long dbRecipeId;
 
     public DbHeartDto(Long userId, Long dbRecipeId) {

@@ -1,4 +1,4 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.Db;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,30 +7,36 @@ import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.DbRecipe;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class DbDto {
+public class DbResponseDto {
+    @NotEmpty
     private Long dbRecipeId;
+    @NotNull
     private String dbFoodName;
+    @NotNull
     private String dbIngredient;
+    @NotNull
     private String howToCook;
+    @NotNull
     private String thumbnailImage;
+    @NotNull
     private String dbContext;
+    @NotNull
     private String dbImage;
-
     private Integer dbLikeCount;
     private Integer dbViewCount;
-
+    private Double dbRatingResult;
     private Allergy allergy;
-
     private List<DbHeartDto> hearts;
-
     private List<ReviewRequestDto> reviews;
 
-    public DbDto(DbRecipe dbRecipe) {
+    public DbResponseDto(DbRecipe dbRecipe) {
         dbRecipeId = dbRecipe.getDbRecipeId();
         dbFoodName = dbRecipe.getDbFoodName();
         dbIngredient = dbRecipe.getDbIngredient();
@@ -47,5 +53,13 @@ public class DbDto {
         reviews = dbRecipe.getReview().stream()
                 .map(review -> new ReviewRequestDto(review))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * DB 평점 계산
+     */
+    public Double calcDbRatingScore(DbRecipe dbRecipe) {
+        double ratingPoint = Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
+        return ratingPoint;
     }
 }

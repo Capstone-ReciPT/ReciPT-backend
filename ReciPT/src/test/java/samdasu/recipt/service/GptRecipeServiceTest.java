@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.GptDto;
+import samdasu.recipt.controller.dto.Gpt.GptDto;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
@@ -41,7 +41,7 @@ class GptRecipeServiceTest {
 
         //when
         for (int i = 0; i < 20; i++) {
-            GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, i, allergy);
+            GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, i, 0.0, 0, allergy);
             GptDto gptDto = GptDto.createGptDto(gptRecipe);
             gptRecipeService.gptSave(gptDto);
         }
@@ -54,7 +54,7 @@ class GptRecipeServiceTest {
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");
         GptRecipe gptRecipe = null;
         for (int i = 0; i < 20; i++) {
-            gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, i, allergy);
+            gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, i, 0.0, 0, allergy);
             gptRecipeRepository.save(gptRecipe);
         }
 
@@ -71,7 +71,7 @@ class GptRecipeServiceTest {
     public void Gpt_레시피_ID_단건조회() throws Exception {
         //given
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0, allergy);
+        GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0, 0.0, 0, allergy);
         gptRecipeRepository.save(gptRecipe);
 
         //when
@@ -85,7 +85,7 @@ class GptRecipeServiceTest {
     public void Gpt_레시피_음식이름_단건조회() throws Exception {
         //given
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0, allergy);
+        GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0, 0.0, 0, allergy);
         gptRecipeRepository.save(gptRecipe);
 
         //when
@@ -101,7 +101,7 @@ class GptRecipeServiceTest {
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");
         GptRecipe gptRecipe = null;
         for (int i = 0; i < 20; i++) {
-            gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0, allergy);
+            gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0, 0.0, 0, allergy);
             gptRecipeRepository.save(gptRecipe);
         }
 
