@@ -65,4 +65,12 @@ public class GptRecipe extends BaseTimeEntity {
         gptRatingScore += gptUpdateRatingScoreDto.getGptRatingScore();
         gptRatingPeople++;
     }
+
+    /**
+     * Gpt 평점 계산
+     */
+    public Double calcGptRatingScore(GptRecipe gptRecipe) {
+        double ratingPoint = Math.round(gptRecipe.getGptRatingScore() / gptRecipe.getGptRatingPeople() * 100) / 100.0;
+        return ratingPoint;
+    }
 }

@@ -71,4 +71,12 @@ public class DbRecipe extends BaseTimeEntity {
         dbRatingScore += dbUpdateRatingScore.getDbRatingScore();
         dbRatingPeople++;
     }
+
+    /**
+     * DB 평점 계산
+     */
+    public Double calcDbRatingScore(DbRecipe dbRecipe) {
+        double ratingPoint = Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
+        return ratingPoint;
+    }
 }
