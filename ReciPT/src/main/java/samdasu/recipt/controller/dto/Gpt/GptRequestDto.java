@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class GptDto {
+public class GptRequestDto {
     @NotEmpty
     private Long gptRecipeId;
     @NotNull
@@ -32,7 +32,7 @@ public class GptDto {
     private Review review;
     private List<GptHeartDto> hearts;
 
-    public GptDto(GptRecipe gptRecipe) {
+    public GptRequestDto(GptRecipe gptRecipe) {
         gptRecipeId = gptRecipe.getGptRecipeId();
         gptFoodName = gptRecipe.getGptFoodName();
         gptIngredient = gptRecipe.getGptIngredient();
@@ -49,7 +49,7 @@ public class GptDto {
                 .collect(Collectors.toList());
     }
 
-    public GptDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople) {
+    public GptRequestDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople) {
         this.gptFoodName = gptFoodName;
         this.gptIngredient = gptIngredient;
         this.gptHowToCook = gptHowToCook;
@@ -63,12 +63,12 @@ public class GptDto {
         this.hearts = hearts;
     }
 
-    public static GptDto createGptDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople) {
-        return new GptDto(gptFoodName, gptIngredient, gptHowToCook, gptTip, allergy, gptLikeCount, gptViewCount, gptRatingScore, gptRatingPeople);
+    public static GptRequestDto createGptDto(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Allergy allergy, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople) {
+        return new GptRequestDto(gptFoodName, gptIngredient, gptHowToCook, gptTip, allergy, gptLikeCount, gptViewCount, gptRatingScore, gptRatingPeople);
     }
 
-    public static GptDto createGptDto(GptRecipe gptRecipe) {
-        return new GptDto(gptRecipe.getGptFoodName(), gptRecipe.getGptIngredient(), gptRecipe.getGptHowToCook(), gptRecipe.getGptTip(), gptRecipe.getAllergy(), gptRecipe.getGptLikeCount(), gptRecipe.getGptViewCount(), gptRecipe.getGptRatingScore(), gptRecipe.getGptRatingPeople());
+    public static GptRequestDto createGptDto(GptRecipe gptRecipe) {
+        return new GptRequestDto(gptRecipe.getGptFoodName(), gptRecipe.getGptIngredient(), gptRecipe.getGptHowToCook(), gptRecipe.getGptTip(), gptRecipe.getAllergy(), gptRecipe.getGptLikeCount(), gptRecipe.getGptViewCount(), gptRecipe.getGptRatingScore(), gptRecipe.getGptRatingPeople());
     }
 
 }

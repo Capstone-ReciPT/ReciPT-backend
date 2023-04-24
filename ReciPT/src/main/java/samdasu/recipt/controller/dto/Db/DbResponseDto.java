@@ -55,11 +55,7 @@ public class DbResponseDto {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * DB 평점 계산
-     */
-    public Double calcDbRatingScore(DbRecipe dbRecipe) {
-        double ratingPoint = Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
-        return ratingPoint;
+    public static DbResponseDto createDbResponseDto(DbRecipe dbRecipe) {
+        return new DbResponseDto(dbRecipe);
     }
 }
