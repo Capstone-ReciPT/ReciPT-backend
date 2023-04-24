@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/capstone/h2_DB/ReciPT
+    url: jdbc:h2:tcp://localhost/~/h2_DB/ReciPT
     username: sa
     password:
     driver-class-name: org.h2.Driver
