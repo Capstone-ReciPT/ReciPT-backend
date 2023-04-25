@@ -40,4 +40,20 @@ public class GptReviewResponseDto {
                 .collect(Collectors.toList());
     }
 
+    public GptReviewResponseDto(Long reviewId, String userName, String title, String comment, Integer viewCount, Integer likeCount, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        this.reviewId = reviewId;
+        this.userName = userName;
+        this.title = title;
+        this.comment = comment;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.gptRecipe = gptRecipe;
+        this.imageFiles = imageFiles;
+    }
+
+    public static GptReviewResponseDto createGptReviewResponseDto(Long reviewId, String userName, String title, String comment, Integer viewCount, Integer likeCount, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        return new GptReviewResponseDto(reviewId, userName, title, comment, viewCount, likeCount, gptRecipe, imageFiles);
+    }
+
+
 }
