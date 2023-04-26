@@ -25,36 +25,30 @@ public class HeartService {
     private final GptRecipeRepository gptRecipeRepository;
 
     @Transactional
-    public Long insertDbHeart(DbHeartDto heartDto) {
-        User user = getUser(heartDto, "Fail: No User Info");
-        DbRecipe dbRecipe = getDbRecipe(heartDto, "Fail: No DbRecipe Info");
+    public void insertDbHeart(DbHeartDto heartDto) {
+        User user = getUser(heartDto.getUserId());
+        DbRecipe dbRecipe = getDbRecipe(heartDto);
 
         //이미 좋아요되어있으면 에러 반환
-//        if (heartRepository.findByUserAndDbRecipe(user, dbRecipe).isPresent()) {
-//            //TODO 409에러로 변경
-//            throw new DuplicateResourceException("already exist data by user id :" + user.getUserId() + " ,"
-//                    + "dbRecipe id : " + dbRecipe.getDbRecipeId());
-//        }
+        if (heartRepository.findByUserAndDbRecipe(user, dbRecipe).isPresent()) {
+            //TODO 409에러로 변경
+            throw new DuplicateResourceException("already exist data by user id :" + user.getUserId() + " ,"
+                    + "dbRecipe id : " + dbRecipe.getDbRecipeId());
+        }
 
         Heart heart = Heart.createDbHeart(user, dbRecipe);
         heartRepository.save(heart);
         dbRecipeRepository.addDbLikeCount(dbRecipe);
-
-        return heart.getHeartId();
     }
+
 
     @Transactional
     public void deleteDbHeart(DbHeartDto dbHeartDto) {
-        User user = getUser(dbHeartDto, "Could not found user id : " + dbHeartDto.getUserId());
-        DbRecipe dbRecipe = getDbRecipe(dbHeartDto, "Could not found DbRecipe id : " + dbHeartDto.getDbRecipeId());
-        userRepository.save(user);
-        dbRecipeRepository.save(dbRecipe);
+        User user = getUser(dbHeartDto.getUserId());
+        DbRecipe dbRecipe = getDbRecipe(dbHeartDto);
 
-        Heart heart = heartRepository.findUserAndDbRecipe(user.getUserId(), dbRecipe.getDbRecipeId())
+        Heart heart = heartRepository.findByUserAndDbRecipe(user, dbRecipe)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found heart"));
-
-        System.out.println("heart.getUser().getusername() = " + heart.getUser().getHearts());
-        System.out.println("heart.getDbRecipe().getDbFoodName() = " + heart.getDbRecipe().getDbFoodName());
 
         heartRepository.delete(heart);
         dbRecipeRepository.subDbLikeCount(dbRecipe);
@@ -62,8 +56,8 @@ public class HeartService {
 
     @Transactional
     public void insertGptHeart(GptHeartDto heartDto) {
-        User user = getUser(heartDto, "Fail: No User Info");
-        GptRecipe gptRecipe = getGptRecipe(heartDto, "Fail: No GptRecipe Info");
+        User user = getUser(heartDto.getUserId());
+        GptRecipe gptRecipe = getGptRecipe(heartDto);
 
         if (heartRepository.findByUserAndGptRecipe(user, gptRecipe).isPresent()) {
             throw new DuplicateResourceException("already exist data by user id :" + user.getUserId() + " ,"
@@ -72,44 +66,36 @@ public class HeartService {
 
         Heart heart = Heart.createGptHeart(user, gptRecipe);
         heartRepository.save(heart);
-
-        userRepository.save(user).getUserId();
         gptRecipeRepository.addGptLikeCount(gptRecipe);
     }
 
     @Transactional
-    public void deleteGptHeart(GptHeartDto heartDto) {
-        User user = getUser(heartDto, "Could not found user id : " + heartDto.getUserId());
-        GptRecipe gptRecipe = getGptRecipe(heartDto, "Could not found GptRecipe id : " + heartDto.getGptRecipeId());
+    public void deleteGptHeart(GptHeartDto gptHeartDto) {
+        User user = getUser(gptHeartDto.getUserId());
+        GptRecipe gptRecipe = getGptRecipe(gptHeartDto);
 
         Heart heart = heartRepository.findByUserAndGptRecipe(user, gptRecipe)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not found heart id"));
+                .orElseThrow(() -> new ResourceNotFoundException("Could not found heart"));
 
         heartRepository.delete(heart);
         gptRecipeRepository.subGptLikeCount(gptRecipe);
     }
 
-    private User getUser(DbHeartDto heartDto, String message) {
-        User user = userRepository.findById(heartDto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(message));
+    private User getUser(Long heartDto) {
+        User user = userRepository.findById(heartDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
         return user;
     }
 
-    private User getUser(GptHeartDto heartDto, String message) {
-        User user = userRepository.findById(heartDto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(message));
-        return user;
-    }
-
-    private DbRecipe getDbRecipe(DbHeartDto heartDto, String message) {
+    private DbRecipe getDbRecipe(DbHeartDto heartDto) {
         DbRecipe dbRecipe = dbRecipeRepository.findById(heartDto.getDbRecipeId())
-                .orElseThrow(() -> new ResourceNotFoundException(message));
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No DbRecipe Info"));
         return dbRecipe;
     }
 
-    private GptRecipe getGptRecipe(GptHeartDto heartDto, String message) {
-        GptRecipe gptRecipe = gptRecipeRepository.findById(heartDto.getGptRecipeId())
-                .orElseThrow(() -> new ResourceNotFoundException(message));
+    private GptRecipe getGptRecipe(GptHeartDto gptHeartDto) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptHeartDto.getGptRecipeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No GptRecipe Info"));
         return gptRecipe;
     }
 }

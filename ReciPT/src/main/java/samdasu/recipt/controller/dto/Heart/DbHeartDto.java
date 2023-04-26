@@ -16,6 +16,11 @@ public class DbHeartDto {
     @NotBlank
     private Long dbRecipeId;
 
+    public DbHeartDto(Heart heart) {
+        userId = heart.getUser().getUserId();
+        dbRecipeId = heart.getDbRecipe().getDbRecipeId();
+    }
+
     public DbHeartDto(Long userId, Long dbRecipeId) {
         this.userId = userId;
         this.dbRecipeId = dbRecipeId;
@@ -25,10 +30,7 @@ public class DbHeartDto {
         return new DbHeartDto(userId, dbRecipeId);
     }
 
-    public DbHeartDto(Heart heart) {
-        userId = heart.getUser().getUserId();
-        dbRecipeId = heart.getDbRecipe().getDbRecipeId();
-    }
+
 }
 
 
