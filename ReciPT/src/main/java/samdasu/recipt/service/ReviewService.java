@@ -3,7 +3,6 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.Review.DbReviewResponseDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.Review;
 import samdasu.recipt.entity.User;
@@ -46,25 +45,27 @@ public class ReviewService {
 
     @Transactional
     public Long saveReview(ReviewRequestDto reviewRequestDto) {
-        validateReview(reviewRequestDto);
+        User user = validateReview(reviewRequestDto);
         Review review = null;
-        User user = userRepository.findByUserName(reviewRequestDto.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
 
-        if (reviewRequestDto.getDbRecipe().getDbRecipeId() == null) {
-            review = Review.createDbReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getDbRecipe());
-        } else if (reviewRequestDto.getGptRecipe().getGptRecipeId() == null) {
+        if (reviewRequestDto.getDbRecipe() == null) {
             review = Review.createGptReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getGptRecipe());
+        } else if (reviewRequestDto.getGptRecipe() == null) {
+            review = Review.createDbReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getDbRecipe());
         }
         return reviewRepository.save(review).getReviewId();
     }
 
-    private void validateReview(ReviewRequestDto reviewRequestDto) {
+    private User validateReview(ReviewRequestDto reviewRequestDto) {
         reviewRepository.findByTitle(reviewRequestDto.getTitle())
                 .ifPresent(review -> {
                     throw new IllegalArgumentException("Fail: Already Exist Review!");
                 });
+        User user = userRepository.findByUsername(reviewRequestDto.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        return user;
     }
+
 
     @Transactional
     public Long update(Long reviewId, ReviewRequestDto reviewRequestDto) {
@@ -75,50 +76,38 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review delete(Long reviewId) {
+    public void delete(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
         reviewRepository.delete(review);
-        return review;
     }
 
 
     /**
      * 조회 수 탑 10 조회
      */
-    @Transactional(readOnly = true)
-    public List<Review> findTop10ViewCount(Review review) {
-        return reviewRepository.Top10ReviewView(review);
+    public List<Review> findTop10ViewCount() {
+        return reviewRepository.Top10ReviewView();
     }
 
     /**
      * 좋아요 탑 10 조회
      */
-    @Transactional(readOnly = true)
-    public List<Review> findTop10LikeCount(Review review) {
-        return reviewRepository.Top10ReviewLike(review);
+    public List<Review> findTop10LikeCount() {
+        return reviewRepository.Top10ReviewLike();
     }
 
-    @Transactional(readOnly = true)
     public Optional<Review> findReviewByTitle(String title) {
         return reviewRepository.findByTitle(title);
 
     }
 
-    @Transactional(readOnly = true)
     public List<Review> findReviewByWriter(String username) {
         List<Review> review = reviewRepository.findReviewByWriter(username);
         return review;
     }
 
-    @Transactional(readOnly = true)
-    public DbReviewResponseDto findById(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No Review Info"));
-        return new DbReviewResponseDto(review);
-    }
 
-    @Transactional(readOnly = true)
     public List<Review> findAll() {
         return reviewRepository.findAll();
     }
