@@ -61,6 +61,14 @@ public class DbRecipeService {
     }
 
     /**
+     * 음식명 포함 조회
+     */
+    @Transactional(readOnly = true)
+    List<DbRecipe> AllDbRecipeView(DbRecipe dbRecipe, String inputFoodName) {
+        return dbRecipeRepository.DbRecipeByFoodNameView(dbRecipe, inputFoodName);
+    }
+
+    /**
      * 좋아요 탑 10 조회
      */
     public List<DbRecipe> findTop10LikeCount() {

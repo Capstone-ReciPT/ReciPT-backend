@@ -8,6 +8,8 @@ import samdasu.recipt.entity.Heart;
 import samdasu.recipt.entity.QDbRecipe;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import java.util.Collections;
 import java.util.List;
 
 import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
@@ -35,7 +37,20 @@ public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
     }
 
     @Override
-    public List<DbRecipe> Top10DbRecipeView() {
+    public List<DbRecipe> DbRecipeByFoodNameView(DbRecipe dbRecipe, String inputFoodName) {
+        try {
+            List<DbRecipe> allView = queryFactory
+                    .selectFrom(QDbRecipe.dbRecipe)
+                    .where(QDbRecipe.dbRecipe.dbFoodName.contains(inputFoodName))
+                    .fetch();
+            return allView;
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe) {
         List<DbRecipe> top10View = queryFactory
                 .selectFrom(QDbRecipe.dbRecipe)
                 .orderBy(QDbRecipe.dbRecipe.dbViewCount.desc())
