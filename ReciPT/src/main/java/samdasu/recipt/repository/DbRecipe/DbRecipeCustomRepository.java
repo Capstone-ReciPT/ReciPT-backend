@@ -10,9 +10,11 @@ public interface DbRecipeCustomRepository {
 
     void subDbLikeCount(DbRecipe dbRecipe);
 
-    List<DbRecipe> DbRecipeByFoodNameView(DbRecipe dbRecipe, String inputFoodName);
+    void addDbViewCount(DbRecipe dbRecipe); //db 레시피 안에서 좋아요
 
-    List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe);
+    List<DbRecipe> findDbRecipeByContain(String searchingFoodName);
+
+    List<DbRecipe> Top10DbRecipeView();
 
     List<DbRecipe> Top10DbRecipeLike();
 

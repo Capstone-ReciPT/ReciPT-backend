@@ -19,29 +19,7 @@ import java.util.Optional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ImageFileService imageFileService;
     private final UserRepository userRepository;
-
-    @Transactional
-    public void increaseViewCount(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
-        review.addViewCount(review);
-    }
-
-    @Transactional
-    public void increaseReviewLike(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
-        review.addReviewLike(review);
-    }
-
-    @Transactional
-    public void decreaseReviewLike(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
-        review.subReviewLike(review);
-    }
 
     @Transactional
     public Long saveReview(ReviewRequestDto reviewRequestDto) {
@@ -49,9 +27,9 @@ public class ReviewService {
         Review review = null;
 
         if (reviewRequestDto.getDbRecipe() == null) {
-            review = Review.createGptReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getGptRecipe());
+            review = Review.createGptReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0L, 0, user, reviewRequestDto.getGptRecipe());
         } else if (reviewRequestDto.getGptRecipe() == null) {
-            review = Review.createDbReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0, 0, user, reviewRequestDto.getDbRecipe());
+            review = Review.createDbReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0L, 0, user, reviewRequestDto.getDbRecipe());
         }
         return reviewRepository.save(review).getReviewId();
     }
