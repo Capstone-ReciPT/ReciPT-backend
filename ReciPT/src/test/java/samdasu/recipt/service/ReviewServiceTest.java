@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.Allergy;
@@ -11,9 +12,7 @@ import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 import samdasu.recipt.repository.Review.ReviewRepository;
-import samdasu.recipt.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,18 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ReviewServiceTest {
     @PersistenceContext
     EntityManager em;
-
-    @Autowired
-    ImageFileService imageFileService;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    UserService userService;
-    @Autowired
-    GptRecipeRepository gptRecipeRepository;
-    @Autowired
-    GptRecipeService gptRecipeService;
-
     @Autowired
     ReviewRepository reviewRepository;
     @Autowired
@@ -52,7 +39,7 @@ class ReviewServiceTest {
         Review review = createReview();
 
         //when
-        reviewService.increaseViewCount(review.getReviewId());
+        reviewRepository.addReviewViewCount(review);
 
         //then
         assertEquals(review.getViewCount(), 1);
@@ -64,7 +51,7 @@ class ReviewServiceTest {
         Review review = createReview();
 
         //when
-        reviewService.increaseReviewLike(review.getReviewId());
+        reviewRepository.addReviewLikeCount(review);
         //then
         assertEquals(review.getLikeCount(), 1);
     }
@@ -75,22 +62,26 @@ class ReviewServiceTest {
         Review review = createReview();
 
         //when
-        reviewService.decreaseReviewLike(review.getReviewId());
+        reviewRepository.subReviewLikeCount(review);
         //then
         assertEquals(review.getLikeCount(), -1);
     }
 
+    /**
+     * 리뷰 저장: 이미지 파일 먼저 저장하는 로직 완성해야함!
+     */
     @Test
+    @Rollback(value = false)
     public void 리뷰_저장() throws Exception {
         //given
         GptRecipe recipe = createRecipe();
-        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", recipe, null);
+        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", (double) 0, recipe, null);
 
         //when
         reviewService.saveReview(gptReviewRequestDto);
 
         //then
-        assertThat(gptReviewRequestDto.getTitle()).isEqualTo("리뷰 제목1");
+        assertThat(gptReviewRequestDto.getTitle()).isEqualTo("tester");
     }
 
     @Test
@@ -99,7 +90,7 @@ class ReviewServiceTest {
         GptRecipe gptRecipe = createRecipe();
         Review review = createReview();
 
-        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("tester2", "changeTitle", "changeComment", gptRecipe, null);
+        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("tester2", "changeTitle", "changeComment", (double) 0, gptRecipe, null);
         //when
         Long updateReview = reviewService.update(review.getReviewId(), gptReviewRequestDto);
 
@@ -196,17 +187,17 @@ class ReviewServiceTest {
 
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");
 
-        GptRecipe gptRecipe = GptRecipe.createGptRecipe("파스타", "면, 소스", "1.삶기 2.먹기", "소스 맛은 기호에 따라 바꾸세요!", 0, 0, 0.0, 0, allergy);
+        GptRecipe gptRecipe = GptRecipe.createGptRecipe("파스타", "면, 소스", "1.삶기 2.먹기", "소스 맛은 기호에 따라 바꾸세요!", 0, 0L, 0.0, 0, allergy);
         em.persist(gptRecipe);
 
-        Review review = Review.createGptReview("파스타 후기", "면이 쫀득쫀득", 0, 0, user, gptRecipe);
+        Review review = Review.createGptReview("파스타 후기", "면이 쫀득쫀득", 0L, 0, user, gptRecipe);
         em.persist(review);
         return review;
     }
 
     private GptRecipe createRecipe() {
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        GptRecipe gptRecipe = GptRecipe.createGptRecipe("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기", "음료수랑 먹으면 맛있어요.", 0, 0, 0.0, 0, allergy);
+        GptRecipe gptRecipe = GptRecipe.createGptRecipe("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기", "음료수랑 먹으면 맛있어요.", 0, 0L, 0.0, 0, allergy);
         em.persist(gptRecipe);
 
         return gptRecipe;
