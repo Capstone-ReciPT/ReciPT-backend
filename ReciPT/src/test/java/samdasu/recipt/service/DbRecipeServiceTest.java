@@ -22,6 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DbRecipeServiceTest {
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     DbRecipeRepository dbRecipeRepository;
     @Autowired
@@ -77,9 +80,6 @@ class DbRecipeServiceTest {
         //then
         Assertions.assertThat(dbRecipes.size()).isEqualTo(14);
     }
-
-    @PersistenceContext
-    EntityManager em;
 
     @Test
     @Rollback(value = false)
