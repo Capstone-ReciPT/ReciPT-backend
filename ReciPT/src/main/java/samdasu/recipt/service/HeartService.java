@@ -53,7 +53,7 @@ public class HeartService {
         Heart heart = heartRepository.findUserAndDbRecipe(user.getUserId(), dbRecipe.getDbRecipeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found heart"));
 
-        System.out.println("heart.getUser().getUserName() = " + heart.getUser().getUserName());
+        System.out.println("heart.getUser().getusername() = " + heart.getUser().getHearts());
         System.out.println("heart.getDbRecipe().getDbFoodName() = " + heart.getDbRecipe().getDbFoodName());
 
         heartRepository.delete(heart);
