@@ -20,7 +20,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long userId;
     @Column(nullable = false)
-    private String userName;
+    private String username;
     @Column(nullable = false, length = 255)
     private String loginId;
     @Column(nullable = false, length = 255)
@@ -39,15 +39,15 @@ public class User extends BaseTimeEntity {
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
 
 
-    public User(String userName, String loginId, String password, String userAllergy) {
-        this.userName = userName;
+    public User(String username, String loginId, String password, String userAllergy) {
+        this.username = username;
         this.loginId = loginId;
         this.password = password;
         this.userAllergy = userAllergy;
     }
 
-    public static User createUser(String userName, String loginId, String password, String userAllergy) {
-        return new User(userName, loginId, password, userAllergy);
+    public static User createUser(String username, String loginId, String password, String userAllergy) {
+        return new User(username, loginId, password, userAllergy);
     }
 
     //==비지니스 로직==//
