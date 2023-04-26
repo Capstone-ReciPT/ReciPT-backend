@@ -29,7 +29,7 @@ public class GptResponseDto {
     private Integer gptLikeCount; //레시피 좋아요
     private Double dbRatingResult;
     private Allergy allergy;
-    private Review review;
+    private List<Review> review;
     private List<GptHeartDto> hearts;
 
     public GptResponseDto(GptRecipe gptRecipe) {
