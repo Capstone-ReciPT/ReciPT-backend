@@ -9,8 +9,8 @@ public interface GptRecipeCustomRepository {
 
     void subGptLikeCount(GptRecipe gptRecipe);
 
-    List<GptRecipe> Top10GptRecipeLike(GptRecipe gptRecipe);
+    List<GptRecipe> Top10GptRecipeLike();
 
-    List<GptRecipe> Top10GptRecipeView(GptRecipe gptRecipe);
+    List<GptRecipe> Top10GptRecipeView();
 
 }

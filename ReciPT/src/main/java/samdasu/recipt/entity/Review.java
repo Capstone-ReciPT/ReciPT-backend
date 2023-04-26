@@ -30,11 +30,10 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ImageFile> imageFiles = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "gpt_id")
     private GptRecipe gptRecipe;
 
@@ -51,7 +50,7 @@ public class Review extends BaseEntity {
 
     public void changeGptRecipe(GptRecipe gptRecipe) {
         this.gptRecipe = gptRecipe;
-        gptRecipe.setReview(this);
+        gptRecipe.getReview().add(this);
     }
 
     public void changeDbRecipe(DbRecipe dbRecipe) {

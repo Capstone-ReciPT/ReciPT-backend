@@ -47,7 +47,7 @@ class UserTest {
 
         User user = userRepository.findById(Long.valueOf(1))
                 .orElseThrow(() -> new IllegalArgumentException("Fail: Empty User Id 1"));
-        System.out.println("user.getUsername() = " + user.getUserName());
+        System.out.println("user.getUsername() = " + user.getUsername());
 
 
     }

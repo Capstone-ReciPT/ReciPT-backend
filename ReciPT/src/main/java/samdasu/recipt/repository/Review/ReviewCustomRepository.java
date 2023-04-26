@@ -9,10 +9,10 @@ public interface ReviewCustomRepository {
 
     void subReviewLikeCount(Review review);
 
-    List<Review> Top10ReviewView(Review review);
+    List<Review> Top10ReviewView();
 
-    List<Review> Top10ReviewLike(Review review);
+    List<Review> Top10ReviewLike();
 
-    List<Review> findReviewByWriter(String userName);//글쓴이 조회
+    List<Review> findReviewByWriter(String username);//글쓴이 조회
 
 }

@@ -56,9 +56,8 @@ public class DbRecipeService {
     /**
      * 조회 수 탑 10 조회
      */
-    @Transactional(readOnly = true)
-    public List<DbRecipe> findTop10ViewCount(DbRecipe dbRecipe) {
-        return dbRecipeRepository.Top10DbRecipeView(dbRecipe);
+    public List<DbRecipe> findTop10ViewCount() {
+        return dbRecipeRepository.Top10DbRecipeView();
     }
 
     /**
@@ -72,25 +71,15 @@ public class DbRecipeService {
     /**
      * 좋아요 탑 10 조회
      */
-    @Transactional(readOnly = true)
-    public List<DbRecipe> findTop10LikeCount(DbRecipe dbRecipe) {
-        return dbRecipeRepository.Top10DbRecipeLike(dbRecipe);
+    public List<DbRecipe> findTop10LikeCount() {
+        return dbRecipeRepository.Top10DbRecipeLike();
     }
 
-    @Transactional(readOnly = true)
-    public DbRecipe findById(Long dbRecipeId) {
-        return dbRecipeRepository.findById(dbRecipeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
-
-    }
-
-    @Transactional(readOnly = true)
     public DbRecipe findByFoodName(String dbFoodName) {
         return dbRecipeRepository.findByDbFoodName(dbFoodName)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
     }
 
-    @Transactional(readOnly = true)
     public List<DbRecipe> findAll() {
         return dbRecipeRepository.findAll();
     }

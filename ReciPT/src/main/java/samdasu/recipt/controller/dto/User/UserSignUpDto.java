@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class UserSignUpDto {
     @NotNull
-    private String userName;
+    private String username;
     @NotNull
     private String loginId;
     @NotNull
@@ -19,8 +19,8 @@ public class UserSignUpDto {
     private String passwordConfirm;
     private String userAllergy;
 
-    public UserSignUpDto(String userName, String loginId, String password, String passwordConfirm, String userAllergy) {
-        this.userName = userName;
+    public UserSignUpDto(String username, String loginId, String password, String passwordConfirm, String userAllergy) {
+        this.username = username;
         this.loginId = loginId;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
@@ -29,7 +29,7 @@ public class UserSignUpDto {
 
     public UserSignUpDto(User user, String passwordConfirm) {
         this.userAllergy = user.getUserAllergy();
-        this.userName = user.getUserName();
+        this.username = user.getUsername();
         this.loginId = user.getLoginId();
         this.password = user.getPassword();
         this.passwordConfirm = passwordConfirm;

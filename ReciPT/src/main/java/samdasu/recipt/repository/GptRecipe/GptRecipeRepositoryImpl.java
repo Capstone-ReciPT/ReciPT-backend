@@ -40,7 +40,7 @@ public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
     }
 
     @Override
-    public List<GptRecipe> Top10GptRecipeView(GptRecipe gptRecipe) {
+    public List<GptRecipe> Top10GptRecipeView() {
         List<GptRecipe> top10View = queryFactory
                 .selectFrom(QGptRecipe.gptRecipe)
                 .orderBy(QGptRecipe.gptRecipe.gptViewCount.desc())
@@ -50,7 +50,7 @@ public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
     }
 
     @Override
-    public List<GptRecipe> Top10GptRecipeLike(GptRecipe gptRecipe) {
+    public List<GptRecipe> Top10GptRecipeLike() {
         List<GptRecipe> top10Like = queryFactory
                 .selectFrom(QGptRecipe.gptRecipe)
                 .orderBy(QGptRecipe.gptRecipe.gptLikeCount.desc())

@@ -20,7 +20,7 @@ public class UserResponseDto {
     @NotBlank
     private Long userId;
     @NotNull
-    private String userName;
+    private String username;
     @NotNull
     private String loginId;
     @NotNull
@@ -33,7 +33,7 @@ public class UserResponseDto {
 
     public UserResponseDto(User user) {
         userId = user.getUserId();
-        userName = user.getUserName();
+        username = user.getUsername();
         loginId = user.getLoginId();
         password = user.getPassword();
         userAllergy = user.getUserAllergy();

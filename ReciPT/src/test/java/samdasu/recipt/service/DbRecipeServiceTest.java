@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Heart;
 import samdasu.recipt.repository.DbRecipe.DbRecipeRepository;
 import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
@@ -24,6 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DbRecipeServiceTest {
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     DbRecipeRepository dbRecipeRepository;
     @Autowired
@@ -31,39 +32,14 @@ class DbRecipeServiceTest {
     @Autowired
     GptRecipeRepository gptRecipeRepository;
 
-
-//    @Test
-//    @Rollback(value = false)
-//    public void 레시피_저장() throws Exception {
-//        //given
-//        Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//        for (int i = 0; i < 20; i++) {
-//            DbRecipe dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜" + i, "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-//                    "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-//                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-//                    i, allergy);
-//        }
-//        //when
-//
-//        //then
-//    }
-
     @Test
-    public void 조회수_탑_10() throws Exception {
+    @Rollback(value = false)
+    public void DB_조회수_탑_10() throws Exception {
         //given
-        Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        DbRecipe dbRecipe = null;
-        for (int i = 0; i < 20; i++) {
-            dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜" + i, "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-                    "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-                    0, i, 0.0, 0, allergy);
-            dbRecipeRepository.save(dbRecipe);
-        }
 
         //when
         System.out.println("############### 조회수 top10 ###############");
-        List<DbRecipe> top10ViewCount = dbRecipeService.findTop10ViewCount(dbRecipe);
+        List<DbRecipe> top10ViewCount = dbRecipeService.findTop10ViewCount();
         //then
         for (DbRecipe recipe : top10ViewCount) {
             System.out.println("dbRecipe.getDbViewCount() = " + recipe.getDbViewCount());
@@ -71,37 +47,27 @@ class DbRecipeServiceTest {
     }
 
     @Test
-    public void DB_레시피_ID_단건조회() throws Exception {
+    public void DB_좋아요_탑_10() throws Exception {
         //given
-        Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        DbRecipe dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜", "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-                "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-                "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-                0, 0, 0.0, 0, allergy);
-        dbRecipeRepository.save(dbRecipe);
 
         //when
-        DbRecipe result = dbRecipeService.findById(dbRecipe.getDbRecipeId());
-
+        System.out.println("############### 좋아요 수 top10 ###############");
+        List<DbRecipe> top10LikeCount = dbRecipeService.findTop10LikeCount();
         //then
-        assertThat(result.getDbFoodName()).isEqualTo(dbRecipe.getDbFoodName());
+        for (DbRecipe recipe : top10LikeCount) {
+            System.out.println("dbRecipe.getDbLikeCount() = " + recipe.getDbLikeCount());
+        }
     }
 
     @Test
     public void DB_레시피_음식이름_단건조회() throws Exception {
         //given
-        Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        DbRecipe dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜", "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-                "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-                "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-                0, 0, 0.0, 0, allergy);
-        dbRecipeRepository.save(dbRecipe);
 
         //when
-        DbRecipe result = dbRecipeService.findByFoodName(dbRecipe.getDbFoodName());
+        DbRecipe dbRecipe = dbRecipeService.findByFoodName("새우두부계란찜");
 
         //then
-        assertThat(result.getDbFoodName()).isEqualTo(dbRecipe.getDbFoodName());
+        assertThat(dbRecipe.getDbFoodName()).isEqualTo("새우두부계란찜");
     }
 
     @Test
@@ -153,43 +119,18 @@ class DbRecipeServiceTest {
     @Test
     public void DB_레시피_전체조회() throws Exception {
         //given
-        Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        DbRecipe dbRecipe = null;
-        for (int i = 0; i < 20; i++) {
-            dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜" + i, "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-                    "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-                    i, 0, 0.0, 0, allergy);
-            dbRecipeRepository.save(dbRecipe);
-        }
 
         //when
         List<DbRecipe> dbRecipes = dbRecipeService.findAll();
 
         //then
-        Assertions.assertThat(dbRecipes.size()).isEqualTo(20);
+        Assertions.assertThat(dbRecipes.size()).isEqualTo(14);
     }
-
-    @PersistenceContext
-    EntityManager em;
 
     @Test
     @Rollback(value = false)
     public void DB_GPT_조회수_탑10() throws Exception {
         //given
-        Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-        for (int i = 0; i < 20; i++) {
-            DbRecipe dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜" + i, "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-                    "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-                    i, 0, 0.0, 0, allergy);
-
-            GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, i, 0.0, 0, allergy);
-            em.persist(dbRecipe);
-            em.persist(gptRecipe);
-        }
-        em.flush();
-        em.clear();
 
 //        //when
 //        Page<RecipeProjection> result = dbRecipeRepository.Top10AllRecipeLike(PageRequest.of(0, 10));

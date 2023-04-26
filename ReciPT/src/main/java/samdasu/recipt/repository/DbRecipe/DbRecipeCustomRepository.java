@@ -14,7 +14,7 @@ public interface DbRecipeCustomRepository {
 
     List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe);
 
-    List<DbRecipe> Top10DbRecipeLike(DbRecipe dbRecipe);
+    List<DbRecipe> Top10DbRecipeLike();
 
     List<Heart> Top10AllRecipeLike();
 }
