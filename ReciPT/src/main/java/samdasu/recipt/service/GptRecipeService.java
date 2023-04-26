@@ -56,34 +56,23 @@ public class GptRecipeService {
     /**
      * 조회 수 탑 10 조회
      */
-    @Transactional(readOnly = true)
-    public List<GptRecipe> findTop10ViewCount(GptRecipe gptRecipe) {
-        return gptRecipeRepository.Top10GptRecipeView(gptRecipe);
+    public List<GptRecipe> findTop10ViewCount() {
+        return gptRecipeRepository.Top10GptRecipeView();
     }
 
     /**
      * 좋아요 탑 10 조회
      */
-    @Transactional(readOnly = true)
-    public List<GptRecipe> findTop10LikeCount(GptRecipe gptRecipe) {
-        return gptRecipeRepository.Top10GptRecipeLike(gptRecipe);
+    public List<GptRecipe> findTop10LikeCount() {
+        return gptRecipeRepository.Top10GptRecipeLike();
     }
 
-    @Transactional(readOnly = true)
-    public GptRequestDto findById(Long gptRecipeId) {
-        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
-        return new GptRequestDto(gptRecipe);
-    }
-
-    @Transactional(readOnly = true)
     public GptRequestDto findByFoodName(String gptFoodName) {
         GptRecipe gptRecipe = gptRecipeRepository.findByGptFoodName(gptFoodName)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
         return new GptRequestDto(gptRecipe);
     }
 
-    @Transactional(readOnly = true)
     public List<GptRecipe> findAll() {
         return gptRecipeRepository.findAll();
     }

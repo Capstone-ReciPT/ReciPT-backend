@@ -17,7 +17,7 @@ public class DbReviewResponseDto {
     @NotEmpty
     private Long reviewId;
     @NotNull
-    private String userName;
+    private String username;
     @NotNull
     private String title;
     @NotNull
@@ -29,7 +29,7 @@ public class DbReviewResponseDto {
 
     public DbReviewResponseDto(Review review) {
         reviewId = review.getReviewId();
-        userName = review.getUser().getUserName();
+        username = review.getUser().getUsername();
         title = review.getTitle();
         comment = review.getComment();
         viewCount = review.getViewCount();

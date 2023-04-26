@@ -5,7 +5,6 @@ import lombok.Setter;
 import samdasu.recipt.controller.dto.Heart.GptHeartDto;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.GptRecipe;
-import samdasu.recipt.entity.Review;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -22,7 +21,6 @@ public class GptRequestDto {
     private String gptHowToCook;
     private String gptTip;
     private Allergy allergy;
-    private Review review;
     private List<GptHeartDto> hearts;
 
     public GptRequestDto(GptRecipe gptRecipe) {
@@ -31,7 +29,6 @@ public class GptRequestDto {
         gptHowToCook = gptRecipe.getGptHowToCook();
         gptTip = gptRecipe.getGptTip();
         allergy = gptRecipe.getAllergy();
-        review = gptRecipe.getReview();
         hearts = gptRecipe.getHearts().stream()
                 .map(heart -> new GptHeartDto(heart))
                 .collect(Collectors.toList());
@@ -43,7 +40,6 @@ public class GptRequestDto {
         this.gptHowToCook = gptHowToCook;
         this.gptTip = gptTip;
         this.allergy = allergy;
-        this.review = review;
         this.hearts = hearts;
     }
 

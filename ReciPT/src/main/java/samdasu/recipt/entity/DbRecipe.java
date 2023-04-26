@@ -25,11 +25,11 @@ public class DbRecipe extends BaseTimeEntity {
     private String dbIngredient;
     @Column(nullable = false)
     private String howToCook;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String thumbnailImage; //url형식
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String dbContext;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String dbImage; //url형식
 
     private Integer dbViewCount; //조회 수

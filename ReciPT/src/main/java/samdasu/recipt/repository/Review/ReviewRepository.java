@@ -6,10 +6,7 @@ import samdasu.recipt.entity.Review;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewCustomRepository {
-
-
-    Optional<Review> findById(Long reviewId);
-
+    
     Optional<Review> findByTitle(String title); //제목 조회
 
 }

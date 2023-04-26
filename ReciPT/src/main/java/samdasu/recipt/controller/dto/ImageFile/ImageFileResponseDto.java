@@ -12,20 +12,26 @@ import javax.validation.constraints.NotEmpty;
 public class ImageFileResponseDto {
     @NotEmpty
     private Long imageId;
+    private String originalFilename;
+    private String storeFilename;
     private Review review;
 
     public ImageFileResponseDto(ImageFile imageFile) {
         imageId = imageFile.getImageId();
+        originalFilename = imageFile.getOriginalFilename();
+        storeFilename = imageFile.getStoreFilename();
         review = imageFile.getReview();
     }
 
-    public ImageFileResponseDto(Long imageId, Review review) {
+    public ImageFileResponseDto(Long imageId, String originalFilename, String storeFilename, Review review) {
         this.imageId = imageId;
+        this.originalFilename = originalFilename;
+        this.storeFilename = storeFilename;
         this.review = review;
     }
 
-    public static ImageFileResponseDto createImageFileResponseDto(Long imageId, Review review) {
-        return new ImageFileResponseDto(imageId, review);
+    public static ImageFileResponseDto createImageFileResponseDto(Long imageId, String originalFilename, String storeFilename, Review review) {
+        return new ImageFileResponseDto(imageId, originalFilename, storeFilename, review);
     }
 
 }

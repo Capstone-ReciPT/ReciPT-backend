@@ -34,7 +34,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public List<Review> Top10ReviewView(Review review) {
+    public List<Review> Top10ReviewView() {
         List<Review> top10View = queryFactory
                 .selectFrom(QReview.review)
                 .orderBy(QReview.review.viewCount.desc())
@@ -44,7 +44,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public List<Review> Top10ReviewLike(Review review) {
+    public List<Review> Top10ReviewLike() {
         List<Review> top10Like = queryFactory
                 .selectFrom(QReview.review)
                 .orderBy(QReview.review.likeCount.desc())
@@ -54,11 +54,11 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
-    public List<Review> findReviewByWriter(String userName) {
+    public List<Review> findReviewByWriter(String username) {
         List<Review> result = queryFactory
-                .select(review)
-                .from(review)
-                .join(review.user, user)
+                .selectFrom(review)
+                .join(review.user, user).fetchJoin()
+                .where(review.user.username.eq(username))
                 .fetch();
         return result;
     }

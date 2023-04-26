@@ -17,7 +17,7 @@ public class GptReviewResponseDto {
     @NotEmpty
     private Long reviewId;
     @NotNull
-    private String userName;
+    private String username;
     @NotNull
     private String title;
     @NotNull
@@ -29,7 +29,7 @@ public class GptReviewResponseDto {
 
     public GptReviewResponseDto(Review review) {
         reviewId = review.getReviewId();
-        userName = review.getUser().getUserName();
+        username = review.getUser().getUsername();
         title = review.getTitle();
         comment = review.getComment();
         viewCount = review.getViewCount();
@@ -39,5 +39,21 @@ public class GptReviewResponseDto {
                 .map(imageFile -> new ImageFileResponseDto(imageFile))
                 .collect(Collectors.toList());
     }
+
+    public GptReviewResponseDto(Long reviewId, String username, String title, String comment, Integer viewCount, Integer likeCount, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        this.reviewId = reviewId;
+        this.username = username;
+        this.title = title;
+        this.comment = comment;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.gptRecipe = gptRecipe;
+        this.imageFiles = imageFiles;
+    }
+
+    public static GptReviewResponseDto createGptReviewResponseDto(Long reviewId, String username, String title, String comment, Integer viewCount, Integer likeCount, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        return new GptReviewResponseDto(reviewId, username, title, comment, viewCount, likeCount, gptRecipe, imageFiles);
+    }
+
 
 }

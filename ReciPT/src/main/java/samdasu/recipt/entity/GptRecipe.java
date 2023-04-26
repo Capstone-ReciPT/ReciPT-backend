@@ -35,13 +35,9 @@ public class GptRecipe extends BaseTimeEntity {
     @OneToMany(mappedBy = "gptRecipe")
     private List<Heart> hearts = new ArrayList<>();
 
-    @OneToOne(mappedBy = "gptRecipe")
-    private Review review;
+    @OneToMany(mappedBy = "gptRecipe")
+    private List<Review> review = new ArrayList<>();
 
-
-    public void setReview(Review review) { //일대일 연관관계 편의 메서드 때문에 set 열어둠
-        this.review = review;
-    }
 
     public GptRecipe(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople, Allergy allergy) {
         this.gptFoodName = gptFoodName;
