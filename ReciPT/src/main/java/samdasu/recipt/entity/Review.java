@@ -24,7 +24,7 @@ public class Review extends BaseEntity {
     private String title;
     @Column(nullable = false)
     private String comment;
-    private Integer viewCount; //조회 수
+    private Long viewCount; //조회 수
     private Integer likeCount; //리뷰 좋아요 개수
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -63,7 +63,7 @@ public class Review extends BaseEntity {
         imageFile.setReview(this);
     }
 
-    public Review(String title, String comment, Integer viewCount, Integer likeCount, User user, DbRecipe dbRecipe, ImageFile... imageFiles) {
+    public Review(String title, String comment, Long viewCount, Integer likeCount, User user, DbRecipe dbRecipe, ImageFile... imageFiles) {
         this.title = title;
         this.comment = comment;
         this.viewCount = viewCount;
@@ -75,7 +75,7 @@ public class Review extends BaseEntity {
         changeDbRecipe(dbRecipe);
     }
 
-    public Review(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe, ImageFile... imageFiles) {
+    public Review(String title, String comment, Long viewCount, Integer likeCount, User user, GptRecipe gptRecipe, ImageFile... imageFiles) {
         this.title = title;
         this.comment = comment;
         this.viewCount = viewCount;
@@ -87,27 +87,16 @@ public class Review extends BaseEntity {
         changeGptRecipe(gptRecipe);
     }
 
-    public static Review createDbReview(String title, String comment, Integer viewCount, Integer likeCount, User user, DbRecipe dbRecipe) {
+    public static Review createDbReview(String title, String comment, Long viewCount, Integer likeCount, User user, DbRecipe dbRecipe) {
         return new Review(title, comment, viewCount, likeCount, user, dbRecipe);
     }
 
-    public static Review createGptReview(String title, String comment, Integer viewCount, Integer likeCount, User user, GptRecipe gptRecipe) {
+    public static Review createGptReview(String title, String comment, Long viewCount, Integer likeCount, User user, GptRecipe gptRecipe) {
         return new Review(title, comment, viewCount, likeCount, user, gptRecipe);
     }
 
 
     //==비지니스 로직==//
-    public void addViewCount(Review review) {
-        review.viewCount++;
-    }
-
-    public void addReviewLike(Review review) {
-        review.likeCount++;
-    }
-
-    public void subReviewLike(Review review) {
-        review.likeCount--;
-    }
 
     public void updateReviewInfo(ReviewRequestDto reviewRequestDto) {
         this.title = reviewRequestDto.getTitle();

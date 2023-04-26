@@ -3,7 +3,6 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.controller.dto.Gpt.GptUpdateRatingScoreDto;
 import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -25,7 +24,7 @@ public class GptRecipe extends BaseTimeEntity {
     @Column(nullable = false)
     private String gptHowToCook;
     private String gptTip;
-    private Integer gptViewCount; //조회 수
+    private Long gptViewCount; //조회 수
     private Integer gptLikeCount; //레시피 좋아요
     private Double gptRatingScore;
     private Integer gptRatingPeople;
@@ -39,7 +38,7 @@ public class GptRecipe extends BaseTimeEntity {
     private List<Review> review = new ArrayList<>();
 
 
-    public GptRecipe(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople, Allergy allergy) {
+    public GptRecipe(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Integer gptLikeCount, Long gptViewCount, Double gptRatingScore, Integer gptRatingPeople, Allergy allergy) {
         this.gptFoodName = gptFoodName;
         this.gptIngredient = gptIngredient;
         this.gptHowToCook = gptHowToCook;
@@ -52,13 +51,13 @@ public class GptRecipe extends BaseTimeEntity {
     }
 
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
-    public static GptRecipe createGptRecipe(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Integer gptLikeCount, Integer gptViewCount, Double gptRatingScore, Integer gptRatingPeople, Allergy allergy) {
+    public static GptRecipe createGptRecipe(String gptFoodName, String gptIngredient, String gptHowToCook, String gptTip, Integer gptLikeCount, Long gptViewCount, Double gptRatingScore, Integer gptRatingPeople, Allergy allergy) {
         return new GptRecipe(gptFoodName, gptIngredient, gptHowToCook, gptTip, gptLikeCount, gptViewCount, gptRatingScore, gptRatingPeople, allergy);
     }
 
     //==비지니스 로직==//
-    public void updateRating(GptUpdateRatingScoreDto gptUpdateRatingScoreDto) {
-        gptRatingScore += gptUpdateRatingScoreDto.getGptRatingScore();
+    public void updateRating(Double ratingScore) {
+        gptRatingScore += ratingScore;
         gptRatingPeople++;
     }
 
@@ -66,7 +65,6 @@ public class GptRecipe extends BaseTimeEntity {
      * Gpt 평점 계산
      */
     public Double calcGptRatingScore(GptRecipe gptRecipe) {
-        double ratingPoint = Math.round(gptRecipe.getGptRatingScore() / gptRecipe.getGptRatingPeople() * 100) / 100.0;
-        return ratingPoint;
+        return Math.round(gptRecipe.getGptRatingScore() / gptRecipe.getGptRatingPeople() * 100) / 100.0;
     }
 }
