@@ -80,4 +80,11 @@ public class GptRecipeService {
     public List<GptRecipe> findAll() {
         return gptRecipeRepository.findAll();
     }
+
+    @Transactional
+    public void IncreaseViewCount(Long gptRecipeId) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+        gptRecipeRepository.addGptViewCount(gptRecipe);
+    }
 }
