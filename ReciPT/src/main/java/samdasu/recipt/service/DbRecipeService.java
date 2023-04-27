@@ -63,7 +63,6 @@ public class DbRecipeService {
     /**
      * 음식명 포함 조회
      */
-    @Transactional(readOnly = true)
     List<DbRecipe> AllDbRecipeView(DbRecipe dbRecipe, String inputFoodName) {
         return dbRecipeRepository.DbRecipeByFoodNameView(dbRecipe, inputFoodName);
     }
