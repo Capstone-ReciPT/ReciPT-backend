@@ -79,4 +79,11 @@ public class DbRecipeService {
     public List<DbRecipe> findAll() {
         return dbRecipeRepository.findAll();
     }
+
+    @Transactional
+    public void IncreaseViewCount(Long dbRecipeId) {
+        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+        dbRecipeRepository.addDbViewCount(dbRecipe);
+    }
 }

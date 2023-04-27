@@ -47,8 +47,8 @@ public class HeartServiceTest {
         DbRecipe dbRecipe = createDbRecipe();
         User user = createUser();
 
-        Heart heart = Heart.createDbHeart(user, dbRecipe);
-        heartRepository.save(heart);
+        createHeart(dbRecipe, user); //Heart 저장
+
         //when
         DbHeartDto dbHeart = DbHeartDto.createDbHeartDto(user.getUserId(), dbRecipe.getDbRecipeId());
         heartService.deleteDbHeart(dbHeart);
@@ -78,8 +78,8 @@ public class HeartServiceTest {
         GptRecipe gptRecipe = createGptRecipe();
         User user = createUser();
 
-        Heart heart = Heart.createGptHeart(user, gptRecipe);
-        heartRepository.save(heart);
+        createHeart(gptRecipe, user); //Heart 저장
+
         //when
         GptHeartDto gptHeart = GptHeartDto.createGptHeartDto(user.getUserId(), gptRecipe.getGptRecipeId());
         heartService.deleteGptHeart(gptHeart);
@@ -87,6 +87,7 @@ public class HeartServiceTest {
         //then
         assertThat(heartRepository.countHeartBy()).isEqualTo(0);
     }
+
 
     private User createUser() {
         User user = User.createUser("tester1", "testId", "test1234", "shrimp");
@@ -112,5 +113,19 @@ public class HeartServiceTest {
         em.persist(gptRecipe);
 
         return gptRecipe;
+    }
+
+    private Heart createHeart(DbRecipe dbRecipe, User user) {
+        Heart heart = Heart.createDbHeart(user, dbRecipe);
+        em.persist(heart);
+
+        return heart;
+    }
+
+    private Heart createHeart(GptRecipe gptRecipe, User user) {
+        Heart heart = Heart.createGptHeart(user, gptRecipe);
+        em.persist(heart);
+
+        return heart;
     }
 }
