@@ -3,7 +3,6 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.controller.dto.Db.DbUpdateRatingScoreDto;
 import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -32,7 +31,7 @@ public class DbRecipe extends BaseTimeEntity {
     @Column(nullable = false, length = 500)
     private String dbImage; //url형식
 
-    private Integer dbViewCount; //조회 수
+    private Long dbViewCount; //조회 수
     private Integer dbLikeCount; // 레시피 좋아요
 
     private Double dbRatingScore;
@@ -42,13 +41,15 @@ public class DbRecipe extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "dbRecipe")
     private List<Heart> hearts = new ArrayList<>();
+    @OneToMany(mappedBy = "dbRecipe")
+    private List<RecentSearch> recentSearches = new ArrayList<>();
 
     @OneToMany(mappedBy = "dbRecipe")
     private List<Review> review = new ArrayList<>();
 
 
     //==생성 메서드==/
-    public DbRecipe(String dbFoodName, String dbIngredient, String howToCook, String thumbnailImage, String dbContext, String dbImage, Integer dbLikeCount, Integer dbViewCount, Double dbRatingScore, Integer dbRatingPeople, Allergy allergy) {
+    public DbRecipe(String dbFoodName, String dbIngredient, String howToCook, String thumbnailImage, String dbContext, String dbImage, Integer dbLikeCount, Long dbViewCount, Double dbRatingScore, Integer dbRatingPeople, Allergy allergy) {
         this.dbFoodName = dbFoodName;
         this.dbIngredient = dbIngredient;
         this.howToCook = howToCook;
@@ -62,13 +63,13 @@ public class DbRecipe extends BaseTimeEntity {
         this.allergy = allergy;
     }
 
-    public static DbRecipe createDbRecipe(String dbFoodName, String dbIngredient, String howToCook, String thumbnailImage, String dbContext, String dbImage, Integer dbLikeCount, Integer dbViewCount, Double dbRatingScore, Integer dbRatingPeople, Allergy allergy) {
+    public static DbRecipe createDbRecipe(String dbFoodName, String dbIngredient, String howToCook, String thumbnailImage, String dbContext, String dbImage, Integer dbLikeCount, Long dbViewCount, Double dbRatingScore, Integer dbRatingPeople, Allergy allergy) {
         return new DbRecipe(dbFoodName, dbIngredient, howToCook, thumbnailImage, dbContext, dbImage, dbLikeCount, dbViewCount, dbRatingScore, dbRatingPeople, allergy);
     }
 
     //==비지니스 로직==//
-    public void updateRating(DbUpdateRatingScoreDto dbUpdateRatingScore) {
-        dbRatingScore += dbUpdateRatingScore.getDbRatingScore();
+    public void updateRating(Double ratingScore) {
+        dbRatingScore += ratingScore;
         dbRatingPeople++;
     }
 
@@ -76,7 +77,6 @@ public class DbRecipe extends BaseTimeEntity {
      * DB 평점 계산
      */
     public Double calcDbRatingScore(DbRecipe dbRecipe) {
-        double ratingPoint = Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
-        return ratingPoint;
+        return Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
     }
 }
