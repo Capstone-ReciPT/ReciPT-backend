@@ -27,10 +27,8 @@ public class UserServiceTest {
     EntityManager em;
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     UserService userService;
-
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
