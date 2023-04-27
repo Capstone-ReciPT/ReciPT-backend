@@ -27,11 +27,10 @@ public class User extends BaseTimeEntity {
     private String password;
     private String userAllergy;
 
-
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
-//    @OneToMany(mappedBy = "user")
-//    private List<GptHeart> gptHearts = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<RecentSearch> recentSearches = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
