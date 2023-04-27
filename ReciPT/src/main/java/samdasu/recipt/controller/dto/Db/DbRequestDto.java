@@ -26,6 +26,7 @@ public class DbRequestDto {
     private String dbContext;
     @NotNull
     private String dbImage;
+    private Double dbRatingScore;
     private Allergy allergy;
     private List<DbHeartDto> hearts;
     private List<ReviewRequestDto> reviews;
@@ -37,6 +38,7 @@ public class DbRequestDto {
         thumbnailImage = dbRecipe.getThumbnailImage();
         dbContext = dbRecipe.getDbContext();
         dbImage = dbRecipe.getDbImage();
+        dbRatingScore = dbRecipe.getDbRatingScore();
         allergy = dbRecipe.getAllergy();
         hearts = dbRecipe.getHearts().stream()
                 .map(heart -> new DbHeartDto(heart))
@@ -45,4 +47,5 @@ public class DbRequestDto {
                 .map(review -> new ReviewRequestDto(review))
                 .collect(Collectors.toList());
     }
+
 }

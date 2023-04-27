@@ -30,8 +30,9 @@ public class DbResponseDto {
     @NotNull
     private String dbImage;
     private Integer dbLikeCount;
-    private Integer dbViewCount;
+    private Long dbViewCount;
     private Double dbRatingResult;
+    private Integer dbRatingPeople;
     private Allergy allergy;
     private List<DbHeartDto> hearts;
     private List<ReviewRequestDto> reviews;
@@ -46,6 +47,8 @@ public class DbResponseDto {
         dbImage = dbRecipe.getDbImage();
         dbLikeCount = dbRecipe.getDbLikeCount();
         dbViewCount = dbRecipe.getDbViewCount();
+        dbRatingResult = dbRecipe.getDbRatingScore();
+        dbRatingPeople = dbRecipe.getDbRatingPeople();
         allergy = dbRecipe.getAllergy();
         hearts = dbRecipe.getHearts().stream()
                 .map(heart -> new DbHeartDto(heart))
