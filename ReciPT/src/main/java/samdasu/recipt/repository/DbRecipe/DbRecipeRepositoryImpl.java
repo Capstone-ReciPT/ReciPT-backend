@@ -50,7 +50,7 @@ public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
     }
 
     @Override
-    public List<DbRecipe> Top10DbRecipeView(DbRecipe dbRecipe) {
+    public List<DbRecipe> Top10DbRecipeView() {
         List<DbRecipe> top10View = queryFactory
                 .selectFrom(QDbRecipe.dbRecipe)
                 .orderBy(QDbRecipe.dbRecipe.dbViewCount.desc())
