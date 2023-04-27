@@ -9,6 +9,8 @@ public interface ReviewCustomRepository {
 
     void subReviewLikeCount(Review review);
 
+    void addReviewViewCount(Review review);
+
     List<Review> Top10ReviewView();
 
     List<Review> Top10ReviewLike();

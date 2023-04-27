@@ -34,6 +34,14 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
+    public void addReviewViewCount(Review selectedReview) {
+        queryFactory.update(review)
+                .set(review.viewCount, review.viewCount.add(1))
+                .where(review.eq(selectedReview))
+                .execute();
+    }
+
+    @Override
     public List<Review> Top10ReviewView() {
         List<Review> top10View = queryFactory
                 .selectFrom(QReview.review)

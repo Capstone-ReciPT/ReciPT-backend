@@ -24,14 +24,29 @@ public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
                 .where(dbRecipe.eq(selectedDbRecipe))
                 .execute();
     }
-
-
+    
     @Override
     public void subDbLikeCount(DbRecipe selectedDbRecipe) {
         queryFactory.update(dbRecipe)
                 .set(dbRecipe.dbLikeCount, dbRecipe.dbLikeCount.subtract(1))
                 .where(dbRecipe.eq(selectedDbRecipe))
                 .execute();
+    }
+
+    @Override
+    public void addDbViewCount(DbRecipe selectedDbRecipe) {
+        queryFactory.update(dbRecipe)
+                .set(dbRecipe.dbViewCount, dbRecipe.dbViewCount.add(1))
+                .where(dbRecipe.eq(selectedDbRecipe))
+                .execute();
+    }
+
+    @Override
+    public List<DbRecipe> findDbRecipeByContain(String searchingFoodName) {
+        return queryFactory
+                .selectFrom(QDbRecipe.dbRecipe)
+                .where(QDbRecipe.dbRecipe.dbFoodName.contains(searchingFoodName))
+                .fetch();
     }
 
     @Override
