@@ -50,6 +50,12 @@ public class DbRecipeService {
         return dbRecipeRepository.save(dbRecipe).getDbRecipeId();
     }
 
+    public DbRecipe findByFoodName(String dbFoodName) {
+        return dbRecipeRepository.findByDbFoodName(dbFoodName)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
+    }
+
+
     /**
      * 음식명 포함 조회(like '%foodName%')
      */
@@ -71,9 +77,39 @@ public class DbRecipeService {
         return dbRecipeRepository.Top10DbRecipeLike();
     }
 
-    public DbRecipe findByFoodName(String dbFoodName) {
-        return dbRecipeRepository.findByDbFoodName(dbFoodName)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
+    /**
+     * 좋아요 탑 1
+     */
+    public DbRecipe findTop1DbRecipeLike() {
+        return dbRecipeRepository.Top1DbRecipeLike();
+    }
+
+    /**
+     * 조회수 탑 1
+     */
+    public DbRecipe findTop1DbRecipeViewCount() {
+        return dbRecipeRepository.Top1DbRecipeViewCount();
+    }
+
+    /**
+     * 평점 탑 1
+     */
+    public DbRecipe findTop1DbRecipeRatingScore() {
+        return dbRecipeRepository.Top1DbRecipeRatingScore();
+    }
+
+    /**
+     * 사용자 입력 값 보다 높은 좋아요 찾기
+     */
+    public List<DbRecipe> findSearchingDbRecipeLikeByInputNum(int inputNum) {
+        return dbRecipeRepository.SearchingDbRecipeLikeByInputNum(inputNum);
+    }
+
+    /**
+     * 사용자 입력 값 보다 높은 조회수 찾기
+     */
+    public List<DbRecipe> findSearchingDbRecipeViewCountByInputNum(int inputNum) {
+        return dbRecipeRepository.SearchingDbRecipeViewCountByInputNum(inputNum);
     }
 
     public List<DbRecipe> findAll() {
