@@ -29,6 +29,10 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<UserAllergy> userAllergies = new ArrayList<>();
+    
     @OneToMany(mappedBy = "user")
     private List<RecentSearch> recentSearches = new ArrayList<>();
 
