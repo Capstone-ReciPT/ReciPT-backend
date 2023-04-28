@@ -111,7 +111,6 @@ class ReviewServiceTest {
         //then
         long count = reviewRepository.count();
         assertThat(count).isEqualTo(18);
-
     }
 
     @Test
