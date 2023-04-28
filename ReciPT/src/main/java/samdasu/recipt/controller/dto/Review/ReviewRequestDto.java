@@ -20,6 +20,7 @@ public class ReviewRequestDto {
     private String title;
     @NotNull
     private String comment;
+    private Double ratingScore;
     private GptRecipe gptRecipe;
     private DbRecipe dbRecipe;
     private List<ImageFileResponseDto> imageFiles;
@@ -34,28 +35,30 @@ public class ReviewRequestDto {
                 .collect(Collectors.toList());
     }
 
-    public ReviewRequestDto(String username, String title, String comment, DbRecipe dbRecipe, List<ImageFileResponseDto> imageFiles) {
+    public ReviewRequestDto(String username, String title, String comment, Double ratingScore, DbRecipe dbRecipe, List<ImageFileResponseDto> imageFiles) {
         this.username = username;
         this.title = title;
         this.comment = comment;
+        this.ratingScore = ratingScore;
         this.dbRecipe = dbRecipe;
         this.imageFiles = imageFiles;
     }
 
-    public ReviewRequestDto(String username, String title, String comment, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+    public ReviewRequestDto(String username, String title, String comment, Double ratingScore, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
         this.username = username;
         this.title = title;
         this.comment = comment;
+        this.ratingScore = ratingScore;
         this.gptRecipe = gptRecipe;
         this.imageFiles = imageFiles;
     }
 
-    public static ReviewRequestDto createDbReviewRequestDto(String username, String title, String comment, DbRecipe dbRecipe, List<ImageFileResponseDto> imageFiles) {
-        return new ReviewRequestDto(username, title, comment, dbRecipe, imageFiles);
+    public static ReviewRequestDto createDbReviewRequestDto(String username, String title, String comment, Double ratingScore, DbRecipe dbRecipe, List<ImageFileResponseDto> imageFiles) {
+        return new ReviewRequestDto(username, title, comment, ratingScore, dbRecipe, imageFiles);
     }
 
-    public static ReviewRequestDto createGptReviewRequestDto(String username, String title, String comment, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
-        return new ReviewRequestDto(username, title, comment, gptRecipe, imageFiles);
+    public static ReviewRequestDto createGptReviewRequestDto(String username, String title, String comment, Double ratingScore, GptRecipe gptRecipe, List<ImageFileResponseDto> imageFiles) {
+        return new ReviewRequestDto(username, title, comment, ratingScore, gptRecipe, imageFiles);
     }
 
 }

@@ -22,7 +22,7 @@ public class DbReviewResponseDto {
     private String title;
     @NotNull
     private String comment;
-    private Integer viewCount;
+    private Long viewCount;
     private Integer likeCount;
     private DbRecipe dbRecipe;
     private List<ImageFileResponseDto> imageFiles;

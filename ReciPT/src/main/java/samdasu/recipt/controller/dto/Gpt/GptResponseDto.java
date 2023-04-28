@@ -25,9 +25,10 @@ public class GptResponseDto {
     @NotNull
     private String gptHowToCook;
     private String gptTip;
-    private Integer gptViewCount; //조회 수
     private Integer gptLikeCount; //레시피 좋아요
-    private Double dbRatingResult;
+    private Long gptViewCount; //조회 수
+    private Double gptRatingResult;
+    private Integer gptRatingPeople;
     private Allergy allergy;
     private List<Review> review;
     private List<GptHeartDto> hearts;
@@ -38,8 +39,10 @@ public class GptResponseDto {
         gptIngredient = gptRecipe.getGptIngredient();
         gptHowToCook = gptRecipe.getGptHowToCook();
         gptTip = gptRecipe.getGptTip();
-        gptViewCount = gptRecipe.getGptViewCount();
         gptLikeCount = gptRecipe.getGptLikeCount();
+        gptViewCount = gptRecipe.getGptViewCount();
+        gptRatingResult = gptRecipe.getGptRatingScore();
+        gptRatingPeople = gptRecipe.getGptRatingPeople();
         allergy = gptRecipe.getAllergy();
         review = gptRecipe.getReview();
         hearts = gptRecipe.getHearts().stream()

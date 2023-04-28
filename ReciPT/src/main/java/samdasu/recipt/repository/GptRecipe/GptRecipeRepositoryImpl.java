@@ -3,26 +3,18 @@ package samdasu.recipt.repository.GptRecipe;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import samdasu.recipt.entity.DbRecipe;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.QGptRecipe;
 
 import java.util.List;
 
-import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
 import static samdasu.recipt.entity.QGptRecipe.gptRecipe;
 
 @Repository
 @RequiredArgsConstructor
 public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
     private final JPAQueryFactory queryFactory;
-
-    public List<DbRecipe> findAllByQuerydsl() {
-        return queryFactory
-                .selectFrom(dbRecipe)
-                .fetch();
-    }
-
+    
     @Override
     public void addGptLikeCount(GptRecipe selectedGptRecipe) {
         queryFactory.update(gptRecipe)
@@ -37,6 +29,22 @@ public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
                 .set(gptRecipe.gptLikeCount, gptRecipe.gptLikeCount.subtract(1))
                 .where(gptRecipe.eq(selectedGptRecipe))
                 .execute();
+    }
+
+    @Override
+    public void addGptViewCount(GptRecipe selectedDbRecipe) {
+        queryFactory.update(gptRecipe)
+                .set(gptRecipe.gptViewCount, gptRecipe.gptViewCount.add(1))
+                .where(gptRecipe.eq(selectedDbRecipe))
+                .execute();
+    }
+
+    @Override
+    public List<GptRecipe> findGptRecipeByContain(String searchingFoodName) {
+        return queryFactory
+                .selectFrom(gptRecipe)
+                .where(gptRecipe.gptFoodName.contains(searchingFoodName))
+                .fetch();
     }
 
     @Override
