@@ -14,7 +14,7 @@ import static samdasu.recipt.entity.QGptRecipe.gptRecipe;
 @RequiredArgsConstructor
 public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
     private final JPAQueryFactory queryFactory;
-    
+
     @Override
     public void addGptLikeCount(GptRecipe selectedGptRecipe) {
         queryFactory.update(gptRecipe)
@@ -49,21 +49,78 @@ public class GptRecipeRepositoryImpl implements GptRecipeCustomRepository {
 
     @Override
     public List<GptRecipe> Top10GptRecipeView() {
-        List<GptRecipe> top10View = queryFactory
+        return queryFactory
                 .selectFrom(QGptRecipe.gptRecipe)
                 .orderBy(QGptRecipe.gptRecipe.gptViewCount.desc())
                 .limit(10)
                 .fetch();
-        return top10View;
     }
 
     @Override
     public List<GptRecipe> Top10GptRecipeLike() {
-        List<GptRecipe> top10Like = queryFactory
+        return queryFactory
                 .selectFrom(QGptRecipe.gptRecipe)
                 .orderBy(QGptRecipe.gptRecipe.gptLikeCount.desc())
                 .limit(10)
                 .fetch();
-        return top10Like;
+    }
+
+    /**
+     * Gpt 좋아요 1위 조회
+     */
+    @Override
+    public GptRecipe Top1GptRecipeLike() {
+        return queryFactory
+                .selectFrom(gptRecipe)
+                .orderBy(gptRecipe.gptLikeCount.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
+    /**
+     * Gpt 조회 수 1위 조회
+     */
+    @Override
+    public GptRecipe Top1GptRecipeViewCount() {
+        return queryFactory
+                .selectFrom(gptRecipe)
+                .orderBy(gptRecipe.gptViewCount.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
+    /**
+     * Gpt 평점 1위
+     */
+    @Override
+    public GptRecipe Top1GptRecipeRatingScore() {
+        return queryFactory
+                .selectFrom(gptRecipe)
+                .orderBy(gptRecipe.gptRatingScore.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
+
+    /**
+     * 좋아요 사용자 입력 값 이상 조회
+     */
+    @Override
+    public List<GptRecipe> SearchingGptRecipeLikeByInputNum(int inputNum) {
+        return queryFactory
+                .selectFrom(gptRecipe)
+                .where(gptRecipe.gptLikeCount.goe(inputNum))
+                .fetch();
+    }
+
+    /**
+     * 조회수 사용자 입력 값 이상 조회
+     */
+    @Override
+    public List<GptRecipe> SearchingGptRecipeViewCountByInputNum(int inputNum) {
+        return queryFactory
+                .selectFrom(gptRecipe)
+                .where(gptRecipe.gptViewCount.goe(inputNum))
+                .fetch();
     }
 }

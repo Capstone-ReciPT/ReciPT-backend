@@ -1,5 +1,6 @@
 package samdasu.recipt.service;
 
+import com.querydsl.core.Tuple;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Db.DbResponseDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.Heart;
 import samdasu.recipt.repository.DbRecipe.DbRecipeRepository;
 import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 
@@ -124,6 +124,78 @@ class DbRecipeServiceTest {
     }
 
     @Test
+    public void 좋아요_탑1() throws Exception {
+        //given
+
+        //when
+        System.out.println("############### 좋아요 수 top1 ###############");
+        DbRecipe top1DbRecipeLike = dbRecipeService.findTop1DbRecipeLike();
+
+        //then
+        System.out.println("top1DbRecipeLike.getDbFoodName() = " + top1DbRecipeLike.getDbFoodName());
+        System.out.println("top1DbRecipeLike.getDbLikeCount() = " + top1DbRecipeLike.getDbLikeCount());
+    }
+
+    @Test
+    public void 조회수_탑1() throws Exception {
+        //given
+
+        //when
+        System.out.println("############### 조회수 수 top1 ###############");
+        DbRecipe top1DbRecipeViewCount = dbRecipeService.findTop1DbRecipeViewCount();
+
+        //then
+        System.out.println("top1DbRecipeViewCount.getDbFoodName() = " + top1DbRecipeViewCount.getDbFoodName());
+        System.out.println("top1DbRecipeViewCount.getDbViewCount() = " + top1DbRecipeViewCount.getDbViewCount());
+    }
+
+    @Test
+    public void 평점_탑1() throws Exception {
+        //given
+
+        //when
+        System.out.println("############### 평점 top1 ###############");
+        DbRecipe top1DbRecipeRatingScore = dbRecipeService.findTop1DbRecipeRatingScore();
+
+        //then
+        System.out.println("top1DbRecipeRatingScore.getDbFoodName() = " + top1DbRecipeRatingScore.getDbFoodName());
+        System.out.println("top1DbRecipeRatingScore.getDbRatingScore() = " + top1DbRecipeRatingScore.getDbRatingScore());
+    }
+
+    @Test
+    public void 사용자_입력_값보다_높은_좋아요_찾기() throws Exception {
+        //given
+        int inputNum = 3;
+        //when
+        List<DbRecipe> searchingDbRecipeLikeByInputNum = dbRecipeService.findSearchingDbRecipeLikeByInputNum(inputNum);
+
+        //then
+        for (DbRecipe dbRecipe : searchingDbRecipeLikeByInputNum) {
+            System.out.println("dbRecipe.getDbFoodName() = " + dbRecipe.getDbFoodName());
+            System.out.println("dbRecipe.getDbLikeCount() = " + dbRecipe.getDbLikeCount());
+        }
+
+    }
+
+    @Test
+    public void 사용자_입력_값보다_높은_조회수_찾기() throws Exception {
+        //given
+        int inputNum = 3;
+        //when
+        List<DbRecipe> searchingDbRecipeViewCountByInputNum = dbRecipeService.findSearchingDbRecipeViewCountByInputNum(inputNum);
+
+        //then
+        for (DbRecipe dbRecipe : searchingDbRecipeViewCountByInputNum) {
+            System.out.println("dbRecipe.getDbFoodName() = " + dbRecipe.getDbFoodName());
+            System.out.println("dbRecipe.getDbViewCount() = " + dbRecipe.getDbViewCount());
+        }
+    }
+
+    public List<DbRecipe> findAll() {
+        return dbRecipeRepository.findAll();
+    }
+
+    @Test
     public void DB_레시피_전체조회() throws Exception {
         //given
 
@@ -139,17 +211,17 @@ class DbRecipeServiceTest {
     public void DB_GPT_조회수_탑10() throws Exception {
         //given
 
-//        //when
+        //when
 //        Page<RecipeProjection> result = dbRecipeRepository.Top10AllRecipeLike(PageRequest.of(0, 10));
 //        List<RecipeProjection> content = result.getContent();
 //        for (RecipeProjection recipeProjection : content) {
 //            System.out.println("recipeProjection = " + recipeProjection.getFoodName());
 //            System.out.println("recipeProjection.getIngredient() = " + recipeProjection.getIngredient());
 //        }
-//        //then
+        //then
 
-        List<Heart> hearts = dbRecipeRepository.Top10AllRecipeLike();
-        for (Heart heart : hearts) {
+        List<Tuple> hearts = dbRecipeRepository.Top10AllRecipeLike();
+        for (Tuple heart : hearts) {
             System.out.println("heart = " + heart);
         }
     }

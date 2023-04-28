@@ -129,6 +129,75 @@ class GptRecipeServiceTest {
         Assertions.assertThat(gptRecipes.size()).isEqualTo(0);
     }
 
+
+    @Test
+    public void 좋아요_탑1() throws Exception {
+        //given
+
+        //when
+        System.out.println("############### 좋아요 수 top1 ###############");
+        GptRecipe top1DbRecipeLike = gptRecipeService.findTop1GptRecipeLike();
+
+        //then
+        System.out.println("top1DbRecipeLike.getGptFoodName() = " + top1DbRecipeLike.getGptFoodName());
+        System.out.println("top1DbRecipeLike.getGptLikeCount() = " + top1DbRecipeLike.getGptLikeCount());
+    }
+
+    @Test
+    public void 조회수_탑1() throws Exception {
+        //given
+
+        //when
+        System.out.println("############### 조회수 수 top1 ###############");
+        GptRecipe top1DbRecipeViewCount = gptRecipeService.findTop1GptRecipeViewCount();
+
+        //then
+        System.out.println("top1DbRecipeViewCount.getGptFoodName() = " + top1DbRecipeViewCount.getGptFoodName());
+        System.out.println("top1DbRecipeViewCount.getGptViewCount() = " + top1DbRecipeViewCount.getGptViewCount());
+    }
+
+    @Test
+    public void 평점_탑1() throws Exception {
+        //given
+
+        //when
+        System.out.println("############### 평점 top1 ###############");
+        GptRecipe top1GptRecipeRatingScore = gptRecipeService.findTop1GptRecipeRatingScore();
+
+        //then
+        System.out.println("top1GptRecipeRatingScore.getGptFoodName() = " + top1GptRecipeRatingScore.getGptFoodName());
+        System.out.println("top1GptRecipeRatingScore.getGptRatingScore() = " + top1GptRecipeRatingScore.getGptRatingScore());
+    }
+
+    @Test
+    public void 사용자_입력_값보다_높은_좋아요_찾기() throws Exception {
+        //given
+        int inputNum = 3;
+        //when
+        List<GptRecipe> searchingDbRecipeLikeByInputNum = gptRecipeService.findSearchingGptRecipeLikeByInputNum(inputNum);
+
+        //then
+        for (GptRecipe gptRecipe : searchingDbRecipeLikeByInputNum) {
+            System.out.println("gptRecipe.getGptFoodName() = " + gptRecipe.getGptFoodName());
+            System.out.println("gptRecipe.getGptLikeCount() = " + gptRecipe.getGptLikeCount());
+        }
+
+    }
+
+    @Test
+    public void 사용자_입력_값보다_높은_조회수_찾기() throws Exception {
+        //given
+        int inputNum = 3;
+        //when
+        List<GptRecipe> searchingDbRecipeViewCountByInputNum = gptRecipeService.findSearchingGptRecipeViewCountByInputNum(inputNum);
+
+        //then
+        for (GptRecipe gptRecipe : searchingDbRecipeViewCountByInputNum) {
+            System.out.println("gptRecipe.getGptFoodName() = " + gptRecipe.getGptFoodName());
+            System.out.println("gptRecipe.getGptViewCount() = " + gptRecipe.getGptViewCount());
+        }
+    }
+
     @Test
     public void Gpt_레시피_전체조회() throws Exception {
         //given
