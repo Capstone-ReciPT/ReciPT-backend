@@ -50,6 +50,12 @@ public class GptRecipeService {
         return gptRecipeRepository.save(gptRecipe).getGptRecipeId();
     }
 
+    public GptRequestDto findByFoodName(String gptFoodName) {
+        GptRecipe gptRecipe = gptRecipeRepository.findByGptFoodName(gptFoodName)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+        return new GptRequestDto(gptRecipe);
+    }
+
     /**
      * 음식명 포함 조회(like '%foodName%')
      */
@@ -71,10 +77,39 @@ public class GptRecipeService {
         return gptRecipeRepository.Top10GptRecipeLike();
     }
 
-    public GptRequestDto findByFoodName(String gptFoodName) {
-        GptRecipe gptRecipe = gptRecipeRepository.findByGptFoodName(gptFoodName)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
-        return new GptRequestDto(gptRecipe);
+    /**
+     * 좋아요 탑 1
+     */
+    public GptRecipe findTop1GptRecipeLike() {
+        return gptRecipeRepository.Top1GptRecipeLike();
+    }
+
+    /**
+     * 조회수 탑 1
+     */
+    public GptRecipe findTop1GptRecipeViewCount() {
+        return gptRecipeRepository.Top1GptRecipeViewCount();
+    }
+
+    /**
+     * 평점 탑 1
+     */
+    public GptRecipe findTop1GptRecipeRatingScore() {
+        return gptRecipeRepository.Top1GptRecipeRatingScore();
+    }
+
+    /**
+     * 사용자 입력 값 보다 높은 좋아요 찾기
+     */
+    public List<GptRecipe> findSearchingGptRecipeLikeByInputNum(int inputNum) {
+        return gptRecipeRepository.SearchingGptRecipeLikeByInputNum(inputNum);
+    }
+
+    /**
+     * 사용자 입력 값 보다 높은 조회수 찾기
+     */
+    public List<GptRecipe> findSearchingGptRecipeViewCountByInputNum(int inputNum) {
+        return gptRecipeRepository.SearchingGptRecipeViewCountByInputNum(inputNum);
     }
 
     public List<GptRecipe> findAll() {

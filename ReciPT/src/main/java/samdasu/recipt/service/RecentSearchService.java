@@ -1,33 +1,115 @@
-//package samdasu.recipt.service;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//import samdasu.recipt.controller.dto.Heart.DbHeartDto;
-//import samdasu.recipt.controller.dto.Heart.GptHeartDto;
-//import samdasu.recipt.controller.dto.RecentSearchDto;
-//import samdasu.recipt.entity.DbRecipe;
-//import samdasu.recipt.entity.GptRecipe;
-//import samdasu.recipt.entity.RecentSearch;
-//import samdasu.recipt.entity.User;
-//import samdasu.recipt.exception.ResourceNotFoundException;
-//import samdasu.recipt.repository.DbRecipe.DbRecipeRepository;
-//import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
-//import samdasu.recipt.repository.RecentSearch.RecentSearchRepository;
-//import samdasu.recipt.repository.UserRepository;
-//
-//import java.time.LocalDateTime;
-//import java.util.List;
-//
-//@Service
-//@RequiredArgsConstructor
-//public class RecentSearchService {
-//    private final RecentSearchRepository recentSearchRepository;
-//    private final UserRepository userRepository;
-//    private final DbRecipeRepository dbRecipeRepository;
-//    private final GptRecipeRepository gptRecipeRepository;
-//
-//    @Transactional
+package samdasu.recipt.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import samdasu.recipt.controller.dto.RecentSearch.DbRecentSearchDto;
+import samdasu.recipt.controller.dto.RecentSearch.GptRecentSearchDto;
+import samdasu.recipt.entity.DbRecipe;
+import samdasu.recipt.entity.GptRecipe;
+import samdasu.recipt.entity.RecentSearch;
+import samdasu.recipt.entity.User;
+import samdasu.recipt.exception.ResourceNotFoundException;
+import samdasu.recipt.repository.DbRecipe.DbRecipeRepository;
+import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
+import samdasu.recipt.repository.RecentSearchRepository;
+import samdasu.recipt.repository.UserRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class RecentSearchService {
+    private final RecentSearchRepository recentSearchRepository;
+    private final UserRepository userRepository;
+    private final DbRecipeRepository dbRecipeRepository;
+    private final GptRecipeRepository gptRecipeRepository;
+
+    @Transactional
+    public void insertDbSearchInfo(DbRecentSearchDto dbRecentSearchDto) {
+        User user = getUser(dbRecentSearchDto.getUserId());
+        DbRecipe dbRecipe = getDbRecipe(dbRecentSearchDto.getDbRecipeId());
+
+        checkLastModifiedDate();
+
+        if (recentSearchRepository.findByUserAndDbRecipe(user, dbRecipe).isEmpty()) {
+            RecentSearch recentSearch = RecentSearch.createDbRecentSearch(user, dbRecipe, dbRecipe.getDbFoodName());
+            recentSearchRepository.save(recentSearch);
+        }
+    }
+
+    @Transactional
+    public void deleteDbSearchInfo(DbRecentSearchDto dbRecentSearchDto) {
+        User user = getUser(dbRecentSearchDto.getUserId());
+        DbRecipe dbRecipe = getDbRecipe(dbRecentSearchDto.getDbRecipeId());
+
+        RecentSearch recentSearch = recentSearchRepository.findByUserAndDbRecipe(user, dbRecipe)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not found recentSearch"));
+
+        recentSearchRepository.delete(recentSearch);
+    }
+
+    @Transactional
+    public void insertGptSearchInfo(GptRecentSearchDto gptRecentSearchDto) {
+        User user = getUser(gptRecentSearchDto.getUserId());
+        GptRecipe gptRecipe = getGptRecipe(gptRecentSearchDto.getGptRecipeId());
+
+        checkLastModifiedDate();
+
+        if (recentSearchRepository.findByUserAndGptRecipe(user, gptRecipe).isEmpty()) {
+            RecentSearch recentSearch = RecentSearch.createGptRecentSearch(user, gptRecipe, gptRecipe.getGptFoodName());
+            recentSearchRepository.save(recentSearch);
+        }
+    }
+
+    @Transactional
+    public void deleteGptSearchInfo(GptRecentSearchDto gptRecentSearchDto) {
+        User user = getUser(gptRecentSearchDto.getUserId());
+        GptRecipe gptRecipe = getGptRecipe(gptRecentSearchDto.getGptRecipeId());
+
+        RecentSearch recentSearch = recentSearchRepository.findByUserAndGptRecipe(user, gptRecipe)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not found recentSearch"));
+
+        recentSearchRepository.delete(recentSearch);
+    }
+
+    private User getUser(Long gptRecentSearchDto) {
+        User user = userRepository.findById(gptRecentSearchDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        return user;
+    }
+
+    private DbRecipe getDbRecipe(Long dbRecentSearchDto) {
+        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecentSearchDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No DbRecipe Info"));
+        return dbRecipe;
+    }
+
+    private GptRecipe getGptRecipe(Long gptRecentSearchDto) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecentSearchDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No GptRecipe Info"));
+        return gptRecipe;
+    }
+
+    private void checkLastModifiedDate() {
+        if (recentSearchRepository.countRecentSearchBy() >= 10) {
+            //last_modified 가장 오래된 row 삭제
+            List<RecentSearch> recentSearches = recentSearchRepository.findAll();
+            LocalDateTime temp = recentSearches.get(0).getLastModifiedDate();
+            RecentSearch oldModifiedDate = null;
+            for (int i = 1; i < recentSearches.size(); i++) {
+                if (temp.compareTo(recentSearches.get(i).getLastModifiedDate()) < 0) {
+                    temp = recentSearches.get(i).getLastModifiedDate();
+                    oldModifiedDate = recentSearches.get(i);
+                }
+            }
+            recentSearchRepository.delete(oldModifiedDate);
+        }
+    }
+
+
+    //    @Transactional
 //    public void insertSearchInfo(RecentSearchDto recentSearchDto) {
 //        User user = userRepository.findById(recentSearchDto.getUserId())
 //                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
@@ -62,8 +144,7 @@
 //            recentSearchRepository.save(recentSearch);
 //        }
 //    }
-//
-//
+
 //    @Transactional
 //    public void deleteSearchInfo(RecentSearchDto recentSearchDto) {
 //        User user = userRepository.findById(recentSearchDto.getUserId())
@@ -79,17 +160,4 @@
 //
 //        recentSearchRepository.delete(recentSearch);
 //    }
-//
-//
-//    private DbRecipe getDbRecipe(DbHeartDto heartDto) {
-//        DbRecipe dbRecipe = dbRecipeRepository.findById(heartDto.getDbRecipeId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Fail: No DbRecipe Info"));
-//        return dbRecipe;
-//    }
-//
-//    private GptRecipe getGptRecipe(GptHeartDto gptHeartDto) {
-//        GptRecipe gptRecipe = gptRecipeRepository.findById(gptHeartDto.getGptRecipeId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Fail: No GptRecipe Info"));
-//        return gptRecipe;
-//    }
-//}
+}

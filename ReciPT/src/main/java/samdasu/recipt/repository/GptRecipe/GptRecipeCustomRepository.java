@@ -17,4 +17,14 @@ public interface GptRecipeCustomRepository {
 
     List<GptRecipe> Top10GptRecipeView();
 
+    GptRecipe Top1GptRecipeLike();
+
+    GptRecipe Top1GptRecipeViewCount();
+
+    GptRecipe Top1GptRecipeRatingScore();
+
+    List<GptRecipe> SearchingGptRecipeLikeByInputNum(int inputNum);
+
+    List<GptRecipe> SearchingGptRecipeViewCountByInputNum(int inputNum);
+
 }

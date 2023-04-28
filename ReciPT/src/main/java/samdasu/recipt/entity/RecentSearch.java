@@ -49,14 +49,23 @@ public class RecentSearch extends BaseTimeEntity {
 
     //==생성 메서드==//
 
-    public RecentSearch(User user, DbRecipe dbRecipe, GptRecipe gptRecipe, String recentSearchFoodName) {
+    public RecentSearch(User user, DbRecipe dbRecipe, String recentSearchFoodName) {
         changeUser(user);
         changeDbRecipe(dbRecipe);
+        this.recentSearchFoodName = recentSearchFoodName;
+    }
+
+    public RecentSearch(User user, GptRecipe gptRecipe, String recentSearchFoodName) {
+        changeUser(user);
         changeGptRecipe(gptRecipe);
         this.recentSearchFoodName = recentSearchFoodName;
     }
 
-    public static RecentSearch createRecentSearch(User user, DbRecipe dbRecipe, GptRecipe gptRecipe, String recentSearchFoodName) {
-        return new RecentSearch(user, dbRecipe, gptRecipe, recentSearchFoodName);
+    public static RecentSearch createDbRecentSearch(User user, DbRecipe dbRecipe, String recentSearchFoodName) {
+        return new RecentSearch(user, dbRecipe, recentSearchFoodName);
+    }
+
+    public static RecentSearch createGptRecentSearch(User user, GptRecipe gptRecipe, String recentSearchFoodName) {
+        return new RecentSearch(user, gptRecipe, recentSearchFoodName);
     }
 }

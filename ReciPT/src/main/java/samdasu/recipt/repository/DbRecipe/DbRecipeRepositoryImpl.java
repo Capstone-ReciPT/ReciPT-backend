@@ -1,16 +1,15 @@
 package samdasu.recipt.repository.DbRecipe;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.Heart;
-import samdasu.recipt.entity.QDbRecipe;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static samdasu.recipt.entity.QDbRecipe.dbRecipe;
+import static samdasu.recipt.entity.QRecentSearch.recentSearch;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
                 .where(dbRecipe.eq(selectedDbRecipe))
                 .execute();
     }
-    
+
     @Override
     public void subDbLikeCount(DbRecipe selectedDbRecipe) {
         queryFactory.update(dbRecipe)
@@ -44,53 +43,96 @@ public class DbRecipeRepositoryImpl implements DbRecipeCustomRepository {
     @Override
     public List<DbRecipe> findDbRecipeByContain(String searchingFoodName) {
         return queryFactory
-                .selectFrom(QDbRecipe.dbRecipe)
-                .where(QDbRecipe.dbRecipe.dbFoodName.contains(searchingFoodName))
+                .selectFrom(dbRecipe)
+                .where(dbRecipe.dbFoodName.contains(searchingFoodName))
                 .fetch();
     }
 
     @Override
     public List<DbRecipe> Top10DbRecipeView() {
-        List<DbRecipe> top10View = queryFactory
-                .selectFrom(QDbRecipe.dbRecipe)
-                .orderBy(QDbRecipe.dbRecipe.dbViewCount.desc())
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .orderBy(dbRecipe.dbViewCount.desc())
                 .limit(10)
                 .fetch();
-        return top10View;
     }
 
     @Override
     public List<DbRecipe> Top10DbRecipeLike() {
-        List<DbRecipe> top10Like = queryFactory
-                .selectFrom(QDbRecipe.dbRecipe)
-                .orderBy(QDbRecipe.dbRecipe.dbLikeCount.desc())
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .orderBy(dbRecipe.dbLikeCount.desc())
                 .limit(10)
                 .fetch();
-        return top10Like;
     }
 
-    private final EntityManager em;
-
+    /**
+     * Db 좋아요 1위 조회
+     */
     @Override
-    public List<Heart> Top10AllRecipeLike() {
-        return em.createQuery(
-                        "select h.dbRecipe.dbFoodName, h.gptRecipe.gptFoodName from Heart h" +
-                                " join h.dbRecipe db" +
-                                " join h.gptRecipe gpt", Heart.class)
-                .getResultList();
+    public DbRecipe Top1DbRecipeLike() {
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .orderBy(dbRecipe.dbLikeCount.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
+    /**
+     * Db 조회 수 1위 조회
+     */
+    @Override
+    public DbRecipe Top1DbRecipeViewCount() {
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .orderBy(dbRecipe.dbViewCount.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
+    /**
+     * DB 평점 1위
+     */
+    @Override
+    public DbRecipe Top1DbRecipeRatingScore() {
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .orderBy(dbRecipe.dbRatingScore.desc())
+                .limit(1)
+                .fetchOne();
     }
 
 
     /**
-     * DB 레시피 평점 평균 구하기
-     * -
+     * 좋아요 사용자 입력 값 이상 조회
      */
-//    public List<DbRecipe> searchAverageRatingScore() {
-//        List<Tuple> result = queryFactory
-//                .select(dbRecipe.dbFoodName)
-//                .from(dbRecipe)
-//                .groupBy(dbRecipe.dbRecipeId)
-//                .fetch();
-//        return null;
-//    }
+    @Override
+    public List<DbRecipe> SearchingDbRecipeLikeByInputNum(int inputNum) {
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .where(dbRecipe.dbLikeCount.goe(inputNum))
+                .fetch();
+    }
+
+    /**
+     * 조회수 사용자 입력 값 이상 조회
+     */
+    @Override
+    public List<DbRecipe> SearchingDbRecipeViewCountByInputNum(int inputNum) {
+        return queryFactory
+                .selectFrom(dbRecipe)
+                .where(dbRecipe.dbViewCount.goe(inputNum))
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> Top10AllRecipeLike() {
+        List<Tuple> fetch = queryFactory
+                .select(recentSearch.gptRecipe, dbRecipe)
+                .from(recentSearch)
+                .join(recentSearch.dbRecipe, dbRecipe)
+                .fetch();
+        return fetch;
+    }
+
 }

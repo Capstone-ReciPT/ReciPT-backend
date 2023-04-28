@@ -12,9 +12,9 @@ public class RecentSearchDto {
     @NotBlank
     private Long userId;
     @NotBlank
-    private Long dbRecipeId;
-    @NotBlank
     private Long gptRecipeId;
+    @NotBlank
+    private Long dbRecipeId;
 
     public RecentSearchDto(RecentSearch recentSearch) {
         userId = recentSearch.getUser().getUserId();

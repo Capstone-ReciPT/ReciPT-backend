@@ -1,7 +1,7 @@
 package samdasu.recipt.repository.DbRecipe;
 
+import com.querydsl.core.Tuple;
 import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.Heart;
 
 import java.util.List;
 
@@ -18,5 +18,15 @@ public interface DbRecipeCustomRepository {
 
     List<DbRecipe> Top10DbRecipeLike();
 
-    List<Heart> Top10AllRecipeLike();
+    DbRecipe Top1DbRecipeLike();
+
+    DbRecipe Top1DbRecipeViewCount();
+
+    DbRecipe Top1DbRecipeRatingScore();
+
+    List<DbRecipe> SearchingDbRecipeLikeByInputNum(int inputNum);
+
+    List<DbRecipe> SearchingDbRecipeViewCountByInputNum(int inputNum);
+
+    List<Tuple> Top10AllRecipeLike();
 }
