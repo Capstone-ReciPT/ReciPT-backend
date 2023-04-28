@@ -1,4 +1,4 @@
-package samdasu.recipt.controller.dto;
+package samdasu.recipt.controller.dto.RecentSearch;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,28 +8,24 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class RecentSearchDto {
+public class GptRecentSearchDto {
     @NotBlank
     private Long userId;
     @NotBlank
-    private Long dbRecipeId;
-    @NotBlank
     private Long gptRecipeId;
 
-    public RecentSearchDto(RecentSearch recentSearch) {
+    public GptRecentSearchDto(RecentSearch recentSearch) {
         userId = recentSearch.getUser().getUserId();
-        dbRecipeId = recentSearch.getDbRecipe().getDbRecipeId();
         gptRecipeId = recentSearch.getGptRecipe().getGptRecipeId();
     }
 
-    public RecentSearchDto(Long userId, Long dbRecipeId, Long gptRecipeId) {
+    public GptRecentSearchDto(Long userId, Long gptRecipeId) {
         this.userId = userId;
-        this.dbRecipeId = dbRecipeId;
         this.gptRecipeId = gptRecipeId;
     }
 
-    public static RecentSearchDto createDbHeartDto(Long userId, Long dbRecipeId, Long gptRecipeId) {
-        return new RecentSearchDto(userId, dbRecipeId, gptRecipeId);
+    public static GptRecentSearchDto createDbHeartDto(Long userId, Long gptRecipeId) {
+        return new GptRecentSearchDto(userId, gptRecipeId);
     }
 }
 
