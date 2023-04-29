@@ -12,21 +12,17 @@ import javax.validation.constraints.NotNull;
 public class UserUpdateRequestDto {
     @NotNull
     private String password;
-    @NotNull
-    private String userAllergy;
 
-    public UserUpdateRequestDto(String password, String userAllergy) {
+    public UserUpdateRequestDto(String password) {
         this.password = password;
-        this.userAllergy = userAllergy;
     }
 
-    public static UserUpdateRequestDto createUpdateUserInfo(String password, String userAllergy) {
-        return new UserUpdateRequestDto(password, userAllergy);
+    public static UserUpdateRequestDto createUpdateUserInfo(String password) {
+        return new UserUpdateRequestDto(password);
     }
 
     public UserUpdateRequestDto(UserResponseDto userResponseDto) {
         this.password = userResponseDto.getPassword();
-        this.userAllergy = userResponseDto.getUserAllergy();
     }
 
 }

@@ -41,6 +41,10 @@ public class DbRecipe extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "dbRecipe")
     private List<Heart> hearts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "dbRecipe")
+    private List<SearchingAllRecipe> searchingAllRecipes = new ArrayList<>();
+
     @OneToMany(mappedBy = "dbRecipe")
     private List<RecentSearch> recentSearches = new ArrayList<>();
 

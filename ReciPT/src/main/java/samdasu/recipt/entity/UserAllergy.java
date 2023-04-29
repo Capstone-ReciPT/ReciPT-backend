@@ -4,8 +4,8 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
-import samdasu.recipt.controller.dto.allergy.UserAllergyRequestDto;
+import samdasu.recipt.controller.dto.Allergy.UserAllergyRequestDto;
+import samdasu.recipt.controller.dto.Allergy.UserAllergyUpdateRequestDto;
 import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -31,12 +31,19 @@ public class UserAllergy extends BaseTimeEntity {
         this.user = user;
     }
 
-    public static UserAllergy createUserAllergy(String infoAllergy, User user) {
-        return new UserAllergy(infoAllergy, user);
+    public static UserAllergy createUserAllergy(String userAllergy, User user) {
+        return new UserAllergy(userAllergy, user);
     }
+
+    public static UserAllergy createUserAllergy(UserAllergyRequestDto userAllergyRequestDto) {
+        return new UserAllergy(userAllergyRequestDto.getUserAllergy(), userAllergyRequestDto.getUser());
+    }
+
 
     //==비지니스 로직==//
-    public void updateUserAllergyInfo(){
-
+    public void updateUserAllergyInfo(UserAllergyUpdateRequestDto userAllergyUpdateRequestDto) {
+        this.userAllergy = userAllergyUpdateRequestDto.getUserAllergy();
+        
     }
+
 }

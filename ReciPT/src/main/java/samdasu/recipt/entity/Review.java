@@ -3,7 +3,7 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.controller.dto.Review.ReviewUpdateRequestDto;
 import samdasu.recipt.global.BaseEntity;
 
 import javax.persistence.*;
@@ -98,10 +98,9 @@ public class Review extends BaseEntity {
 
     //==비지니스 로직==//
 
-    public void updateReviewInfo(ReviewRequestDto reviewRequestDto) {
-        this.title = reviewRequestDto.getTitle();
-        this.comment = reviewRequestDto.getComment();
-//        this.imageFiles = reviewRequestDto.getImageFiles();
+    public void updateReviewInfo(ReviewUpdateRequestDto reviewUpdateRequestDto) {
+        this.title = reviewUpdateRequestDto.getTitle();
+        this.comment = reviewUpdateRequestDto.getComment();
     }
 
 }

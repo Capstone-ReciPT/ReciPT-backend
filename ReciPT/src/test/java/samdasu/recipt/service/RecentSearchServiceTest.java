@@ -54,7 +54,7 @@ class RecentSearchServiceTest {
         //then
         assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(1);
     }
-    
+
     @Test
     public void 같은_유저_다른_레시피_최근검색어_저장() throws Exception {
         //given
@@ -119,7 +119,7 @@ class RecentSearchServiceTest {
 
 
     private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", "shrimp");
+        User user = User.createUser("tester1", "testId", "test1234");
         em.persist(user);
 
         return user;

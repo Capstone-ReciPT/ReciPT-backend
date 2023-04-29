@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.controller.dto.Review.ReviewUpdateRequestDto;
 import samdasu.recipt.entity.Review;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
@@ -46,10 +47,10 @@ public class ReviewService {
 
 
     @Transactional
-    public Long update(Long reviewId, ReviewRequestDto reviewRequestDto) {
+    public Long update(Long reviewId, ReviewUpdateRequestDto reviewUpdateRequestDto) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
-        review.updateReviewInfo(reviewRequestDto);
+        review.updateReviewInfo(reviewUpdateRequestDto);
         return reviewId;
     }
 
