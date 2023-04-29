@@ -33,7 +33,7 @@ public class InitDb {
         private final EntityManager em;
 
         public void dbInit1() {
-            User user = User.createUser("testerA", "testA", "A1234", "shrimp");
+            User user = User.createUser("testerA", "testA", "A1234");
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -58,7 +58,7 @@ public class InitDb {
         }
 
         public void dbInit2() {
-            User user = User.createUser("testerB", "testB", "B1234", "milk");
+            User user = User.createUser("testerB", "testB", "B1234");
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -94,7 +94,7 @@ public class InitDb {
         }
 
         public void gptInit1() {
-            User user = User.createUser("testerC", "testC", "C1234", "bean");
+            User user = User.createUser("testerC", "testC", "C1234");
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -113,7 +113,7 @@ public class InitDb {
         }
 
         public void gptInit2() {
-            User user = User.createUser("testerD", "testD", "D1234", "peanut");
+            User user = User.createUser("testerD", "testD", "D1234");
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -141,7 +141,7 @@ public class InitDb {
         }
 
         public void reviewInit() {
-            User user = User.createUser("testerD", "testD", "D1234", "peanut");
+            User user = User.createUser("testerD", "testD", "D1234");
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
