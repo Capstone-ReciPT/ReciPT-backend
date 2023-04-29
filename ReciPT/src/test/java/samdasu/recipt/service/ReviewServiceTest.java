@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.controller.dto.Review.ReviewUpdateRequestDto;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.GptRecipe;
 import samdasu.recipt.entity.Review;
@@ -90,9 +91,9 @@ class ReviewServiceTest {
         GptRecipe gptRecipe = createRecipe();
         Review review = createReview();
 
-        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("tester2", "changeTitle", "changeComment", (double) 0, gptRecipe, null);
+        ReviewUpdateRequestDto reviewUpdateRequestDto = ReviewUpdateRequestDto.createDbReviewRequestDto("changeTitle", "changeComment");
         //when
-        Long updateReview = reviewService.update(review.getReviewId(), gptReviewRequestDto);
+        Long updateReview = reviewService.update(review.getReviewId(), reviewUpdateRequestDto);
 
         Review findReview = reviewRepository.findById(updateReview).get();
         //then
@@ -181,7 +182,7 @@ class ReviewServiceTest {
     }
 
     private Review createReview() {
-        User user = User.createUser("testerE", "testE", "E1234", "bean");
+        User user = User.createUser("testerE", "testE", "E1234");
         em.persist(user);
 
         Allergy allergy = Allergy.createAllergy("갑각류", "새우");

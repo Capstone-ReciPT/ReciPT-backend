@@ -36,7 +36,7 @@ public class UserServiceTest {
     @Test
     public void 유저_회원가입() {
         //given
-        UserSignUpDto signUpDto = new UserSignUpDto("tester", "testId", "test1234", "test1234", "shrimp");
+        UserSignUpDto signUpDto = getUserSignUpDto("tester", "test1234");
 
         //when
         Long savedId = userService.join(signUpDto);
@@ -53,13 +53,13 @@ public class UserServiceTest {
     @Test
     public void 유저_회원가입_중복회원() {
         // given
-        UserSignUpDto tester1 = new UserSignUpDto("tester1", "testId", "test1234", "test1234", "shrimp");
+        UserSignUpDto tester1 = getUserSignUpDto("tester1", "test1234");
 
         userService.join(tester1);
 
         // when
         // same loginId
-        UserSignUpDto tester2 = new UserSignUpDto("tester2", "testId", "test5678", "test5678", "milk");
+        UserSignUpDto tester2 = getUserSignUpDto("tester2", "test5678");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             userService.join(tester2);
@@ -92,14 +92,13 @@ public class UserServiceTest {
 
         //when
         //change password & Allergy Info
-        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.createUpdateUserInfo("changePassword", "changeAllergy");
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.createUpdateUserInfo("changePassword");
         Long updateUserInfo = userService.update(userResponseDto.getUserId(), userUpdateRequestDto);
 
         //then
         UserResponseDto updateUser = findUserResponseDtoById(updateUserInfo);
 
         assertThat(updateUser.getPassword()).isEqualTo(userUpdateRequestDto.getPassword());
-        assertThat(updateUser.getUserAllergy()).isEqualTo(userUpdateRequestDto.getUserAllergy());
     }
 
     public UserResponseDto findUserResponseDtoById(Long userId) {
@@ -109,8 +108,12 @@ public class UserServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("testerC", "testC", "C1234", "bean");
+        User user = User.createUser("testerC", "testC", "C1234");
         em.persist(user);
         return user;
+    }
+
+    private static UserSignUpDto getUserSignUpDto(String username, String password) {
+        return new UserSignUpDto(username, "testId", password, password);
     }
 }

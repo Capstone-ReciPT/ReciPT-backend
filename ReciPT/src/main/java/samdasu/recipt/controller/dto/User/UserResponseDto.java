@@ -25,7 +25,6 @@ public class UserResponseDto {
     private String loginId;
     @NotNull
     private String password;
-    private String userAllergy;
 
     private List<DbHeartDto> dbHeartDto;
     private List<GptHeartDto> gptHeartDto;
@@ -36,7 +35,6 @@ public class UserResponseDto {
         username = user.getUsername();
         loginId = user.getLoginId();
         password = user.getPassword();
-        userAllergy = user.getUserAllergy();
 
         dbHeartDto = user.getHearts().stream()
                 .map(heart -> new DbHeartDto(heart))
