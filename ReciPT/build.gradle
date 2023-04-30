@@ -95,6 +95,11 @@ dependencies {
 
 //    형태소 분석
     implementation 'com.github.shin285:KOMORAN:3.3.4'
+
+// 엑셀파일 DB 삽입
+    implementation 'org.apache.poi:poi:5.0.0'
+    implementation 'org.apache.poi:poi-ooxml:5.0.0'
+    implementation 'com.opencsv:opencsv:5.5.2'
 }
 
 tasks.named('test') {
