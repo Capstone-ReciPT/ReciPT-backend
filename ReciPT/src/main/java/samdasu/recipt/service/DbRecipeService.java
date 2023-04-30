@@ -66,9 +66,6 @@ public class DbRecipeService {
     /**
      * 조회 수 탑 10 조회
      */
-    List<DbRecipe> AllDbRecipeView(DbRecipe dbRecipe, String inputFoodName) {
-        return dbRecipeRepository.DbRecipeByFoodNameView(dbRecipe, inputFoodName);
-    
     public List<DbRecipe> findTop10ViewCount() {
         return dbRecipeRepository.Top10DbRecipeView();
     }
