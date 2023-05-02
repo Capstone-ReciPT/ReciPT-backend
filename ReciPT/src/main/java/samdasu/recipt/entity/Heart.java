@@ -31,6 +31,9 @@ public class Heart extends BaseTimeEntity {
     @JoinColumn(name = "gpt_id")
     private GptRecipe gptRecipe;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "register_id")
+    private RegisterRecipe registerRecipe;
 
     //== 연관관계 편의 메서드 ==//
     public void changeUser(User user) {
