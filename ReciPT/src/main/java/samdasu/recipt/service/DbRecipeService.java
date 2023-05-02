@@ -35,7 +35,7 @@ public class DbRecipeService {
     public DbResponseDto calcDbRatingScore(DbRecipe dbRecipe) {
         Double avgDbRatingScore = dbRecipe.calcDbRatingScore(dbRecipe);
 
-        DbResponseDto dbResponseDto = DbResponseDto.createDbResponseDto(dbRecipe);
+        DbResponseDto dbResponseDto = DbResponseDto.createDbResponseDto(dbRecipe, dbRecipe.getDbRecipeId());
         dbResponseDto.setDbRatingResult(avgDbRatingScore);
         return dbResponseDto;
     }
@@ -113,6 +113,12 @@ public class DbRecipeService {
 
     public List<DbRecipe> findDbRecipes() {
         return dbRecipeRepository.findAll();
+    }
+
+    public DbRecipe findOne(Long dbRecipeId) {
+        DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No DbRecipe Info"));
+        return dbRecipe;
     }
 
     @Transactional
