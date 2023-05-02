@@ -90,7 +90,7 @@ public class HeartServiceTest {
 
 
     private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", "shrimp");
+        User user = User.createUser("tester1", "testId", "test1234");
         em.persist(user);
 
         return user;

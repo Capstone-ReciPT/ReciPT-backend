@@ -33,6 +33,8 @@ public class GptRecipe extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "gptRecipe")
     private List<Heart> hearts = new ArrayList<>();
+    @OneToMany(mappedBy = "gptRecipe")
+    private List<SearchingAllRecipe> searchingAllRecipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "gptRecipe")
     private List<RecentSearch> recentSearches = new ArrayList<>();

@@ -30,8 +30,8 @@ class UserTest {
 
     @Test
     public void testEntity() {
-        User user1 = new User("user1", "id1", "pw1", "shrimp");
-        User user2 = new User("user2", "id2", "pw2", "milk");
+        User user1 = new User("user1", "id1", "pw1");
+        User user2 = new User("user2", "id2", "pw2");
         em.persist(user1);
         em.persist(user2);
 
