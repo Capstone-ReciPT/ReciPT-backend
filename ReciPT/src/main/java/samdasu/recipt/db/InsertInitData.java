@@ -15,8 +15,6 @@ public class InsertInitData {
     private static final String EXCEL_FILE_PATH = "/Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/test.xlsx";
 
     public static void insertInitData(ApplicationContext context, InsertRecipeService insertRecipeService) {
-//        ApplicationContext context = SpringApplication.run(ExcelConfig.class, args);
-//        InsertRecipeService insertRecipeService = context.getBean(InsertRecipeService.class);
         RecipeImporter importer = new RecipeImporter();
         File file = new File(EXCEL_FILE_PATH); //엑셀 파일 경로
         importer.importRecipesFromExcel(file);
