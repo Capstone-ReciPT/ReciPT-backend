@@ -21,7 +21,7 @@ public class ReciPtApplication {
         ApplicationContext context = SpringApplication.run(ReciPtApplication.class, args);
         ExcelReader excelReader = context.getBean(ExcelReader.class);
         InsertRecipeService insertRecipeService = context.getBean(InsertRecipeService.class);
-        File file = new File("C:/Users/73630/data/test.xlsx"); // 엑셀 파일
+        File file = new File("/Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/test.xlsx"); // 엑셀 파일
 
         try {
             // 엑셀 파일에서 데이터 읽기
@@ -43,6 +43,10 @@ public class ReciPtApplication {
             e.printStackTrace();
         }
     }
+
+//    public static void main(String[] args) {
+//        SpringApplication.run(ReciPtApplication.class, args);
+//    }
 
     @Bean
     JPAQueryFactory jpaQueryFactory(EntityManager em) {
