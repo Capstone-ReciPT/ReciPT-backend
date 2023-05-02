@@ -175,7 +175,7 @@ class ReviewServiceTest {
         //given
 
         //when
-        List<Review> reviews = reviewService.findAll();
+        List<Review> reviews = reviewService.findReviews();
 
         //then
         assertThat(reviews.size()).isEqualTo(18);
