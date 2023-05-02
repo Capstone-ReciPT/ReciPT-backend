@@ -1,7 +1,6 @@
 package samdasu.recipt.db;
 
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.stereotype.Component;
 import samdasu.recipt.entity.Allergy;
 import samdasu.recipt.entity.DbRecipe;
 
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@Component
 public class ExcelReader {
 
     //엑셀 파일 읽어서 각 컬럼에 맞게 데이터 저장한 레시피 리스트 반환
