@@ -87,7 +87,7 @@ public class ReviewService {
     }
 
 
-    public List<Review> findAll() {
+    public List<Review> findReviews() {
         return reviewRepository.findAll();
     }
 }

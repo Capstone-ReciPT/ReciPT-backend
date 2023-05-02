@@ -112,7 +112,7 @@ public class GptRecipeService {
         return gptRecipeRepository.SearchingGptRecipeViewCountByInputNum(inputNum);
     }
 
-    public List<GptRecipe> findAll() {
+    public List<GptRecipe> findGptRecipes() {
         return gptRecipeRepository.findAll();
     }
 

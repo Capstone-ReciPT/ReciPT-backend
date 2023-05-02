@@ -111,7 +111,7 @@ public class DbRecipeService {
         return dbRecipeRepository.SearchingDbRecipeViewCountByInputNum(inputNum);
     }
 
-    public List<DbRecipe> findAll() {
+    public List<DbRecipe> findDbRecipes() {
         return dbRecipeRepository.findAll();
     }
 

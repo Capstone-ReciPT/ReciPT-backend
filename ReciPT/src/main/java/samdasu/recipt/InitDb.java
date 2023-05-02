@@ -1,6 +1,7 @@
 package samdasu.recipt;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.entity.*;
@@ -31,9 +32,10 @@ public class InitDb {
     @RequiredArgsConstructor
     static class InitService {
         private final EntityManager em;
+        private final BCryptPasswordEncoder passwordEncoder;
 
         public void dbInit1() {
-            User user = User.createUser("testerA", "testA", "A1234");
+            User user = User.createUser("testerA", "testA", passwordEncoder.encode("A1234"));
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -58,7 +60,7 @@ public class InitDb {
         }
 
         public void dbInit2() {
-            User user = User.createUser("testerB", "testB", "B1234");
+            User user = User.createUser("testerB", "testB", passwordEncoder.encode("B1234"));
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -94,7 +96,7 @@ public class InitDb {
         }
 
         public void gptInit1() {
-            User user = User.createUser("testerC", "testC", "C1234");
+            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"));
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -113,7 +115,7 @@ public class InitDb {
         }
 
         public void gptInit2() {
-            User user = User.createUser("testerD", "testD", "D1234");
+            User user = User.createUser("testerD", "testD", passwordEncoder.encode("D1234"));
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -141,7 +143,7 @@ public class InitDb {
         }
 
         public void reviewInit() {
-            User user = User.createUser("testerD", "testD", "D1234");
+            User user = User.createUser("testerD", "testD", passwordEncoder.encode("D1234"));
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");

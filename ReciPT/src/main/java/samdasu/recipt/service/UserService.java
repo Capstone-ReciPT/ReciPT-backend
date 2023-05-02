@@ -10,6 +10,8 @@ import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -36,10 +38,19 @@ public class UserService {
 
     @Transactional
     public Long update(Long userId, UserUpdateRequestDto updateRequestDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        User user = findOne(userId);
 
         user.updateUserInfo(updateRequestDto);
         return userId;
+    }
+
+    public List<User> findUsers() {
+        return userRepository.findAll();
+    }
+
+    public User findOne(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        return user;
     }
 }

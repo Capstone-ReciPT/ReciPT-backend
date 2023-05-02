@@ -1,4 +1,4 @@
-package samdasu.recipt.config;
+package samdasu.recipt.config.Auditing;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
