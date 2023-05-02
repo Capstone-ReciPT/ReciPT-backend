@@ -1,6 +1,7 @@
 package samdasu.recipt.controller.dto.User;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import samdasu.recipt.entity.User;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserSignUpDto {
     @NotNull
     private String username;
