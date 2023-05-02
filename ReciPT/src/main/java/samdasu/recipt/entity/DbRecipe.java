@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +40,10 @@ public class DbRecipe extends BaseTimeEntity {
     private Integer dbRatingPeople;
     @Embedded
     private Allergy allergy;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "register_id")
+    private RegisterRecipe registerRecipe;
 
     @OneToMany(mappedBy = "dbRecipe")
     private List<Heart> hearts = new ArrayList<>();
