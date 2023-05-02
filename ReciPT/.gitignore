@@ -40,5 +40,8 @@ out/
 ### gpt ###
 gpt/logs/
 
-### Querydsl
+### Querydsl ###
 /src/main/generated
+
+### Spy log ###
+spy.log
