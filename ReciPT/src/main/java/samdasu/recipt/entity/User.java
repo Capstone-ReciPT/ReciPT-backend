@@ -38,6 +38,9 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<RegisterRecipe> registerRecipes = new ArrayList<>();
+
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
 
 
