@@ -37,13 +37,13 @@ public class DbRecipeApiController {
                 .collect(Collectors.toList());
         return new Result(dbHearts.size(), dbReviews.size(), new DbResponseDto(findDbRecipe, findDbRecipe.getDbRecipeId()));
     }
-    
+
 
     @Data
     @AllArgsConstructor
     static class Result<T> {
-        private int heartCount; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
-        private int reviewCount; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
+        private int heartCount; //특정 List의 개수
+        private int reviewCount; //특정 List의 개수
         private T data;
     }
 }
