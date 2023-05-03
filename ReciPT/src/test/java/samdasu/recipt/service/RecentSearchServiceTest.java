@@ -11,6 +11,7 @@ import samdasu.recipt.repository.RecentSearchRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,16 +27,16 @@ class RecentSearchServiceTest {
     RecentSearchService recentSearchService;
 
     @Test
-    public void 최근검색어_조회_성공() throws Exception {
+    public void 최근검색어_저장_성공() throws Exception {
         //given
         User user = createUser();
         DbRecipe dbRecipe = createDbRecipe1();
 
-        DbRecentSearchDto recentSearchDto = DbRecentSearchDto.createDbHeartDto(user.getUserId(), dbRecipe.getDbRecipeId());
+        DbRecentSearchDto recentSearchDto = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe.getDbRecipeId());
         //when
         recentSearchService.insertDbSearchInfo(recentSearchDto);
         //then
-        assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(1);
+        assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(3);
     }
 
 
@@ -45,14 +46,14 @@ class RecentSearchServiceTest {
         User user = createUser();
         DbRecipe dbRecipe = createDbRecipe1();
 
-        DbRecentSearchDto recentSearchDto1 = DbRecentSearchDto.createDbHeartDto(user.getUserId(), dbRecipe.getDbRecipeId());
+        DbRecentSearchDto recentSearchDto1 = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe.getDbRecipeId());
 
         //when
         recentSearchService.insertDbSearchInfo(recentSearchDto1);
         recentSearchService.insertDbSearchInfo(recentSearchDto1);
 
         //then
-        assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(1);
+        assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(3);
     }
 
     @Test
@@ -62,15 +63,15 @@ class RecentSearchServiceTest {
         DbRecipe dbRecipe1 = createDbRecipe1();
         DbRecipe dbRecipe2 = createDbRecipe2();
 
-        DbRecentSearchDto recentSearchDto1 = DbRecentSearchDto.createDbHeartDto(user.getUserId(), dbRecipe1.getDbRecipeId());
-        DbRecentSearchDto recentSearchDto2 = DbRecentSearchDto.createDbHeartDto(user.getUserId(), dbRecipe2.getDbRecipeId());
+        DbRecentSearchDto recentSearchDto1 = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe1.getDbRecipeId());
+        DbRecentSearchDto recentSearchDto2 = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe2.getDbRecipeId());
 
         //when
         recentSearchService.insertDbSearchInfo(recentSearchDto1);
         recentSearchService.insertDbSearchInfo(recentSearchDto2);
 
         //then
-        assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(2);
+        assertThat(recentSearchRepository.countRecentSearchBy()).isEqualTo(4);
     }
 
     @Test
@@ -85,7 +86,7 @@ class RecentSearchServiceTest {
                     0, 0L, 0.0, 0, null);
             em.persist(dbRecipe);
 
-            DbRecentSearchDto recentSearchDto1 = DbRecentSearchDto.createDbHeartDto(user.getUserId(), dbRecipe.getDbRecipeId());
+            DbRecentSearchDto recentSearchDto1 = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe.getDbRecipeId());
 
             //when
             recentSearchService.insertDbSearchInfo(recentSearchDto1);
@@ -102,14 +103,33 @@ class RecentSearchServiceTest {
         DbRecipe dbRecipe = createDbRecipe1();
 
         createRecentSearch(user, dbRecipe); //최근검색어 저장
-        DbRecentSearchDto dbRecentSearchDto = DbRecentSearchDto.createDbHeartDto(user.getUserId(), dbRecipe.getDbRecipeId());
+        DbRecentSearchDto dbRecentSearchDto = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe.getDbRecipeId());
 
         //when
         recentSearchService.deleteDbSearchInfo(dbRecentSearchDto);
 
         //then
         long count = recentSearchRepository.count();
-        assertThat(count).isEqualTo(0);
+        assertThat(count).isEqualTo(2);
+    }
+
+    @Test
+    public void 최근_검색어_조회() throws Exception {
+        //given
+        User user = createUser();
+        DbRecipe dbRecipe = createDbRecipe1();
+
+        createRecentSearch(user, dbRecipe); //최근검색어 저장
+        DbRecentSearchDto dbRecentSearchDto = DbRecentSearchDto.createDbRecentSearchDto(user.getUserId(), dbRecipe.getDbRecipeId());
+        //when
+        List<RecentSearch> recentSearches = recentSearchService.findRecentSearches(user.getUserId());
+
+        //then
+        for (RecentSearch recentSearch : recentSearches) {
+            System.out.println("recentSearch.getRecentSearchFoodName() = " + recentSearch.getRecentSearchFoodName());
+        }
+        long count = recentSearchRepository.count();
+        assertThat(count).isEqualTo(3);
     }
 
     private void createRecentSearch(User user, DbRecipe dbRecipe) {

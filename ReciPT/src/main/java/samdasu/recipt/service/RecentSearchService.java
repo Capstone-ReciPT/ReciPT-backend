@@ -74,8 +74,15 @@ public class RecentSearchService {
         recentSearchRepository.delete(recentSearch);
     }
 
-    private User getUser(Long gptRecentSearchDto) {
-        User user = userRepository.findById(gptRecentSearchDto)
+    public List<RecentSearch> findRecentSearches(Long userId) {
+        User user = getUser(userId);
+        List<RecentSearch> findRecentSearch = recentSearchRepository.findByUser(user);
+        return findRecentSearch;
+    }
+
+
+    private User getUser(Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
         return user;
     }
@@ -107,7 +114,6 @@ public class RecentSearchService {
             recentSearchRepository.delete(oldModifiedDate);
         }
     }
-
 
     //    @Transactional
 //    public void insertSearchInfo(RecentSearchDto recentSearchDto) {
