@@ -63,6 +63,8 @@ public class Review extends BaseEntity {
         imageFile.setReview(this);
     }
 
+    //==생성 메서드==//
+    
     public Review(String title, String comment, Long viewCount, Integer likeCount, User user, DbRecipe dbRecipe, ImageFile... imageFiles) {
         this.title = title;
         this.comment = comment;

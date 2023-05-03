@@ -32,11 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userLoginService).passwordEncoder(passwordEncoder());
     }
 
-//    @Bean
-//    public SecurityAuthenticationFilter securityAuthenticationFilter() {
-//        return new SecurityAuthenticationFilter();
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -56,10 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().disable()
         ;
-
-//        http
-//                .addFilterBefore(securityAuthenticationFilter(),
-//                        UsernamePasswordAuthenticationFilter.class);
+        
     }
 
 

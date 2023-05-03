@@ -203,7 +203,7 @@ class DbRecipeServiceTest {
         List<DbRecipe> dbRecipes = dbRecipeService.findDbRecipes();
 
         //then
-        Assertions.assertThat(dbRecipes.size()).isEqualTo(14);
+        Assertions.assertThat(dbRecipes.size()).isEqualTo(15);
     }
 
     @Test

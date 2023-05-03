@@ -33,8 +33,7 @@ public class GptResponseDto {
     private List<Review> review;
     private List<GptHeartDto> hearts;
 
-    public GptResponseDto(GptRecipe gptRecipe) {
-        gptRecipeId = gptRecipe.getGptRecipeId();
+    public GptResponseDto(GptRecipe gptRecipe, Long gptRecipeId) {
         gptFoodName = gptRecipe.getGptFoodName();
         gptIngredient = gptRecipe.getGptIngredient();
         gptHowToCook = gptRecipe.getGptHowToCook();
@@ -44,14 +43,13 @@ public class GptResponseDto {
         gptRatingResult = gptRecipe.getGptRatingScore();
         gptRatingPeople = gptRecipe.getGptRatingPeople();
         allergy = gptRecipe.getAllergy();
-        review = gptRecipe.getReview();
         hearts = gptRecipe.getHearts().stream()
                 .map(heart -> new GptHeartDto(heart))
                 .collect(Collectors.toList());
     }
 
-    public static GptResponseDto createGptResponseDto(GptRecipe gptRecipe) {
-        return new GptResponseDto(gptRecipe);
+    public static GptResponseDto createGptResponseDto(GptRecipe gptRecipe, Long gptRecipeId) {
+        return new GptResponseDto(gptRecipe, gptRecipeId);
     }
 
 

@@ -82,7 +82,7 @@ class ReviewServiceTest {
         reviewService.saveReview(gptReviewRequestDto);
 
         //then
-        assertThat(gptReviewRequestDto.getTitle()).isEqualTo("tester");
+        assertThat(gptReviewRequestDto.getTitle()).isEqualTo("리뷰 제목1");
     }
 
     @Test
@@ -164,7 +164,7 @@ class ReviewServiceTest {
         List<Review> findReviewsByWriter = reviewService.findReviewByWriter("testerA"); // 'testerA' 찾기
 
         //then
-        assertEquals(findReviewsByWriter.size(), 2);
+        assertEquals(findReviewsByWriter.size(), 3);
         for (Review review : findReviewsByWriter) {
             System.out.println("review.getUser().getUserName() = " + review.getUser().getUsername());
         }
@@ -178,7 +178,7 @@ class ReviewServiceTest {
         List<Review> reviews = reviewService.findReviews();
 
         //then
-        assertThat(reviews.size()).isEqualTo(18);
+        assertThat(reviews.size()).isEqualTo(19);
     }
 
     private Review createReview() {
