@@ -35,7 +35,7 @@ public class DbRecipeService {
     public DbResponseDto calcDbRatingScore(DbRecipe dbRecipe) {
         Double avgDbRatingScore = dbRecipe.calcDbRatingScore(dbRecipe);
 
-        DbResponseDto dbResponseDto = DbResponseDto.createDbResponseDto(dbRecipe, dbRecipe.getDbRecipeId());
+        DbResponseDto dbResponseDto = DbResponseDto.createDbAllInfo(dbRecipe);
         dbResponseDto.setDbRatingResult(avgDbRatingScore);
         return dbResponseDto;
     }
@@ -124,7 +124,7 @@ public class DbRecipeService {
     @Transactional
     public void IncreaseViewCount(Long dbRecipeId) {
         DbRecipe dbRecipe = dbRecipeRepository.findById(dbRecipeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail:No gptRecipe Info"));
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No dbRecipe Info"));
         dbRecipeRepository.addDbViewCount(dbRecipe);
     }
 }

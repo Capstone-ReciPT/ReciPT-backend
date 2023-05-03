@@ -206,7 +206,7 @@ class GptRecipeServiceTest {
         List<GptRecipe> gptRecipes = gptRecipeRepository.findAll();
 
         //then
-        assertThat(gptRecipes.size()).isEqualTo(15);
+        assertThat(gptRecipes.size()).isEqualTo(16);
     }
 
     private GptRecipe createRecipe() {

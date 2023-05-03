@@ -25,6 +25,8 @@ public class InitDb {
         initService.gptInit3();
 
         initService.reviewInit();
+        initService.recentSearchInit();
+        
     }
 
     @Component
@@ -143,7 +145,7 @@ public class InitDb {
         }
 
         public void reviewInit() {
-            User user = User.createUser("testerD", "testD", passwordEncoder.encode("D1234"));
+            User user = User.createUser("testerE", "testE", passwordEncoder.encode("E1234"));
             em.persist(user);
 
             Allergy allergy = Allergy.createAllergy("갑각류", "새우");
@@ -154,8 +156,27 @@ public class InitDb {
             for (int i = 0; i < 10; i++) {
                 Review review1 = Review.createGptReview("계란찜 후기", "밥도둑이네", 0L, 0, user, gptRecipe);
                 em.persist(review1);
-
             }
+        }
+
+        public void recentSearchInit() {
+            User user = User.createUser("testerF", "testF", passwordEncoder.encode("F1234"));
+            em.persist(user);
+
+            DbRecipe dbRecipe = DbRecipe.createDbRecipe("된장 부대찌개", "다시마 1g, 두부 10g, 떡국 떡 10g, 스팸(마일드) 10g, 다진 마늘 5g, 무 20g, 김치 15g, 소시지 10g(1/2개), 우민찌 5g(1작은술), 양파 5g, 저염된장 15g(1큰술), 베이컨 5g, 대파 5g, 청양고추 5g, 홍고추 1g",
+                    "끓이기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00036_1.png", "1. 김치, 베이컨, 스팸, 소시지, 양파, 두부, 무는 두께 0.5cm로 썬다. 2. 다시마와 물을 끓여 다시마물을 만든다. 3. 냄비에 소시지, 베이컨, 두부, 스팸, 무, 우민찌, 김치, 다시마물 300g을 넣어 끓인 후 저염된장, 양파, 대파, 다진 마늘, 떡국 떡을 넣고 재료가 다 익으면 홍고추와 청양고추를 넣어 완성한다.",
+                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_3.png",
+                    10, 55L, 3.5, 1, null);
+            em.persist(dbRecipe);
+
+            GptRecipe gptRecipe = GptRecipe.createGptRecipe("오이무침", "오이, 쪽파, 양파, 고춧가루, 참기름, 깨", "1.채소 손질 2.버무리기 3.플레이팅", "밥이랑 먹으면 맛있어요.", 10, 55L, 3.5, 3, null);
+            em.persist(gptRecipe);
+
+            RecentSearch dbRecentSearch = RecentSearch.createDbRecentSearch(user, dbRecipe, dbRecipe.getDbFoodName());
+            em.persist(dbRecentSearch);
+            RecentSearch gptRecentSearch = RecentSearch.createGptRecentSearch(user, gptRecipe, gptRecipe.getGptFoodName());
+            em.persist(gptRecentSearch);
+
         }
     }
 

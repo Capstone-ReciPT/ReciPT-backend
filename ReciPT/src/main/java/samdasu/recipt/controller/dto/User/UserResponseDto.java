@@ -61,7 +61,7 @@ public class UserResponseDto implements UserDetails {
         userAllergyResponseDto = user.getUserAllergies().stream()
                 .map(userAllergy -> new UserAllergyResponseDto(userAllergy))
                 .collect(Collectors.toList());
-        List<String> reviewTitle = user.getReviews().stream()
+        reviewTitle = user.getReviews().stream()
                 .map(review -> review.getTitle())
                 .collect(Collectors.toList());
     }
