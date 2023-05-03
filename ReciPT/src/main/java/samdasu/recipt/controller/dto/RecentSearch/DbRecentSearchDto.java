@@ -24,7 +24,7 @@ public class DbRecentSearchDto {
         this.dbRecipeId = dbRecipeId;
     }
 
-    public static DbRecentSearchDto createDbHeartDto(Long userId, Long dbRecipeId) {
+    public static DbRecentSearchDto createDbRecentSearchDto(Long userId, Long dbRecipeId) {
         return new DbRecentSearchDto(userId, dbRecipeId);
     }
 }

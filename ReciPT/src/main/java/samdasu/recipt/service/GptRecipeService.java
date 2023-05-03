@@ -35,7 +35,7 @@ public class GptRecipeService {
     public GptResponseDto calcGptRatingScore(GptRecipe gptRecipe) {
         Double avgDbRatingScore = gptRecipe.calcGptRatingScore(gptRecipe);
 
-        GptResponseDto gptResponseDto = GptResponseDto.createGptResponseDto(gptRecipe);
+        GptResponseDto gptResponseDto = GptResponseDto.createGptResponseDto(gptRecipe, gptRecipe.getGptRecipeId());
         gptResponseDto.setGptRatingResult(avgDbRatingScore);
         return gptResponseDto;
     }
@@ -114,6 +114,12 @@ public class GptRecipeService {
 
     public List<GptRecipe> findGptRecipes() {
         return gptRecipeRepository.findAll();
+    }
+
+    public GptRecipe findOne(Long gptRecipeId) {
+        GptRecipe gptRecipe = gptRecipeRepository.findById(gptRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No GptRecipe Info"));
+        return gptRecipe;
     }
 
     @Transactional

@@ -24,7 +24,7 @@ public class GptRecentSearchDto {
         this.gptRecipeId = gptRecipeId;
     }
 
-    public static GptRecentSearchDto createDbHeartDto(Long userId, Long gptRecipeId) {
+    public static GptRecentSearchDto createGptRecentSearchDto(Long userId, Long gptRecipeId) {
         return new GptRecentSearchDto(userId, gptRecipeId);
     }
 }

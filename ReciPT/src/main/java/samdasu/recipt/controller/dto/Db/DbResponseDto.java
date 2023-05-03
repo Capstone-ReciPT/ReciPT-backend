@@ -36,28 +36,7 @@ public class DbResponseDto {
     private List<DbHeartDto> hearts;
     private List<ReviewRequestDto> reviews;
 
-//    public DbResponseDto(DbRecipe dbRecipe) {
-//        dbRecipeId = dbRecipe.getDbRecipeId();
-//        dbFoodName = dbRecipe.getDbFoodName();
-//        dbIngredient = dbRecipe.getDbIngredient();
-//        howToCook = dbRecipe.getHowToCook();
-//        thumbnailImage = dbRecipe.getThumbnailImage();
-//        dbContext = dbRecipe.getDbContext();
-//        dbImage = dbRecipe.getDbImage();
-//        dbLikeCount = dbRecipe.getDbLikeCount();
-//        dbViewCount = dbRecipe.getDbViewCount();
-//        dbRatingResult = dbRecipe.getDbRatingScore();
-//        dbRatingPeople = dbRecipe.getDbRatingPeople();
-//        allergy = dbRecipe.getAllergy();
-//        hearts = dbRecipe.getHearts().stream()
-//                .map(heart -> new DbHeartDto(heart))
-//                .collect(Collectors.toList());
-//        reviews = dbRecipe.getReview().stream()
-//                .map(review -> new ReviewRequestDto(review))
-//                .collect(Collectors.toList());
-//    }
-
-    public DbResponseDto(DbRecipe dbRecipe, Long dbRecipeId) {
+    public DbResponseDto(DbRecipe dbRecipe) {
         dbFoodName = dbRecipe.getDbFoodName();
         dbIngredient = dbRecipe.getDbIngredient();
         howToCook = dbRecipe.getHowToCook();
@@ -71,8 +50,7 @@ public class DbResponseDto {
         allergy = dbRecipe.getAllergy();
     }
 
-
-    public static DbResponseDto createDbResponseDto(DbRecipe dbRecipe, Long dbRecipeId) {
-        return new DbResponseDto(dbRecipe, dbRecipeId);
+    public static DbResponseDto createDbAllInfo(DbRecipe dbRecipe) {
+        return new DbResponseDto(dbRecipe);
     }
 }
