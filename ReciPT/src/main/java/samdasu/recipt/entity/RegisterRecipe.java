@@ -46,16 +46,26 @@ public class RegisterRecipe extends BaseTimeEntity {
     @OneToMany(mappedBy = "registerRecipe")
     private List<GptRecipe> gptRecipes = new ArrayList<>();
 
-    public RegisterRecipe(String registerThumbnailImage, String registerTitle, String registerComment, String registerIngredient, String registerHowToCook, Integer registerLikeCount) {
+
+    //== 연관관계 편의 메서드 ==//
+    public void changeUser(User user) {
+        this.user = user;
+        user.getRegisterRecipes().add(this);
+    }
+
+
+    //==생성 메서드==//
+    public RegisterRecipe(String registerThumbnailImage, String registerTitle, String registerComment, String registerIngredient, String registerHowToCook, Integer registerLikeCount, User user) {
         this.registerThumbnailImage = registerThumbnailImage;
         this.registerTitle = registerTitle;
         this.registerComment = registerComment;
         this.registerIngredient = registerIngredient;
         this.registerHowToCook = registerHowToCook;
         this.registerLikeCount = registerLikeCount;
+        changeUser(user);
     }
 
-    public static RegisterRecipe CreateRegisterRecipe(String registerThumbnailImage, String registerTitle, String registerComment, String registerIngredient, String registerHowToCook, Integer registerLikeCount) {
-        return new RegisterRecipe(registerThumbnailImage, registerTitle, registerComment, registerIngredient, registerHowToCook, registerLikeCount);
+    public static RegisterRecipe CreateRegisterRecipe(String registerThumbnailImage, String registerTitle, String registerComment, String registerIngredient, String registerHowToCook, Integer registerLikeCount, User user) {
+        return new RegisterRecipe(registerThumbnailImage, registerTitle, registerComment, registerIngredient, registerHowToCook, registerLikeCount, user);
     }
 }
