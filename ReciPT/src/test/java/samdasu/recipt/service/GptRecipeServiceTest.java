@@ -34,7 +34,7 @@ class GptRecipeServiceTest {
     public void 평점_갱신() throws Exception {
         //given
         GptRecipe recipe = createRecipe();
-        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5, recipe, null);
+        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5);
 
         //when
         gptRecipeService.gptUpdateRatingScore(recipe.getGptRecipeId(), gptReviewRequestDto);
@@ -48,7 +48,7 @@ class GptRecipeServiceTest {
     public void 평점_계산() throws Exception {
         //given
         GptRecipe recipe = createRecipe();
-        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5, recipe, null);
+        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 5.0);
         gptRecipeService.gptUpdateRatingScore(recipe.getGptRecipeId(), gptReviewRequestDto);
 
         //when

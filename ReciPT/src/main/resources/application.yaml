@@ -5,6 +5,12 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+    # 이미지 용량 설정
+    servlet:
+      multipart:
+        maxFileSize: 10MB
+        maxRequestSize: 20MB
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -23,3 +29,4 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace      # 파라미터까지 볼 수 있음
+

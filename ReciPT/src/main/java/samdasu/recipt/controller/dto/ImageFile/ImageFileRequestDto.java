@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ImageFileRequestDto {
+    private Long itemId;
     private String itemName;
     private List<MultipartFile> imageFiles; //이미지 다중 업로드
     private MultipartFile attachFile;

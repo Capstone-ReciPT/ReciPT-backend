@@ -30,7 +30,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageFile> imageFiles = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
@@ -60,41 +60,25 @@ public class Review extends BaseEntity {
 
     public void addImageFile(ImageFile imageFile) {
         imageFiles.add(imageFile);
-        imageFile.setReview(this);
+
+        if (imageFile.getReview() != this) {
+            imageFile.setReview(this);
+        }
     }
+
 
     //==생성 메서드==//
-    
-    public Review(String title, String comment, Long viewCount, Integer likeCount, User user, DbRecipe dbRecipe, ImageFile... imageFiles) {
+
+    public Review(String title, String comment, Long viewCount, Integer likeCount, User user) {
         this.title = title;
         this.comment = comment;
         this.viewCount = viewCount;
         this.likeCount = likeCount;
         changeUser(user);
-        for (ImageFile imageFile : imageFiles) {
-            addImageFile(imageFile);
-        }
-        changeDbRecipe(dbRecipe);
     }
 
-    public Review(String title, String comment, Long viewCount, Integer likeCount, User user, GptRecipe gptRecipe, ImageFile... imageFiles) {
-        this.title = title;
-        this.comment = comment;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
-        changeUser(user);
-        for (ImageFile imageFile : imageFiles) {
-            addImageFile(imageFile);
-        }
-        changeGptRecipe(gptRecipe);
-    }
-
-    public static Review createDbReview(String title, String comment, Long viewCount, Integer likeCount, User user, DbRecipe dbRecipe) {
-        return new Review(title, comment, viewCount, likeCount, user, dbRecipe);
-    }
-
-    public static Review createGptReview(String title, String comment, Long viewCount, Integer likeCount, User user, GptRecipe gptRecipe) {
-        return new Review(title, comment, viewCount, likeCount, user, gptRecipe);
+    public static Review createReview(String title, String comment, Long viewCount, Integer likeCount, User user) {
+        return new Review(title, comment, viewCount, likeCount, user);
     }
 
 

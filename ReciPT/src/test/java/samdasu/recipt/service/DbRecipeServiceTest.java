@@ -38,7 +38,7 @@ class DbRecipeServiceTest {
     public void 평점_갱신() throws Exception {
         //given
         DbRecipe recipe = createRecipe();
-        ReviewRequestDto dbReviewRequestDto = ReviewRequestDto.createDbReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5, recipe, null);
+        ReviewRequestDto dbReviewRequestDto = ReviewRequestDto.createReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5);
 
         //when
         dbRecipeService.dbUpdateRatingScore(recipe.getDbRecipeId(), dbReviewRequestDto);
@@ -52,7 +52,7 @@ class DbRecipeServiceTest {
     public void 평점_계산() throws Exception {
         //given
         DbRecipe recipe = createRecipe();
-        ReviewRequestDto dbReviewRequestDto = ReviewRequestDto.createDbReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5, recipe, null);
+        ReviewRequestDto dbReviewRequestDto = ReviewRequestDto.createReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 3.5);
         dbRecipeService.dbUpdateRatingScore(recipe.getDbRecipeId(), dbReviewRequestDto);
 
         //when

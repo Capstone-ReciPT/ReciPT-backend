@@ -76,7 +76,7 @@ class ReviewServiceTest {
     public void 리뷰_저장() throws Exception {
         //given
         GptRecipe recipe = createRecipe();
-        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createGptReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", (double) 0, recipe, null);
+        ReviewRequestDto gptReviewRequestDto = ReviewRequestDto.createReviewRequestDto("testerA", "리뷰 제목1", "계란말이 맛있다.", 0.0);
 
         //when
         reviewService.saveReview(gptReviewRequestDto);
@@ -190,7 +190,7 @@ class ReviewServiceTest {
         GptRecipe gptRecipe = GptRecipe.createGptRecipe("파스타", "면, 소스", "1.삶기 2.먹기", "소스 맛은 기호에 따라 바꾸세요!", 0, 0L, 0.0, 0, allergy);
         em.persist(gptRecipe);
 
-        Review review = Review.createGptReview("파스타 후기", "면이 쫀득쫀득", 0L, 0, user, gptRecipe);
+        Review review = Review.createReview("파스타 후기", "면이 쫀득쫀득", 0L, 0, user);
         em.persist(review);
         return review;
     }

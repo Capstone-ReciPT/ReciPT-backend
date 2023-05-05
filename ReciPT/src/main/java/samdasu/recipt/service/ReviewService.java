@@ -25,13 +25,9 @@ public class ReviewService {
     @Transactional
     public Long saveReview(ReviewRequestDto reviewRequestDto) {
         User user = validateReview(reviewRequestDto);
-        Review review = null;
 
-        if (reviewRequestDto.getDbRecipe() == null) {
-            review = Review.createGptReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0L, 0, user, reviewRequestDto.getGptRecipe());
-        } else if (reviewRequestDto.getGptRecipe() == null) {
-            review = Review.createDbReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0L, 0, user, reviewRequestDto.getDbRecipe());
-        }
+        Review review = Review.createReview(reviewRequestDto.getTitle(), reviewRequestDto.getComment(), 0L, 0, user);
+
         return reviewRepository.save(review).getReviewId();
     }
 
@@ -78,7 +74,6 @@ public class ReviewService {
 
     public Optional<Review> findReviewByTitle(String title) {
         return reviewRepository.findByTitle(title);
-
     }
 
     public List<Review> findReviewByWriter(String username) {

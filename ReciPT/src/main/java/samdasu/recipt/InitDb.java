@@ -26,7 +26,7 @@ public class InitDb {
 
         initService.reviewInit();
         initService.recentSearchInit();
-        
+
     }
 
     @Component
@@ -54,10 +54,10 @@ public class InitDb {
                     3, 3L, 3.0, 1, allergy);
             em.persist(dbRecipe2);
 
-            Review review1 = Review.createDbReview("새우두부계란찜 후기", "맛있는 계란찜", 0L, 0, user, dbRecipe1);
+            Review review1 = Review.createReview("새우두부계란찜 후기", "맛있는 계란찜", 0L, 0, user);
             em.persist(review1);
 
-            Review review2 = Review.createDbReview("부추 콩가루 찜 후기", "이게 무슨 요리지?", 0L, 0, user, dbRecipe2);
+            Review review2 = Review.createReview("부추 콩가루 찜 후기", "이게 무슨 요리지?", 0L, 0, user);
             em.persist(review2);
         }
 
@@ -79,10 +79,10 @@ public class InitDb {
                     1, 1L, 1.0, 1, allergy);
             em.persist(dbRecipe2);
 
-            Review review1 = Review.createDbReview("사과 새우 북엇국 후기", "얼큰하다", 0L, 0, user, dbRecipe1);
+            Review review1 = Review.createReview("사과 새우 북엇국 후기", "얼큰하다", 0L, 0, user);
             em.persist(review1);
 
-            Review review2 = Review.createDbReview("황태해장국 후기", "해장에 딱이지", 0L, 0, user, dbRecipe2);
+            Review review2 = Review.createReview("황태해장국 후기", "해장에 딱이지", 0L, 0, user);
             em.persist(review2);
         }
 
@@ -109,10 +109,10 @@ public class InitDb {
             GptRecipe gptRecipe2 = GptRecipe.createGptRecipe("계란후라이", "계란", "1.계란 톡 2.굽기", "케찹이랑 먹으면 맛있어요.", 3, 3L, 3.0, 1, allergy);
             em.persist(gptRecipe2);
 
-            Review review1 = Review.createGptReview("계란찜 후기", "밥도둑이네", 0L, 0, user, gptRecipe1);
+            Review review1 = Review.createReview("계란찜 후기", "밥도둑이네", 0L, 0, user);
             em.persist(review1);
 
-            Review review2 = Review.createGptReview("계란후라이 후기", "아침에는 계란 후라이", 0L, 0, user, gptRecipe2);
+            Review review2 = Review.createReview("계란후라이 후기", "아침에는 계란 후라이", 0L, 0, user);
             em.persist(review2);
         }
 
@@ -128,10 +128,10 @@ public class InitDb {
             GptRecipe gptRecipe2 = GptRecipe.createGptRecipe("오이무침", "오이, 쪽파, 양파, 고춧가루, 참기름, 깨", "1.채소 손질 2.버무리기 3.플레이팅", "밥이랑 먹으면 맛있어요.", 2, 2L, 2.0, 2, allergy);
             em.persist(gptRecipe2);
 
-            Review review1 = Review.createGptReview("오므라이스 후기", "어린아이도 좋아해요", 0L, 0, user, gptRecipe1);
+            Review review1 = Review.createReview("오므라이스 후기", "어린아이도 좋아해요", 0L, 0, user);
             em.persist(review1);
 
-            Review review2 = Review.createGptReview("오이무침 후기", "아삭아삭 오이무침", 0L, 0, user, gptRecipe2);
+            Review review2 = Review.createReview("오이무침 후기", "아삭아삭 오이무침", 0L, 0, user);
             em.persist(review2);
         }
 
@@ -154,7 +154,7 @@ public class InitDb {
             em.persist(gptRecipe);
 
             for (int i = 0; i < 10; i++) {
-                Review review1 = Review.createGptReview("계란찜 후기", "밥도둑이네", 0L, 0, user, gptRecipe);
+                Review review1 = Review.createReview("계란찜 후기", "밥도둑이네", 0L, 0, user);
                 em.persist(review1);
             }
         }
