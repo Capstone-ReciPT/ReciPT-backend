@@ -22,7 +22,7 @@ public class UserService {
     @Transactional
     public Long join(UserSignUpDto signUpDto) { //회원가입
         validateLogin(signUpDto);
-        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()));
+        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge());
         return userRepository.save(user).getUserId();
     }
 
@@ -38,7 +38,7 @@ public class UserService {
 
     @Transactional
     public Long update(Long userId, UserUpdateRequestDto updateRequestDto) {
-        User user = findOne(userId);
+        User user = findById(userId);
 
         user.updateUserInfo(updateRequestDto);
         return userId;
@@ -48,9 +48,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findOne(Long userId) {
-        User user = userRepository.findById(userId)
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
-        return user;
     }
 }

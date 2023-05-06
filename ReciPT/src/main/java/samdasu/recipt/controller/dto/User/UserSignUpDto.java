@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 public class UserSignUpDto {
     @NotNull
     private String username;
+
+    @NotNull
+    private Integer age;
     @NotNull
     private String loginId;
     @NotNull
@@ -20,8 +23,9 @@ public class UserSignUpDto {
     @NotNull
     private String passwordConfirm;
 
-    public UserSignUpDto(String username, String loginId, String password, String passwordConfirm) {
+    public UserSignUpDto(String username, Integer age, String loginId, String password, String passwordConfirm) {
         this.username = username;
+        this.age = age;
         this.loginId = loginId;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
@@ -33,5 +37,4 @@ public class UserSignUpDto {
         this.password = user.getPassword();
         this.passwordConfirm = passwordConfirm;
     }
-
 }

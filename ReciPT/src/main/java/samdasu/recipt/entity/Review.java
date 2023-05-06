@@ -21,71 +21,67 @@ public class Review extends BaseEntity {
     @Column(name = "review_id")
     private Long reviewId;
     @Column(nullable = false)
-    private String title;
-    @Column(nullable = false)
     private String comment;
-    private Long viewCount; //조회 수
-    private Integer likeCount; //리뷰 좋아요 개수
+    private Integer likeCount;
+    private Double ratingScore;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageFile> imageFiles = new ArrayList<>();
-
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "gpt_id")
-    private GptRecipe gptRecipe;
+    @JoinColumn(name = "register_id")
+    private RegisterRecipe registerRecipe;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "recipe_id")
-    private DbRecipe dbRecipe;
+    private Recipe recipe;
 
+    @OneToMany(mappedBy = "review")
+    private List<Heart> hearts = new ArrayList<>();
 
     //== 연관관계 편의 메서드 ==//
-    public void changeUser(User user) {
+    public void addUser(User user) {
         this.user = user;
         user.getReviews().add(this);
     }
 
-    public void changeGptRecipe(GptRecipe gptRecipe) {
-        this.gptRecipe = gptRecipe;
-        gptRecipe.getReview().add(this);
+    public void addRegisterRecipe(RegisterRecipe registerRecipe) {
+        this.registerRecipe = registerRecipe;
+        registerRecipe.getReviews().add(this);
     }
 
-    public void changeDbRecipe(DbRecipe dbRecipe) {
-        this.dbRecipe = dbRecipe;
-        dbRecipe.getReview().add(this);
+    public void addRecipe(Recipe recipe) {
+        this.recipe = recipe;
+        recipe.getReview().add(this);
     }
-
-    public void addImageFile(ImageFile imageFile) {
-        imageFiles.add(imageFile);
-
-        if (imageFile.getReview() != this) {
-            imageFile.setReview(this);
-        }
-    }
-
-
     //==생성 메서드==//
 
-    public Review(String title, String comment, Long viewCount, Integer likeCount, User user) {
-        this.title = title;
+
+    public Review(String comment, Integer likeCount, Double ratingScore) {
         this.comment = comment;
-        this.viewCount = viewCount;
         this.likeCount = likeCount;
-        changeUser(user);
+        this.ratingScore = ratingScore;
+
     }
 
-    public static Review createReview(String title, String comment, Long viewCount, Integer likeCount, User user) {
-        return new Review(title, comment, viewCount, likeCount, user);
+    public static Review createRecipeReview(String comment, Integer likeCount, Double ratingScore, User user, Recipe recipe) {
+        Review review = new Review(comment, likeCount, ratingScore);
+        review.addUser(user);
+        review.addRecipe(recipe);
+        return review;
     }
 
+    public static Review createRegisterReview(String comment, Integer likeCount, Double ratingScore, User user, RegisterRecipe registerRecipe) {
+        Review review = new Review(comment, likeCount, ratingScore);
+        review.addUser(user);
+        review.addRegisterRecipe(registerRecipe);
+        return review;
+    }
 
     //==비지니스 로직==//
 
     public void updateReviewInfo(ReviewUpdateRequestDto reviewUpdateRequestDto) {
-        this.title = reviewUpdateRequestDto.getTitle();
         this.comment = reviewUpdateRequestDto.getComment();
     }
 
