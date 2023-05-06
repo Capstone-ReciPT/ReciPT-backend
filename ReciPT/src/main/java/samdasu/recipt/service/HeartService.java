@@ -3,17 +3,16 @@ package samdasu.recipt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.Heart.DbHeartDto;
-import samdasu.recipt.controller.dto.Heart.GptHeartDto;
-import samdasu.recipt.entity.DbRecipe;
-import samdasu.recipt.entity.GptRecipe;
-import samdasu.recipt.entity.Heart;
-import samdasu.recipt.entity.User;
+import samdasu.recipt.controller.dto.Heart.RecipeHeartDto;
+import samdasu.recipt.controller.dto.Heart.RegisterHeartDto;
+import samdasu.recipt.controller.dto.Heart.ReviewHeartDto;
+import samdasu.recipt.entity.*;
 import samdasu.recipt.exception.DuplicateResourceException;
 import samdasu.recipt.exception.ResourceNotFoundException;
-import samdasu.recipt.repository.DbRecipe.DbRecipeRepository;
-import samdasu.recipt.repository.GptRecipe.GptRecipeRepository;
 import samdasu.recipt.repository.HeartRepository;
+import samdasu.recipt.repository.Recipe.RecipeRepository;
+import samdasu.recipt.repository.Register.RegisterRecipeRepository;
+import samdasu.recipt.repository.Review.ReviewRepository;
 import samdasu.recipt.repository.UserRepository;
 
 @Service
@@ -21,81 +20,112 @@ import samdasu.recipt.repository.UserRepository;
 public class HeartService {
     private final HeartRepository heartRepository;
     private final UserRepository userRepository;
-    private final DbRecipeRepository dbRecipeRepository;
-    private final GptRecipeRepository gptRecipeRepository;
+    private final RecipeRepository recipeRepository;
+    private final RegisterRecipeRepository registerRecipeRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
-    public void insertDbHeart(DbHeartDto heartDto) {
-        User user = getUser(heartDto.getUserId());
-        DbRecipe dbRecipe = getDbRecipe(heartDto);
+    public void insertRecipeHeart(RecipeHeartDto heartDto) {
+        User user = findUserById(heartDto.getUserId());
+        Recipe recipe = findRecipeById(heartDto);
 
         //이미 좋아요되어있으면 에러 반환
-        if (heartRepository.findByUserAndDbRecipe(user, dbRecipe).isPresent()) {
+        if (heartRepository.findByUserAndRecipe(user, recipe).isPresent()) {
             //TODO 409에러로 변경
             throw new DuplicateResourceException("already exist data by user id :" + user.getUserId() + " ,"
-                    + "dbRecipe id : " + dbRecipe.getDbRecipeId());
+                    + "Recipe id : " + recipe.getRecipeId());
         }
 
-        Heart heart = Heart.createDbHeart(user, dbRecipe);
+        Heart heart = Heart.createRecipeHeart(user, recipe);
         heartRepository.save(heart);
-        dbRecipeRepository.addDbLikeCount(dbRecipe);
+        recipeRepository.addRecipeLikeCount(recipe);
     }
 
 
     @Transactional
-    public void deleteDbHeart(DbHeartDto dbHeartDto) {
-        User user = getUser(dbHeartDto.getUserId());
-        DbRecipe dbRecipe = getDbRecipe(dbHeartDto);
+    public void deleteRecipeHeart(RecipeHeartDto heartDto) {
+        User user = findUserById(heartDto.getUserId());
+        Recipe recipe = findRecipeById(heartDto);
 
-        Heart heart = heartRepository.findByUserAndDbRecipe(user, dbRecipe)
+        Heart heart = heartRepository.findByUserAndRecipe(user, recipe)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found heart"));
 
         heartRepository.delete(heart);
-        dbRecipeRepository.subDbLikeCount(dbRecipe);
+        recipeRepository.subRecipeLikeCount(recipe);
     }
 
     @Transactional
-    public void insertGptHeart(GptHeartDto heartDto) {
-        User user = getUser(heartDto.getUserId());
-        GptRecipe gptRecipe = getGptRecipe(heartDto);
+    public void insertRegisterRecipeHeart(RegisterHeartDto heartDto) {
+        User user = findUserById(heartDto.getUserId());
+        RegisterRecipe registerRecipe = findRegisterRecipeById(heartDto);
 
-        if (heartRepository.findByUserAndGptRecipe(user, gptRecipe).isPresent()) {
+        if (heartRepository.findByUserAndRegisterRecipe(user, registerRecipe).isPresent()) {
             throw new DuplicateResourceException("already exist data by user id :" + user.getUserId() + " ,"
-                    + "gptRecipe id : " + gptRecipe.getGptRecipeId());
+                    + "RegisterRecipe id : " + registerRecipe.getRegisterId());
         }
 
-        Heart heart = Heart.createGptHeart(user, gptRecipe);
+        Heart heart = Heart.createRegiterRecipeHeart(user, registerRecipe);
         heartRepository.save(heart);
-        gptRecipeRepository.addGptLikeCount(gptRecipe);
+        registerRecipeRepository.addRegisterRecipeLikeCount(registerRecipe);
     }
 
     @Transactional
-    public void deleteGptHeart(GptHeartDto gptHeartDto) {
-        User user = getUser(gptHeartDto.getUserId());
-        GptRecipe gptRecipe = getGptRecipe(gptHeartDto);
+    public void deleteRegisterRecipeHeart(RegisterHeartDto heartDto) {
+        User user = findUserById(heartDto.getUserId());
+        RegisterRecipe registerRecipe = findRegisterRecipeById(heartDto);
 
-        Heart heart = heartRepository.findByUserAndGptRecipe(user, gptRecipe)
+        Heart heart = heartRepository.findByUserAndRegisterRecipe(user, registerRecipe)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found heart"));
 
         heartRepository.delete(heart);
-        gptRecipeRepository.subGptLikeCount(gptRecipe);
+        registerRecipeRepository.subRegisterRecipeLikeCount(registerRecipe);
     }
 
-    private User getUser(Long heartDto) {
+    @Transactional
+    public void insertReviewHeart(ReviewHeartDto heartDto) {
+        User user = findUserById(heartDto.getUserId());
+        Review review = findReviewById(heartDto);
+
+        if (heartRepository.findByUserAndReview(user, review).isPresent()) {
+            throw new DuplicateResourceException("already exist data by user id :" + user.getUserId() + " ,"
+                    + "Review id : " + review.getReviewId());
+        }
+
+        Heart heart = Heart.createReviewHeart(user, review);
+        heartRepository.save(heart);
+        reviewRepository.addReviewLikeCount(review);
+    }
+
+    @Transactional
+    public void deleteReviewHeart(ReviewHeartDto heartDto) {
+        User user = findUserById(heartDto.getUserId());
+        Review review = findReviewById(heartDto);
+
+        Heart heart = heartRepository.findByUserAndReview(user, review)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not found heart"));
+
+        heartRepository.delete(heart);
+        reviewRepository.subReviewLikeCount(review);
+    }
+
+    private User findUserById(Long heartDto) {
         User user = userRepository.findById(heartDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
         return user;
     }
 
-    private DbRecipe getDbRecipe(DbHeartDto heartDto) {
-        DbRecipe dbRecipe = dbRecipeRepository.findById(heartDto.getDbRecipeId())
+    private Recipe findRecipeById(RecipeHeartDto recipeHeartDto) {
+        return recipeRepository.findById(recipeHeartDto.getRecipeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No DbRecipe Info"));
-        return dbRecipe;
     }
 
-    private GptRecipe getGptRecipe(GptHeartDto gptHeartDto) {
-        GptRecipe gptRecipe = gptRecipeRepository.findById(gptHeartDto.getGptRecipeId())
+    private RegisterRecipe findRegisterRecipeById(RegisterHeartDto registerHeartDto) {
+        return registerRecipeRepository.findById(registerHeartDto.getRegisterId())
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No GptRecipe Info"));
-        return gptRecipe;
+    }
+
+    private Review findReviewById(ReviewHeartDto reviewHeartDto) {
+        return reviewRepository.findById(reviewHeartDto.getReviewId())
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
     }
 }

@@ -5,16 +5,19 @@ import samdasu.recipt.entity.Review;
 import java.util.List;
 
 public interface ReviewCustomRepository {
-    void addReviewLikeCount(Review review); //음식 종류에 상관없이 좋아요
+    void addReviewLikeCount(Review review);
 
     void subReviewLikeCount(Review review);
 
-    void addReviewViewCount(Review review);
-
-    List<Review> Top10ReviewView();
-
-    List<Review> Top10ReviewLike();
-
     List<Review> findReviewByWriter(String username);//글쓴이 조회
+
+    List<Review> registerOrderByLike(Long selectRegisterId);
+
+    List<Review> registerOrderByCreateDate(Long selectRegisterId);
+
+    List<Review> recipeOrderByLike(Long selectRecipeId);
+
+    List<Review> recipeOrderByCreateDate(Long selectRecipeId);
+
 
 }

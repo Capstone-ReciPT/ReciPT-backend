@@ -1,72 +1,42 @@
 package samdasu.recipt.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import samdasu.recipt.controller.dto.ImageFile.ImageFileResponseDto;
+import samdasu.recipt.Image.ImageUtils;
 import samdasu.recipt.entity.ImageFile;
-import samdasu.recipt.repository.Review.ReviewRepository;
+import samdasu.recipt.repository.ImageFileRepository;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
+@Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ImageFileService {
-    /**
-     * 고민: review 저장시 image파일도 같이 @transactional 걸어야할거 같은데... reviewservice에서 저장시키는게 맞을까?
-     * 아님 controller에서 직접 저장시키고 review 따로 저장?
-     */
 
-    @Value("${file.dir}")
-    private String fileDir;
-    private final ReviewRepository reviewRepository;
+    private final ImageFileRepository imageFileRepository;
 
-    public String getFullPath(String filename) {
-        return filename + filename;
-    }
+    public String uploadImage(MultipartFile file) throws IOException {
+        log.info("upload file: {}", file);
+        ImageFile imageFile = imageFileRepository.save(
+                ImageFile.createImageFile(file.getOriginalFilename(), file.getContentType(), ImageUtils.compressImage(file.getBytes())));
 
-    /**
-     * 여러개 업로드
-     */
-    public List<ImageFile> saveFiles(ImageFileResponseDto imageFileDto, List<MultipartFile> multipartFiles) throws IOException {
-        List<ImageFile> storeFileResult = new ArrayList<>();
-        for (MultipartFile multipartFile : multipartFiles) {
-            if (!multipartFile.isEmpty()) {
-                storeFileResult.add(storeFile(multipartFile));
-            }
-        }
-        return storeFileResult;
-    }
-
-    public ImageFile storeFile(MultipartFile multipartFile) throws IOException {
-        if (multipartFile.isEmpty()) {
-            return null;
+        if (imageFile != null) {
+            log.info("imageFile: {}", imageFile);
+            return "file uploaded successfully : " + file.getOriginalFilename();
         }
 
-        String originalFilename = multipartFile.getOriginalFilename();
-        String storeFileName = createStoreFileName(originalFilename); //업로드 파일 명
-        multipartFile.transferTo(new File(getFullPath(storeFileName))); //파일 저장
-        return ImageFile.createImageFile(originalFilename, storeFileName);
+        return null;
     }
 
-    private String createStoreFileName(String originalFilename) {
-        String uuid = UUID.randomUUID().toString();
-        String ext = extractExt(originalFilename);
-        return uuid + "." + ext;
-    }
+    // 이미지 파일로 압축하기
+    public byte[] downloadImage(String fileName) {
+        ImageFile imageFile = imageFileRepository.findByFilename(fileName)
+                .orElseThrow(RuntimeException::new);
 
-    /**
-     * .txt / .png 인지 뒤에 확장자 뽑기
-     */
-    private String extractExt(String originalFilename) {
-        int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
+        log.info("download imageFile: {}", imageFile);
+
+        return ImageUtils.decompressImage(imageFile.getImageData());
     }
 }
