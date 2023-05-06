@@ -21,8 +21,4 @@ public class UserUpdateRequestDto {
         return new UserUpdateRequestDto(password);
     }
 
-    public UserUpdateRequestDto(UserResponseDto userResponseDto) {
-        this.password = userResponseDto.getPassword();
-    }
-
 }

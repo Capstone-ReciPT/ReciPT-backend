@@ -25,33 +25,35 @@ public class User extends BaseTimeEntity {
     private String loginId;
     @Column(nullable = false, length = 255)
     private String password;
+    @Column(nullable = false)
+    private Integer age;
 
+    @OneToMany(mappedBy = "user")
+    private List<Recipe> recipes = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<UserAllergy> userAllergies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<RecentSearch> recentSearches = new ArrayList<>();
-
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<RegisterRecipe> registerRecipes = new ArrayList<>();
 
+
+    //== 연관관계 편의 메서드 ==//
+
+
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
 
 
-    public User(String username, String loginId, String password) {
+    public User(String username, String loginId, String password, Integer age) {
         this.username = username;
         this.loginId = loginId;
         this.password = password;
+        this.age = age;
     }
 
-    public static User createUser(String username, String loginId, String password) {
-        return new User(username, loginId, password);
+    public static User createUser(String username, String loginId, String password, Integer age) {
+        return new User(username, loginId, password, age);
     }
 
     //==비지니스 로직==//

@@ -25,50 +25,71 @@ public class Heart extends BaseTimeEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "recipe_id")
-    private DbRecipe dbRecipe;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "gpt_id")
-    private GptRecipe gptRecipe;
+    private Recipe recipe;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "register_id")
     private RegisterRecipe registerRecipe;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "review_id")
+    private Review review;
+
     //== 연관관계 편의 메서드 ==//
-    public void changeUser(User user) {
+    public void addUser(User user) {
         this.user = user;
         user.getHearts().add(this);
     }
 
-    public void changeDbRecipe(DbRecipe dbRecipe) {
-        this.dbRecipe = dbRecipe;
-        dbRecipe.getHearts().add(this);
+    public void addRecipe(Recipe recipe) {
+        this.recipe = recipe;
+        recipe.getHearts().add(this);
     }
 
-    public void changeGptRecipe(GptRecipe gptRecipe) {
-        this.gptRecipe = gptRecipe;
-        gptRecipe.getHearts().add(this);
+    public void addRegisterRecipe(RegisterRecipe registerRecipe) {
+        this.registerRecipe = registerRecipe;
+        registerRecipe.getHearts().add(this);
+    }
+
+    public void addReview(Review review) {
+        this.review = review;
+        review.getHearts().add(this);
     }
 
     //==생성 메서드==//
-
-    public Heart(User user, DbRecipe dbRecipe) {
-        changeUser(user);
-        changeDbRecipe(dbRecipe);
+    public Heart(User user, Recipe recipe) {
+        this.user = user;
+        this.recipe = recipe;
     }
 
-    public Heart(User user, GptRecipe gptRecipe) {
-        changeUser(user);
-        changeGptRecipe(gptRecipe);
-    }
-    
-
-    public static Heart createDbHeart(User user, DbRecipe dbRecipe) {
-        return new Heart(user, dbRecipe);
+    public static Heart createRecipeHeart(User user, Recipe recipe) {
+        Heart heart = new Heart();
+        heart.addUser(user);
+        heart.addRecipe(recipe);
+        return heart;
     }
 
-    public static Heart createGptHeart(User user, GptRecipe gptRecipe) {
-        return new Heart(user, gptRecipe);
+    public Heart(User user, RegisterRecipe registerRecipe) {
+        this.user = user;
+        this.registerRecipe = registerRecipe;
+    }
+
+    public static Heart createRegiterRecipeHeart(User user, RegisterRecipe registerRecipe) {
+        Heart heart = new Heart();
+        heart.addUser(user);
+        heart.addRegisterRecipe(registerRecipe);
+        return heart;
+    }
+
+    public Heart(User user, Review review) {
+        this.user = user;
+        this.review = review;
+    }
+
+    public static Heart createReviewHeart(User user, Review review) {
+        Heart heart = new Heart();
+        heart.addUser(user);
+        heart.addReview(review);
+        return heart;
     }
 }

@@ -17,29 +17,35 @@ public class ImageFile extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "image_id")
     private Long imageId;
-    private String originalFilename; //원본 파일 명(유저가 업로드한 이미지의 원본 파일명)
-    private String storeFilename; //서버에 저장된 파일명
+    private String filename;
+    private String type;
+
+    @Lob
+    @Column(name = "imagedata", length = 1000)
+    private byte[] imageData;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+    @JoinColumn(name = "register_id")
+    private RegisterRecipe registerRecipe;
 
-    public void setReview(Review review) {
-        this.review = review;
+    //== 연관관계 편의 메서드 ==//
+
+    public void setRegisterRecipe(RegisterRecipe registerRecipe) {
+        this.registerRecipe = registerRecipe;
     }
+
 
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
-    public ImageFile(String originalFilename, String storeFilename) {
-        this.originalFilename = originalFilename;
-        this.storeFilename = storeFilename;
+    public ImageFile(String filename, String type, byte[] imageData) {
+        this.filename = filename;
+        this.type = type;
+        this.imageData = imageData;
     }
 
-    public static ImageFile createImageFile(String originalFilename, String storeFilename) {
-        return new ImageFile(originalFilename, storeFilename);
+    public static ImageFile createImageFile(String filename, String type, byte[] imageData) {
+        return new ImageFile(filename, type, imageData);
     }
-
 
     //==비지니스 로직==//
-
-
+    
 }

@@ -46,6 +46,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     testImplementation 'org.springframework.security:spring-security-test'
 
+    //    파일 처리 관련
+    implementation 'commons-io:commons-io:2.6'
 
     // queryDSL 설정
     implementation "com.querydsl:querydsl-jpa"
