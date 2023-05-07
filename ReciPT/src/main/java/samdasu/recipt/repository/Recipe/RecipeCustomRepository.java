@@ -11,12 +11,7 @@ public interface RecipeCustomRepository {
 
     void addRecipeViewCount(Recipe recipe); //db 레시피 안에서 좋아요
 
-    List<Recipe> findRecipeByContain(String searchingFoodName);
+    List<Recipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName);
 
-    List<Recipe> searchingRecipeLikeByInputNum(int inputNum);
-
-    List<Recipe> searchingRecipeViewCountByInputNum(int inputNum);
-
-    List<Recipe> dynamicSearching();
 //    List<Tuple> JoinTable();
 }

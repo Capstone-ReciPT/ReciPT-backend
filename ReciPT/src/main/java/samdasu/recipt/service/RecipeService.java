@@ -37,25 +37,8 @@ public class RecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No Recipe Info"));
     }
 
-    /**
-     * 음식명 포함 조회(like '%foodName%')
-     */
-    public List<Recipe> findRecipeByContain(String searchingFoodName) {
-        return recipeRepository.findRecipeByContain(searchingFoodName);
-    }
-
-    /**
-     * 사용자 입력 값 보다 높은 좋아요 찾기
-     */
-    public List<Recipe> findSearchingRecipeLikeByInputNum(int inputNum) {
-        return recipeRepository.searchingRecipeLikeByInputNum(inputNum);
-    }
-
-    /**
-     * 사용자 입력 값 보다 높은 조회수 찾기
-     */
-    public List<Recipe> findSearchingRecipeViewCountByInputNum(int inputNum) {
-        return recipeRepository.searchingRecipeViewCountByInputNum(inputNum);
+    public List<Recipe> searchDynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
+        return recipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
     }
 
     @Transactional

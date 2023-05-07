@@ -1,5 +1,6 @@
 package samdasu.recipt.repository.Recipe;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -39,38 +40,32 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
     @Override
-    public List<Recipe> findRecipeByContain(String searchingFoodName) {
+    public List<Recipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
         return queryFactory
                 .selectFrom(recipe)
-                .where(recipe.foodName.contains(searchingFoodName))
+                .where(searchByLikeGoe(likeCond), searchByViewGoe(viewCond), searchByFoodNameContain(searchingFoodName))
                 .fetch();
     }
 
-    /**
-     * 좋아요 사용자 입력 값 이상 조회
-     */
-    @Override
-    public List<Recipe> searchingRecipeLikeByInputNum(int inputNum) {
-        return queryFactory
-                .selectFrom(recipe)
-                .where(recipe.likeCount.goe(inputNum))
-                .fetch();
+    private BooleanExpression searchByFoodNameContain(String searchingFoodName) {
+        if (searchingFoodName == null) {
+            return null;
+        }
+        return recipe.foodName.contains(searchingFoodName);
     }
 
-    /**
-     * 조회수 사용자 입력 값 이상 조회
-     */
-    @Override
-    public List<Recipe> searchingRecipeViewCountByInputNum(int inputNum) {
-        return queryFactory
-                .selectFrom(recipe)
-                .where(recipe.viewCount.goe(inputNum))
-                .fetch();
+    private BooleanExpression searchByLikeGoe(Integer likeCond) {
+        if (likeCond == null) {
+            return null;
+        }
+        return recipe.likeCount.goe(likeCond);
     }
 
-    @Override
-    public List<Recipe> dynamicSearching() {
-        return null;
+    private BooleanExpression searchByViewGoe(Integer viewCond) {
+        if (viewCond == null) {
+            return null;
+        }
+        return recipe.viewCount.goe(viewCond);
     }
 
 
