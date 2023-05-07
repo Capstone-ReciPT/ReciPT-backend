@@ -14,29 +14,31 @@ spring:
         format_sql: true
         use_sql_comments: true #실행되는 JPQL 보기
 
-  #server:
-  #  address: localhost
-  #  port: 3306
-  #spring:
-  #  datasource:
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://localhost:3306/ReciPT?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
-  #    username: root
-  #    password: 1234
-  #
-  #  jpa:
-  #    database: mysql
-  #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-  #    generate-ddl: true
-  #    show-sql: true
+#server:
+#  address: localhost
+#  port: 3307
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/ReciPT?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    username: root
+#    password: 1234
+#
+#  jpa:
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    generate-ddl: true
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: create
 
-  data:
-    web:
-      pageable:
-        default-page-size: 10 #기본 page 사이즈(Web 확장)
-        max-page-size: 2000 #최대 page 사이즈(Web 확장)
+data:
+  web:
+    pageable:
+      default-page-size: 10 #기본 page 사이즈(Web 확장)
+      max-page-size: 2000 #최대 page 사이즈(Web 확장)
 
 logging.level:
   org.hibernate.SQL: debug
-  #org.hibernate.type: trace      # 파라미터까지 볼 수 있음
+# org.hibernate.type: trace      # 파라미터까지 볼 수 있음
 
