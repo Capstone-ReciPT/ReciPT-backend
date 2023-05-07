@@ -18,5 +18,9 @@ public class ReviewRequestDto {
         this.comment = comment;
         this.inputRatingScore = inputRatingScore;
     }
-    
+
+    public static ReviewRequestDto createReviewRequestDto(String comment, Double inputRatingScore) {
+        return new ReviewRequestDto(comment, inputRatingScore);
+    }
+
 }

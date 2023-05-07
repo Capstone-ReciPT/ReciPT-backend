@@ -40,17 +40,17 @@ public class ReviewService {
     }
 
     @Transactional
-    public Long saveRegisterRecipeReview(Long userId, Long registerId, ReviewRequestDto reviewRequestDto) {
+    public Long saveRegisterRecipeReview(Long userId, Long registerRecipeId, ReviewRequestDto reviewRequestDto) {
         //엔티티 조회
         User user = findUserById(userId);
-        RegisterRecipe recipe = registerRecipeRepository.findById(registerId)
+        RegisterRecipe registerRecipe = registerRecipeRepository.findById(registerRecipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
 
-        Review review = Review.createRegisterReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, recipe);
+        Review review = Review.createRegisterReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, registerRecipe);
 
         return reviewRepository.save(review).getReviewId();
     }
-
+    
     @Transactional
     public Long update(Long reviewId, ReviewUpdateRequestDto reviewUpdateRequestDto) {
         Review review = findById(reviewId);
@@ -75,7 +75,7 @@ public class ReviewService {
     public List<Review> recipeOrderByLike(Long selectRecipeId) {
         return reviewRepository.recipeOrderByLike(selectRecipeId);
     }
-    
+
 
     /**
      * 최신 순

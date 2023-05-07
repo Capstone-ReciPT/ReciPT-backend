@@ -21,7 +21,7 @@ public class RegisterHeartDto {
         this.registerId = registerId;
     }
 
-    public static RegisterHeartDto createDbHeartDto(Long userId, Long registerId) {
+    public static RegisterHeartDto createRegisterHeartDto(Long userId, Long registerId) {
         return new RegisterHeartDto(userId, registerId);
     }
 

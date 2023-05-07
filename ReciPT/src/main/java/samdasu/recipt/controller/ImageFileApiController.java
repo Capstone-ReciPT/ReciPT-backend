@@ -12,14 +12,14 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/image")
+@RequestMapping("/api/image")
 public class ImageFileApiController {
 
     private final ImageFileService imageFileService;
 
     // 업로드
     @PostMapping
-    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadImage(@RequestParam(value = "image") MultipartFile file) throws IOException {
         String uploadImage = imageFileService.uploadImage(file);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);

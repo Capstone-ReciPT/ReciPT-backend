@@ -22,7 +22,7 @@ public class RegisterRecipe extends BaseTimeEntity {
     @Column(nullable = false)
     private String foodName;
     @Lob
-    @Column(nullable = false, length = 1000)
+    @Column(length = 1000)
     private byte[] thumbnailImage;
     @Column(nullable = false, length = 100)
     private String title;
@@ -90,7 +90,7 @@ public class RegisterRecipe extends BaseTimeEntity {
         this.ratingPeople = ratingPeople;
     }
 
-    public static RegisterRecipe createRegisterRecipe(String foodName, byte[] thumbnailImage, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, User user, Gpt gpt, List<ImageFile> imageFiles) {
+    public static RegisterRecipe createRegisterRecipe(String foodName, byte[] thumbnailImage, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, User user, Gpt gpt, ImageFile... imageFiles) {
         RegisterRecipe registerRecipe = new RegisterRecipe(foodName, thumbnailImage, title, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople);
         registerRecipe.addUser(user);
         registerRecipe.addGpt(gpt);
@@ -109,7 +109,7 @@ public class RegisterRecipe extends BaseTimeEntity {
     /**
      * DB 평점 계산
      */
-    public Double calcRatingScore(RegisterRecipe recipe) {
-        return Math.round(recipe.getRatingScore() / recipe.getRatingPeople() * 100) / 100.0;
+    public void calcRatingScore(RegisterRecipe recipe) {
+        recipe.ratingScore = Math.round(recipe.getRatingScore() / recipe.getRatingPeople() * 100) / 100.0;
     }
 }

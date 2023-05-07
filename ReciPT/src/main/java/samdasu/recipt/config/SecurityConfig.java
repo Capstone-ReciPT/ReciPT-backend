@@ -45,13 +45,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/signup").permitAll()
-                .antMatchers("/api/edit").authenticated()
+                .antMatchers("/api/image/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin().disable()
         ;
-        
+
     }
 
 
