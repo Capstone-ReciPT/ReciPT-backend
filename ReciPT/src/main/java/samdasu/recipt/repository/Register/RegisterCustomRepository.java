@@ -16,12 +16,15 @@ public interface RegisterCustomRepository {
     List<RegisterRecipe> SearchingRegisterRecipeLikeByInputNum(int inputNum);
 
     List<RegisterRecipe> SearchingRegisterRecipeViewCountByInputNum(int inputNum);
-    
 
-//    List<RegisterRecipe> Top10registerRecipeLike();
-//
-//    List<RegisterRecipe> Top10registerRecipeView();
-//
+
+    List<RegisterRecipe> Top10RegisterRecipeLike();
+
+    List<RegisterRecipe> Top10RegisterRecipeView();
+
+    List<RegisterRecipe> Top10RegisterRecipeRatingScore();
+
+
 //    RegisterRecipe Top1registerRecipeLike();
 //
 //    RegisterRecipe Top1registerRecipeViewCount();

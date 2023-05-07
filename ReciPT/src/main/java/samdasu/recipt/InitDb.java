@@ -36,7 +36,7 @@ public class InitDb {
 
             Recipe recipe1 = Recipe.createRecipe("된장 부대찌개", "다시마 1g, 두부 10g, 떡국 떡 10g, 스팸(마일드) 10g, 다진 마늘 5g, 무 20g, 김치 15g, 소시지 10g(1/2개), 우민찌 5g(1작은술), 양파 5g, 저염된장 15g(1큰술), 베이컨 5g, 대파 5g, 청양고추 5g, 홍고추 1g", "찌개", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00138_1.png",
                     "1. 김치, 베이컨, 스팸, 소시지, 양파, 두부, 무는 두께 0.5cm로 썬다. 2. 다시마와 물을 끓여 다시마물을 만든다. 3. 냄비에 소시지, 베이컨, 두부, 스팸, 무, 우민찌, 김치, 다시마물 300g을 넣어 끓인 후 저염된장, 양파, 대파, 다진 마늘, 떡국 떡을 넣고 재료가 다 익으면 홍고추와 청양고추를 넣어 완성한다.", "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_3.png",
-                    0L, 0, 2.0, 0);
+                    0L, 10, 2.0, 0);
             em.persist(recipe1);
 
             Recipe recipe2 = Recipe.createRecipe("오렌지 당근 주스", "당근 100g(1/2개), 오렌지 100g(1/2개)", "주스", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00108_1.png",
@@ -84,7 +84,7 @@ public class InitDb {
             em.persist(user);
 
             RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
-                    0L, 0, 0.0, 0, user, gpt, imageFile);
+                    0L, 55, 0.0, 0, user, gpt, imageFile);
             em.persist(registerRecipe);
 
             Review review = Review.createRegisterReview("만두 후기", 0, 4.0, user, registerRecipe);
@@ -103,7 +103,7 @@ public class InitDb {
 
 
             RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "버섯을 먹어보아요", "고기랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
-                    0L, 0, 0.0, 0, user, gpt, imageFile);
+                    0L, 35, 0.0, 0, user, gpt, imageFile);
             em.persist(registerRecipe);
 
             Review review = Review.createRegisterReview("버섯구이 후기", 0, 5.0, user, registerRecipe);

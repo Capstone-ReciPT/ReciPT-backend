@@ -9,8 +9,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,6 +42,8 @@ public class Recipe extends BaseTimeEntity {
     @OneToMany(mappedBy = "recipe")
     private List<Heart> hearts = new ArrayList<>();
 
+    @OneToOne(mappedBy = "recipe")
+    private RegisterRecipe registerRecipes;
 
     //==생성 메서드==/
     public Recipe(String foodName, String ingredient, String category, String thumbnailImage, String context, String image, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
@@ -60,8 +60,7 @@ public class Recipe extends BaseTimeEntity {
     }
 
     public static Recipe createRecipe(String foodName, String ingredient, String category, String thumbnailImage, String context, String image, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
-        Recipe recipe = new Recipe(foodName, ingredient, category, thumbnailImage, context, image, viewCount, likeCount, ratingScore, ratingPeople);
-        return recipe;
+        return new Recipe(foodName, ingredient, category, thumbnailImage, context, image, viewCount, likeCount, ratingScore, ratingPeople);
     }
 
     //==비지니스 로직==//

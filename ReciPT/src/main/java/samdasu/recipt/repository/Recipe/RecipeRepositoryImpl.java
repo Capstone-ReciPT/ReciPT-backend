@@ -50,7 +50,7 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
      * 좋아요 사용자 입력 값 이상 조회
      */
     @Override
-    public List<Recipe> SearchingRecipeLikeByInputNum(int inputNum) {
+    public List<Recipe> searchingRecipeLikeByInputNum(int inputNum) {
         return queryFactory
                 .selectFrom(recipe)
                 .where(recipe.likeCount.goe(inputNum))
@@ -61,73 +61,26 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
      * 조회수 사용자 입력 값 이상 조회
      */
     @Override
-    public List<Recipe> SearchingRecipeViewCountByInputNum(int inputNum) {
+    public List<Recipe> searchingRecipeViewCountByInputNum(int inputNum) {
         return queryFactory
                 .selectFrom(recipe)
                 .where(recipe.viewCount.goe(inputNum))
                 .fetch();
     }
 
+    @Override
+    public List<Recipe> dynamicSearching() {
+        return null;
+    }
+
+
 //    @Override
-//    public List<DbRecipe> Top10DbRecipeView() {
-//        return queryFactory
-//                .selectFrom(dbRecipe)
-//                .orderBy(dbRecipe.dbViewCount.desc())
-//                .limit(10)
-//                .fetch();
-//    }
-//
-//    @Override
-//    public List<DbRecipe> Top10DbRecipeLike() {
-//        return queryFactory
-//                .selectFrom(dbRecipe)
-//                .orderBy(dbRecipe.dbLikeCount.desc())
-//                .limit(10)
-//                .fetch();
-//    }
-//
-//    /**
-//     * Db 좋아요 1위 조회
-//     */
-//    @Override
-//    public DbRecipe Top1DbRecipeLike() {
-//        return queryFactory
-//                .selectFrom(dbRecipe)
-//                .orderBy(dbRecipe.dbLikeCount.desc())
-//                .limit(1)
-//                .fetchOne();
-//    }
-//
-//    /**
-//     * Db 조회 수 1위 조회
-//     */
-//    @Override
-//    public DbRecipe Top1DbRecipeViewCount() {
-//        return queryFactory
-//                .selectFrom(dbRecipe)
-//                .orderBy(dbRecipe.dbViewCount.desc())
-//                .limit(1)
-//                .fetchOne();
-//    }
-//
-//    /**
-//     * DB 평점 1위
-//     */
-//    @Override
-//    public DbRecipe Top1DbRecipeRatingScore() {
-//        return queryFactory
-//                .selectFrom(dbRecipe)
-//                .orderBy(dbRecipe.dbRatingScore.desc())
-//                .limit(1)
-//                .fetchOne();
-//    }
-//
-//    @Override
-//    public List<Tuple> Top10AllRecipeLike() {
+//    public List<Tuple> JoinTable() {
 //        List<Tuple> fetch = queryFactory
-//                .select(recentSearch.gptRecipe, dbRecipe)
-//                .from(recentSearch)
-//                .join(recentSearch.dbRecipe, dbRecipe)
+//                .select(registerRecipe.foodName, registerRecipe.ingredient, registerRecipe.category, registerRecipe.likeCount.as("total_like"),
+//                        recipe.foodName, recipe.ingredient, recipe.category, recipe.likeCount.as("total_like"))
+//                .from(recipe, registerRecipe)
+//                .orderBy(recipe.likeCount.desc())
 //                .fetch();
 //        return fetch;
 //    }

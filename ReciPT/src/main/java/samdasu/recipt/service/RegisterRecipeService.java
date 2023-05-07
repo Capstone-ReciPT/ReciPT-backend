@@ -102,38 +102,26 @@ public class RegisterRecipeService {
         return registerRecipeRepository.findById(registerRecipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No RegisterRecipe Info"));
     }
-//    /**
-//     * 조회 수 탑 10 조회
-//     */
-//    public List<GptRecipe> findTop10ViewCount() {
-//        return gpt.Top10GptRecipeView();
-//    }
-//
-//    /**
-//     * 좋아요 탑 10 조회
-//     */
-//    public List<GptRecipe> findTop10LikeCount() {
-//        return gpt.Top10GptRecipeLike();
-//    }
-//
-//    /**
-//     * 좋아요 탑 1
-//     */
-//    public GptRecipe findTop1GptRecipeLike() {
-//        return gpt.Top1GptRecipeLike();
-//    }
-//
-//    /**
-//     * 조회수 탑 1
-//     */
-//    public GptRecipe findTop1GptRecipeViewCount() {
-//        return gpt.Top1GptRecipeViewCount();
-//    }
-//
-//    /**
-//     * 평점 탑 1
-//     */
-//    public GptRecipe findTop1GptRecipeRatingScore() {
-//        return gpt.Top1GptRecipeRatingScore();
-//    }
+
+    /**
+     * 좋아요 탑 10 조회
+     */
+    public List<RegisterRecipe> findTop10RegisterRecipeLike() {
+        return registerRecipeRepository.Top10RegisterRecipeLike();
+    }
+
+    /**
+     * 조회 수 탑 10 조회
+     */
+    public List<RegisterRecipe> findTop10RegisterRecipeView() {
+        return registerRecipeRepository.Top10RegisterRecipeView();
+    }
+
+    /**
+     * 평점 순 탑 10 조회
+     */
+    public List<RegisterRecipe> findTop10RegisterRecipeRatingScore() {
+        return registerRecipeRepository.Top10RegisterRecipeRatingScore();
+    }
+
 }
