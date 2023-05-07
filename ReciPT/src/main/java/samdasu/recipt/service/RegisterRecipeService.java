@@ -67,25 +67,8 @@ public class RegisterRecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No RegisterRecipe Info"));
     }
 
-    /**
-     * 음식명 포함 조회(like '%foodName%')
-     */
-    public List<RegisterRecipe> findRegisterRecipeByContain(String searchingFoodName) {
-        return registerRecipeRepository.findRegisterRecipeByContain(searchingFoodName);
-    }
-
-    /**
-     * 사용자 입력 값 보다 높은 좋아요 찾기
-     */
-    public List<RegisterRecipe> findSearchingRegisterRecipeLikeByInputNum(int inputNum) {
-        return registerRecipeRepository.SearchingRegisterRecipeLikeByInputNum(inputNum);
-    }
-
-    /**
-     * 사용자 입력 값 보다 높은 조회수 찾기
-     */
-    public List<RegisterRecipe> findSearchingRegisterRecipeViewCountByInputNum(int inputNum) {
-        return registerRecipeRepository.SearchingRegisterRecipeViewCountByInputNum(inputNum);
+    public List<RegisterRecipe> searchDynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
+        return registerRecipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
     }
 
     @Transactional

@@ -83,11 +83,11 @@ dependencies {
 
 
 //    STT & TTS
-    implementation platform('com.google.cloud:libraries-bom:26.1.4')
-    implementation 'com.google.cloud:google-cloud-speech'
-
-    implementation platform('com.google.cloud:libraries-bom:26.1.4')
-    implementation 'com.google.cloud:google-cloud-texttospeech'
+//    implementation platform('com.google.cloud:libraries-bom:26.1.4')
+//    implementation 'com.google.cloud:google-cloud-speech'
+//
+//    implementation platform('com.google.cloud:libraries-bom:26.1.4')
+//    implementation 'com.google.cloud:google-cloud-texttospeech'
 
 //    형태소 분석
     implementation 'com.github.shin285:KOMORAN:3.3.4'

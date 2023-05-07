@@ -1,7 +1,6 @@
 package samdasu.recipt.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,27 +75,16 @@ class RegisterRecipeServiceTest {
         assertThat(registerRecipe.getFoodName()).isEqualTo("만두");
     }
 
-    @Test
-    public void 레시피_음식이름포함_조회성공() throws Exception {
-        //given
-
-        //when
-        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.findRegisterRecipeByContain("만두");
-
-        //then
-        Assertions.assertThat(findRegisterRecipes.size()).isEqualTo(1);
-    }
-
-    @Test
-    public void 레시피_음식이름포함_조회실패() throws Exception {
-        //given
-
-        //when
-        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.findRegisterRecipeByContain("고기");
-
-        //then
-        Assertions.assertThat(findRegisterRecipes.size()).isEqualTo(0);
-    }
+//    @Test
+//    public void 레시피_음식이름포함_조회성공() throws Exception {
+//        //given
+//
+//        //when
+//        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.findRegisterRecipeByContain("만두");
+//
+//        //then
+//        Assertions.assertThat(findRegisterRecipes.size()).isEqualTo(1);
+//    }
 
 
     @Test
