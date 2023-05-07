@@ -1,5 +1,6 @@
 package samdasu.recipt.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 @SpringBootTest
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -107,6 +109,47 @@ class RegisterRecipeServiceTest {
         //then
         assertThat(registerRecipes.size()).isEqualTo(2);
     }
+
+    @Test
+    public void 레시피_좋아요_Top10() throws Exception {
+        //given
+
+        //when
+        List<RegisterRecipe> top10RegisterRecipeLike = registerRecipeService.findTop10RegisterRecipeLike();
+
+        //then
+        for (RegisterRecipe registerRecipe : top10RegisterRecipeLike) {
+            log.info("registerRecipe.getLikeCount() = " + registerRecipe.getLikeCount());
+        }
+    }
+
+    @Test
+    public void 레시피_조회수_Top10() throws Exception {
+        //given
+
+        //when
+        List<RegisterRecipe> top10RegisterRecipeView = registerRecipeService.findTop10RegisterRecipeView();
+
+        //then
+        for (RegisterRecipe registerRecipe : top10RegisterRecipeView) {
+            log.info("registerRecipe.getLikeCount() = " + registerRecipe.getLikeCount());
+        }
+    }
+
+
+    @Test
+    public void 레시피_평점순_Top10() throws Exception {
+        //given
+
+        //when
+        List<RegisterRecipe> top10RegisterRecipeRatingScore = registerRecipeService.findTop10RegisterRecipeRatingScore();
+
+        //then
+        for (RegisterRecipe registerRecipe : top10RegisterRecipeRatingScore) {
+            log.info("registerRecipe.getLikeCount() = " + registerRecipe.getLikeCount());
+        }
+    }
+
 
     private ImageFile createImageFile() {
         ImageFile imageFile = ImageFile.createImageFile("만두 사진1", "jpg", null);

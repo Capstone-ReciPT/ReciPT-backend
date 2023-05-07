@@ -45,6 +45,7 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
                 .where(registerRecipe.foodName.contains(searchingFoodName))
                 .fetch();
     }
+    
 
     /**
      * 좋아요 사용자 입력 값 이상 조회
@@ -69,57 +70,30 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     }
 
 
-//    @Override
-//    public List<GptRecipe> Top10GptRecipeView() {
-//        return queryFactory
-//                .selectFrom(QGptRecipe.gptRecipe)
-//                .orderBy(QGptRecipe.gptRecipe.gptViewCount.desc())
-//                .limit(10)
-//                .fetch();
-//    }
-//
-//    @Override
-//    public List<GptRecipe> Top10GptRecipeLike() {
-//        return queryFactory
-//                .selectFrom(QGptRecipe.gptRecipe)
-//                .orderBy(QGptRecipe.gptRecipe.gptLikeCount.desc())
-//                .limit(10)
-//                .fetch();
-//    }
-//
-//    /**
-//     * Gpt 좋아요 1위 조회
-//     */
-//    @Override
-//    public GptRecipe Top1GptRecipeLike() {
-//        return queryFactory
-//                .selectFrom(gptRecipe)
-//                .orderBy(gptRecipe.gptLikeCount.desc())
-//                .limit(1)
-//                .fetchOne();
-//    }
-//
-//    /**
-//     * Gpt 조회 수 1위 조회
-//     */
-//    @Override
-//    public GptRecipe Top1GptRecipeViewCount() {
-//        return queryFactory
-//                .selectFrom(gptRecipe)
-//                .orderBy(gptRecipe.gptViewCount.desc())
-//                .limit(1)
-//                .fetchOne();
-//    }
-//
-//    /**
-//     * Gpt 평점 1위
-//     */
-//    @Override
-//    public GptRecipe Top1GptRecipeRatingScore() {
-//        return queryFactory
-//                .selectFrom(gptRecipe)
-//                .orderBy(gptRecipe.gptRatingScore.desc())
-//                .limit(1)
-//                .fetchOne();
-//    }
+    @Override
+    public List<RegisterRecipe> Top10RegisterRecipeLike() {
+        return queryFactory
+                .selectFrom(registerRecipe)
+                .orderBy(registerRecipe.likeCount.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<RegisterRecipe> Top10RegisterRecipeView() {
+        return queryFactory
+                .selectFrom(registerRecipe)
+                .orderBy(registerRecipe.viewCount.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<RegisterRecipe> Top10RegisterRecipeRatingScore() {
+        return queryFactory
+                .selectFrom(registerRecipe)
+                .orderBy(registerRecipe.ratingScore.desc())
+                .limit(10)
+                .fetch();
+    }
 }

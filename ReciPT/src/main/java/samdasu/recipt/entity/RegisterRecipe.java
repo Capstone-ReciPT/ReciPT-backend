@@ -47,7 +47,9 @@ public class RegisterRecipe extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "gpt_id")
     private Gpt gpt;
-
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
     @OneToMany(mappedBy = "registerRecipe")
     private List<Review> reviews = new ArrayList<>();
 

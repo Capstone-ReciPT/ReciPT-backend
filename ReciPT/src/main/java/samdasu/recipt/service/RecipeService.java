@@ -48,14 +48,14 @@ public class RecipeService {
      * 사용자 입력 값 보다 높은 좋아요 찾기
      */
     public List<Recipe> findSearchingRecipeLikeByInputNum(int inputNum) {
-        return recipeRepository.SearchingRecipeLikeByInputNum(inputNum);
+        return recipeRepository.searchingRecipeLikeByInputNum(inputNum);
     }
 
     /**
      * 사용자 입력 값 보다 높은 조회수 찾기
      */
     public List<Recipe> findSearchingRecipeViewCountByInputNum(int inputNum) {
-        return recipeRepository.SearchingRecipeViewCountByInputNum(inputNum);
+        return recipeRepository.searchingRecipeViewCountByInputNum(inputNum);
     }
 
     @Transactional
@@ -72,41 +72,5 @@ public class RecipeService {
         return recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
     }
-
-
-//    /**
-//     * 조회 수 탑 10 조회
-//     */
-//    public List<DbRecipe> findTop10ViewCount() {
-//        return dbRecipeRepository.Top10DbRecipeView();
-//    }
-//
-//    /**
-//     * 좋아요 탑 10 조회
-//     */
-//    public List<DbRecipe> findTop10LikeCount() {
-//        return dbRecipeRepository.Top10DbRecipeLike();
-//    }
-//
-//    /**
-//     * 좋아요 탑 1
-//     */
-//    public DbRecipe findTop1DbRecipeLike() {
-//        return dbRecipeRepository.Top1DbRecipeLike();
-//    }
-//
-//    /**
-//     * 조회수 탑 1
-//     */
-//    public DbRecipe findTop1DbRecipeViewCount() {
-//        return dbRecipeRepository.Top1DbRecipeViewCount();
-//    }
-//
-//    /**
-//     * 평점 탑 1
-//     */
-//    public DbRecipe findTop1DbRecipeRatingScore() {
-//        return dbRecipeRepository.Top1DbRecipeRatingScore();
-//    }
 
 }

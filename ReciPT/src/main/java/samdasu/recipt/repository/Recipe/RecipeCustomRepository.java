@@ -13,21 +13,10 @@ public interface RecipeCustomRepository {
 
     List<Recipe> findRecipeByContain(String searchingFoodName);
 
-    List<Recipe> SearchingRecipeLikeByInputNum(int inputNum);
+    List<Recipe> searchingRecipeLikeByInputNum(int inputNum);
 
-    List<Recipe> SearchingRecipeViewCountByInputNum(int inputNum);
+    List<Recipe> searchingRecipeViewCountByInputNum(int inputNum);
 
-
-//
-//    List<DbRecipe> Top10DbRecipeView();
-//
-//    List<DbRecipe> Top10DbRecipeLike();
-//
-//    DbRecipe Top1DbRecipeLike();
-//
-//    DbRecipe Top1DbRecipeViewCount();
-//
-//    DbRecipe Top1DbRecipeRatingScore();
-//
-//    List<Tuple> Top10AllRecipeLike();
+    List<Recipe> dynamicSearching();
+//    List<Tuple> JoinTable();
 }

@@ -37,7 +37,7 @@ class ReviewServiceTest {
     public void 리뷰_좋아요_증가() throws Exception {
         //given
         User user = createUser();
-        Recipe recipe = createRecipe(user);
+        Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
         //when
@@ -51,7 +51,7 @@ class ReviewServiceTest {
     public void 리뷰_좋아요_감소() throws Exception {
         //given
         User user = createUser();
-        Recipe recipe = createRecipe(user);
+        Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
         //when
@@ -68,7 +68,7 @@ class ReviewServiceTest {
     public void 리뷰_저장() throws Exception {
         //given
         User user = createUser();
-        Recipe recipe = createRecipe(user);
+        Recipe recipe = createRecipe();
         ReviewRequestDto reviewRequestDto = ReviewRequestDto.createReviewRequestDto("계란찜은 밥이랑 먹어요", 4.0);
 
         //when
@@ -82,7 +82,7 @@ class ReviewServiceTest {
     public void 리뷰_업데이트() throws Exception {
         //given
         User user = createUser();
-        Recipe recipe = createRecipe(user);
+        Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
         ReviewUpdateRequestDto reviewUpdateRequestDto = ReviewUpdateRequestDto.createReviewUpdateRequestDto("changeComment");
@@ -99,7 +99,7 @@ class ReviewServiceTest {
     public void 리뷰_삭제() throws Exception {
         //given
         User user = createUser();
-        Recipe recipe = createRecipe(user);
+        Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
         //when
@@ -139,11 +139,11 @@ class ReviewServiceTest {
         return user;
     }
 
-    private Recipe createRecipe(User user) {
+    private Recipe createRecipe() {
         Recipe recipe = Recipe.createRecipe("새우두부계란찜", "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
                 "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
                 "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-                0L, 0, 0.0, 0, user);
+                0L, 0, 0.0, 0);
         em.persist(recipe);
 
         return recipe;
