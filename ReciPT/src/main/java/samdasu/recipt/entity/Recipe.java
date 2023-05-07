@@ -61,8 +61,7 @@ public class Recipe extends BaseTimeEntity {
 
 
     public static Recipe createRecipe(String foodName, String ingredient, String category, String thumbnailImage, String context, String image, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
-        Recipe recipe = new Recipe(foodName, ingredient, category, thumbnailImage, context, image, viewCount, likeCount, ratingScore, ratingPeople);
-        return recipe;
+        return new Recipe(foodName, ingredient, category, thumbnailImage, context, image, viewCount, likeCount, ratingScore, ratingPeople);
     }
 
     //==비지니스 로직==//
