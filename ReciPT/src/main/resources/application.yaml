@@ -16,11 +16,11 @@ spring:
 
   #server:
   #  address: localhost
-  #  port: 3306
+  #  port: 3307
   #spring:
   #  datasource:
   #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://localhost:3306/ReciPT?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+  #    url: jdbc:mysql://localhost:3306/ReciPT?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
   #    username: root
   #    password: 1234
   #
@@ -29,7 +29,10 @@ spring:
   #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   #    generate-ddl: true
   #    show-sql: true
+  #    hibernate:
+  #      ddl-auto: create
 
+  
   data:
     web:
       pageable:

@@ -11,12 +11,7 @@ public interface RegisterCustomRepository {
 
     void addRegisterRecipeViewCount(RegisterRecipe registerRecipe);
 
-    List<RegisterRecipe> findRegisterRecipeByContain(String searchingFoodName);
-
-    List<RegisterRecipe> SearchingRegisterRecipeLikeByInputNum(int inputNum);
-
-    List<RegisterRecipe> SearchingRegisterRecipeViewCountByInputNum(int inputNum);
-
+    List<RegisterRecipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName);
 
     List<RegisterRecipe> Top10RegisterRecipeLike();
 

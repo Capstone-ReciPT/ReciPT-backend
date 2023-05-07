@@ -1,5 +1,6 @@
 package samdasu.recipt.repository.Register;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -39,34 +40,32 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     }
 
     @Override
-    public List<RegisterRecipe> findRegisterRecipeByContain(String searchingFoodName) {
+    public List<RegisterRecipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
         return queryFactory
                 .selectFrom(registerRecipe)
-                .where(registerRecipe.foodName.contains(searchingFoodName))
-                .fetch();
-    }
-    
-
-    /**
-     * 좋아요 사용자 입력 값 이상 조회
-     */
-    @Override
-    public List<RegisterRecipe> SearchingRegisterRecipeLikeByInputNum(int inputNum) {
-        return queryFactory
-                .selectFrom(registerRecipe)
-                .where(registerRecipe.likeCount.goe(inputNum))
+                .where(searchByLikeGoe(likeCond), searchByViewGoe(viewCond), searchByFoodNameContain(searchingFoodName))
                 .fetch();
     }
 
-    /**
-     * 조회수 사용자 입력 값 이상 조회
-     */
-    @Override
-    public List<RegisterRecipe> SearchingRegisterRecipeViewCountByInputNum(int inputNum) {
-        return queryFactory
-                .selectFrom(registerRecipe)
-                .where(registerRecipe.viewCount.goe(inputNum))
-                .fetch();
+    private BooleanExpression searchByFoodNameContain(String searchingFoodName) {
+        if (searchingFoodName == null) {
+            return null;
+        }
+        return registerRecipe.foodName.contains(searchingFoodName);
+    }
+
+    private BooleanExpression searchByLikeGoe(Integer likeCond) {
+        if (likeCond == null) {
+            return null;
+        }
+        return registerRecipe.viewCount.goe(likeCond);
+    }
+
+    private BooleanExpression searchByViewGoe(Integer viewCond) {
+        if (viewCond == null) {
+            return null;
+        }
+        return registerRecipe.viewCount.goe(viewCond);
     }
 
 

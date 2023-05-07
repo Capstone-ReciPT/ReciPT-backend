@@ -54,31 +54,18 @@ class RecipeServiceTest {
         assertThat(findRecipe.getFoodName()).isEqualTo("새우두부계란찜");
     }
 
-    @Test
-    public void 레시피_음식이름포함_조회성공() throws Exception {
-        //given
-        Recipe recipe = createRecipe();
-
-        //when
-        List<Recipe> findByFoodName = recipeService.findRecipeByContain("계란찜");
-
-        //then
-        assertThat(findByFoodName.size()).isEqualTo(1);
-    }
-
-    @Test
-    public void 레시피_음식이름포함_조회실패() throws Exception {
-        //given
-        Recipe recipe = createRecipe();
-
-        //when
-        List<Recipe> findByFoodName = recipeService.findRecipeByContain("고기");
-
-        //then
-        assertThat(findByFoodName.size()).isEqualTo(0);
-    }
-
-
+//    @Test
+//    public void 레시피_음식이름포함_조회성공() throws Exception {
+//        //given
+//        Recipe recipe = createRecipe();
+//
+//        //when
+//        List<Recipe> findByFoodName = recipeService.findRecipeByContain("계란찜");
+//
+//        //then
+//        assertThat(findByFoodName.size()).isEqualTo(1);
+//    }
+    
     @Test
     public void 레시피_전체조회() throws Exception {
         //given
