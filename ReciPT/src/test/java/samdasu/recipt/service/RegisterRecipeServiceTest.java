@@ -75,16 +75,16 @@ class RegisterRecipeServiceTest {
         assertThat(registerRecipe.getFoodName()).isEqualTo("만두");
     }
 
-//    @Test
-//    public void 레시피_음식이름포함_조회성공() throws Exception {
-//        //given
-//
-//        //when
-//        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.findRegisterRecipeByContain("만두");
-//
-//        //then
-//        Assertions.assertThat(findRegisterRecipes.size()).isEqualTo(1);
-//    }
+    @Test
+    public void 검색조건_동적쿼리() throws Exception {
+        //given
+
+        //when
+        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.searchDynamicSearching(0, 0, "만두");
+
+        //then
+        assertThat(findRegisterRecipes.size()).isEqualTo(1);
+    }
 
 
     @Test
