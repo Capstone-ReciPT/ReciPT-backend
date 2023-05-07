@@ -27,9 +27,10 @@ public class User extends BaseTimeEntity {
     private String password;
     @Column(nullable = false)
     private Integer age;
-    
+
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
+    
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 
