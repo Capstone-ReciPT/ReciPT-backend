@@ -28,12 +28,13 @@ public class Recipe extends BaseTimeEntity {
     private String thumbnailImage; //url형식
     @Column(nullable = false, length = 500)
     private String context;
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, length = 1000)
     private String image; //url형식
     private Long viewCount; //조회 수
     private Integer likeCount; // 레시피 좋아요
     private Double ratingScore;
     private Integer ratingPeople;
+
 
     @OneToMany(mappedBy = "recipe")
     private List<Review> review = new ArrayList<>();
@@ -43,7 +44,6 @@ public class Recipe extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "recipe")
     private RegisterRecipe registerRecipes;
-
 
     //==생성 메서드==/
     public Recipe(String foodName, String ingredient, String category, String thumbnailImage, String context, String image, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
@@ -58,7 +58,6 @@ public class Recipe extends BaseTimeEntity {
         this.ratingScore = ratingScore;
         this.ratingPeople = ratingPeople;
     }
-
 
     public static Recipe createRecipe(String foodName, String ingredient, String category, String thumbnailImage, String context, String image, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
         return new Recipe(foodName, ingredient, category, thumbnailImage, context, image, viewCount, likeCount, ratingScore, ratingPeople);
