@@ -1,184 +1,113 @@
-//package samdasu.recipt;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.stereotype.Component;
-//import org.springframework.transaction.annotation.Transactional;
-//import samdasu.recipt.entity.*;
-//
-//import javax.annotation.PostConstruct;
-//import javax.persistence.EntityManager;
-//
-//@Component
-//@RequiredArgsConstructor
-//public class InitDb {
-//    private final InitService initService;
-//
-//    @PostConstruct
-//    public void init() {
-//        initService.dbInit1();
-//        initService.dbInit2();
-//        initService.dbInit3();
-//
-//        initService.gptInit1();
-//        initService.gptInit2();
-//        initService.gptInit3();
-//
-//        initService.reviewInit();
-//        initService.recentSearchInit();
-//
-//    }
-//
-//    @Component
-//    @Transactional
-//    @RequiredArgsConstructor
-//    static class InitService {
-//        private final EntityManager em;
-//        private final BCryptPasswordEncoder passwordEncoder;
-//
-//        public void dbInit1() {
-//            User user = User.createUser("testerA", "testA", passwordEncoder.encode("A1234"));
-//            em.persist(user);
-//
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//
-//            DbRecipe dbRecipe1 = DbRecipe.createDbRecipe("새우두부계란찜", "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-//                    "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-//                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-//                    5, 5L, 5.0, 1, allergy);
-//            em.persist(dbRecipe1);
-//
-//            DbRecipe dbRecipe2 = DbRecipe.createDbRecipe("부추 콩가루 찜", "조선부추 50g, 날콩가루 7g(1⅓작은술), 저염간장 3g(2/3작은술), 다진 대파 5g(1작은술), 다진 마늘 2g(1/2쪽), 고춧가루 2g(1/3작은술), 요리당 2g(1/3작은술), 참기름 2g(1/3작은술), 참깨 약간",
-//                    "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00029_1.png", "1. 부추는 깨끗이 씻어 물기를 제거하고, 5cm 길이로 썰고 부추에 날콩가루를 넣고 고루 섞이도록 버무린다. 2. 찜기에 면보를 깔고 부추를 넣은 후 김이 오르게 쪄서 파랗게 익힌다. 3. 저염간장에 다진 대파, 다진 마늘, 고춧가루, 요리당 , 참기름, 참깨를 섞어 양념장을 만들고 찐 부추는 그릇에 담아낸다.",
-//                    "http://www.foodsafetykorea.go.kr/uploadimg/20230206/20230206054820_1675673300714.jpg, http://www.foodsafetykorea.go.kr/uploadimg/20230206/20230206054834_1675673314720.jpg, http://www.foodsafetykorea.go.kr/uploadimg/20230206/20230206054908_1675673348152.jpg",
-//                    3, 3L, 3.0, 1, allergy);
-//            em.persist(dbRecipe2);
-//
-//            Review review1 = Review.createReview("새우두부계란찜 후기", "맛있는 계란찜", 0L, 0, user);
-//            em.persist(review1);
-//
-//            Review review2 = Review.createReview("부추 콩가루 찜 후기", "이게 무슨 요리지?", 0L, 0, user);
-//            em.persist(review2);
-//        }
-//
-//        public void dbInit2() {
-//            User user = User.createUser("testerB", "testB", passwordEncoder.encode("B1234"));
-//            em.persist(user);
-//
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//
-//            DbRecipe dbRecipe1 = DbRecipe.createDbRecipe("사과 새우 북엇국", "북어채 25g(15개), 새우 10g(3마리), 사과 30g(1/5개), 양파 40g(1/4개), 표고버섯 20g(2장), 물 300ml(1½컵)",
-//                    "끓이기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00033_1.png", "2. 북어채를 잘게 손으로 찢어 찬물에 헹구어 준비한 후 양파, 표고버섯, 사과는 채 썰고 새우는 등쪽의 두세 마디에 꼬챙이를 넣어 내장을 뺀 후 헹군다. 3. 찬물에 북어채, 새우, 표고버섯, 양파를 넣고 20분 정도 끓인 후 사과를 넣어 북어의 씁쓸한 맛을 없앤다. 5. 그릇에 담아낸다.",
-//                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00033_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00033_3.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00033_5.png",
-//                    4, 4L, 4.0, 1, allergy);
-//            em.persist(dbRecipe1);
-//
-//            DbRecipe dbRecipe2 = DbRecipe.createDbRecipe("황태해장국", "황태(채) 15g(10개), 콩나물 30g(1/6봉지), 무 30g(5×3×2cm), 저염된장 10g(2작은술), 물 300ml(1½컵), 청양고추 5g(1/2개), 다진 마늘 2g(1/3작은술)",
-//                    "끓이기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00036_1.png", "3. 황태는 손질하여 물에 헹궈 건져 놓고 콩나물은 다듬어 씻고 청양고추는 어슷썰기 한다. 4. 냄비에 물을 붓고 황태와 무를 넣고 끓인 후 육수에서 물을 건져내고 저염 된장을 푼다. 5. 콩나물, 다진 마늘, 청양고추를 넣고 뚜껑을 덮어 김이 나게 끓여준다.",
-//                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00036_3.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00036_4.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00036_5.png\n",
-//                    1, 1L, 1.0, 1, allergy);
-//            em.persist(dbRecipe2);
-//
-//            Review review1 = Review.createReview("사과 새우 북엇국 후기", "얼큰하다", 0L, 0, user);
-//            em.persist(review1);
-//
-//            Review review2 = Review.createReview("황태해장국 후기", "해장에 딱이지", 0L, 0, user);
-//            em.persist(review2);
-//        }
-//
-//        public void dbInit3() {
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//            for (int i = 0; i < 10; i++) {
-//                DbRecipe dbRecipe = DbRecipe.createDbRecipe("새우두부계란찜" + i, "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
-//                        "찌기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png", "1. 손질된 새우를 끓는 물에 데쳐 건진다. 2. 연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 넣고 간 뒤 새우(1)를 함께 섞어 그릇에 담는다. 3. 시금치를 잘게 다져 혼합물 그릇(2)에 뿌리고 찜기에 넣고 중간 불에서 10분 정도 찐다.",
-//                        "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png",
-//                        i, (long) i, 0.0 + i, 0, allergy);
-//                em.persist(dbRecipe);
-//            }
-//        }
-//
-//        public void gptInit1() {
-//            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"));
-//            em.persist(user);
-//
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//
-//            GptRecipe gptRecipe1 = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 5, 5L, 5.0, 1, allergy);
-//            em.persist(gptRecipe1);
-//
-//            GptRecipe gptRecipe2 = GptRecipe.createGptRecipe("계란후라이", "계란", "1.계란 톡 2.굽기", "케찹이랑 먹으면 맛있어요.", 3, 3L, 3.0, 1, allergy);
-//            em.persist(gptRecipe2);
-//
-//            Review review1 = Review.createReview("계란찜 후기", "밥도둑이네", 0L, 0, user);
-//            em.persist(review1);
-//
-//            Review review2 = Review.createReview("계란후라이 후기", "아침에는 계란 후라이", 0L, 0, user);
-//            em.persist(review2);
-//        }
-//
-//        public void gptInit2() {
-//            User user = User.createUser("testerD", "testD", passwordEncoder.encode("D1234"));
-//            em.persist(user);
-//
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//
-//            GptRecipe gptRecipe1 = GptRecipe.createGptRecipe("오므라이스", "계란, 밥, 당근, 양파", "1.채소 썰기 2.굽기 3.플레이팅", "김이랑 먹으면 맛있어요.", 4, 4L, 4.0, 1, allergy);
-//            em.persist(gptRecipe1);
-//
-//            GptRecipe gptRecipe2 = GptRecipe.createGptRecipe("오이무침", "오이, 쪽파, 양파, 고춧가루, 참기름, 깨", "1.채소 손질 2.버무리기 3.플레이팅", "밥이랑 먹으면 맛있어요.", 2, 2L, 2.0, 2, allergy);
-//            em.persist(gptRecipe2);
-//
-//            Review review1 = Review.createReview("오므라이스 후기", "어린아이도 좋아해요", 0L, 0, user);
-//            em.persist(review1);
-//
-//            Review review2 = Review.createReview("오이무침 후기", "아삭아삭 오이무침", 0L, 0, user);
-//            em.persist(review2);
-//        }
-//
-//        public void gptInit3() {
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//
-//            for (int i = 0; i < 10; i++) {
-//                GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜" + i, "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", i, (long) i, 0.0 + i, 0, allergy);
-//                em.persist(gptRecipe);
-//            }
-//        }
-//
-//        public void reviewInit() {
-//            User user = User.createUser("testerE", "testE", passwordEncoder.encode("E1234"));
-//            em.persist(user);
-//
-//            Allergy allergy = Allergy.createAllergy("갑각류", "새우");
-//
-//            GptRecipe gptRecipe = GptRecipe.createGptRecipe("계란찜", "계란, 파, 당근", "1.손질 2.굽기 3.먹기", "케찹 추가 맛있어요.", 0, 0L, 0.0, 0, allergy);
-//            em.persist(gptRecipe);
-//
-//            for (int i = 0; i < 10; i++) {
-//                Review review1 = Review.createReview("계란찜 후기", "밥도둑이네", 0L, 0, user);
-//                em.persist(review1);
-//            }
-//        }
-//
-//        public void recentSearchInit() {
-//            User user = User.createUser("testerF", "testF", passwordEncoder.encode("F1234"));
-//            em.persist(user);
-//
-//            DbRecipe dbRecipe = DbRecipe.createDbRecipe("된장 부대찌개", "다시마 1g, 두부 10g, 떡국 떡 10g, 스팸(마일드) 10g, 다진 마늘 5g, 무 20g, 김치 15g, 소시지 10g(1/2개), 우민찌 5g(1작은술), 양파 5g, 저염된장 15g(1큰술), 베이컨 5g, 대파 5g, 청양고추 5g, 홍고추 1g",
-//                    "끓이기", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00036_1.png", "1. 김치, 베이컨, 스팸, 소시지, 양파, 두부, 무는 두께 0.5cm로 썬다. 2. 다시마와 물을 끓여 다시마물을 만든다. 3. 냄비에 소시지, 베이컨, 두부, 스팸, 무, 우민찌, 김치, 다시마물 300g을 넣어 끓인 후 저염된장, 양파, 대파, 다진 마늘, 떡국 떡을 넣고 재료가 다 익으면 홍고추와 청양고추를 넣어 완성한다.",
-//                    "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_3.png",
-//                    10, 55L, 3.5, 1, null);
-//            em.persist(dbRecipe);
-//
-//            GptRecipe gptRecipe = GptRecipe.createGptRecipe("오이무침", "오이, 쪽파, 양파, 고춧가루, 참기름, 깨", "1.채소 손질 2.버무리기 3.플레이팅", "밥이랑 먹으면 맛있어요.", 10, 55L, 3.5, 3, null);
-//            em.persist(gptRecipe);
-//
-//            RecentSearch dbRecentSearch = RecentSearch.createDbRecentSearch(user, dbRecipe, dbRecipe.getDbFoodName());
-//            em.persist(dbRecentSearch);
-//            RecentSearch gptRecentSearch = RecentSearch.createGptRecentSearch(user, gptRecipe, gptRecipe.getGptFoodName());
-//            em.persist(gptRecentSearch);
-//
-//        }
-//    }
-//
-//
-//}
+package samdasu.recipt;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import samdasu.recipt.entity.*;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+
+@Component
+@RequiredArgsConstructor
+public class InitDb {
+    private final InitService initService;
+
+    @PostConstruct
+    public void init() {
+        initService.recipeInit1();
+        initService.recipeInit2();
+
+        initService.registerRecipeInit1();
+        initService.registerRecipeInit2();
+    }
+
+    @Component
+    @Transactional
+    @RequiredArgsConstructor
+    static class InitService {
+        private final EntityManager em;
+        private final BCryptPasswordEncoder passwordEncoder;
+
+        public void recipeInit1() {
+            User user = User.createUser("testerA", "testA", passwordEncoder.encode("A1234"), 10);
+            em.persist(user);
+
+            Recipe recipe1 = Recipe.createRecipe("된장 부대찌개", "다시마 1g, 두부 10g, 떡국 떡 10g, 스팸(마일드) 10g, 다진 마늘 5g, 무 20g, 김치 15g, 소시지 10g(1/2개), 우민찌 5g(1작은술), 양파 5g, 저염된장 15g(1큰술), 베이컨 5g, 대파 5g, 청양고추 5g, 홍고추 1g", "찌개", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00138_1.png",
+                    "1. 김치, 베이컨, 스팸, 소시지, 양파, 두부, 무는 두께 0.5cm로 썬다. 2. 다시마와 물을 끓여 다시마물을 만든다. 3. 냄비에 소시지, 베이컨, 두부, 스팸, 무, 우민찌, 김치, 다시마물 300g을 넣어 끓인 후 저염된장, 양파, 대파, 다진 마늘, 떡국 떡을 넣고 재료가 다 익으면 홍고추와 청양고추를 넣어 완성한다.", "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00138_3.png",
+                    0L, 0, 2.0, 0, user);
+            em.persist(recipe1);
+
+            Recipe recipe2 = Recipe.createRecipe("오렌지 당근 주스", "당근 100g(1/2개), 오렌지 100g(1/2개)", "주스", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00108_1.png",
+                    "1. 오렌지는 깨끗이 씻어 껍질을 벗긴다. 2. 당근은 깨끗이 씻어 작은 토막으로 썬다. 3. 당근, 오렌지, 물(50ml)을 믹서에 곱게 간다. 4. 믹서에 갈아낸 주스는 고운 체로 거른다. 5. 주스를 살얼음이 생길 만큼 시원하게 냉동한다. 6. 컵에 담아 마무리한다.", "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00108_1.jpg, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00108_2.jpg, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00108_3.jpg, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00108_4.jpg, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00108_5.jpg",
+                    50L, 50, 4.0, 1, user);
+            em.persist(recipe2);
+
+            Review review1 = Review.createRecipeReview("된장 부대찌개 후기", 0, 2.0, user, recipe1);
+            em.persist(review1);
+
+            Review review2 = Review.createRecipeReview("오렌지 당근 주스 후기", 0, 4.0, user, recipe2);
+            em.persist(review2);
+        }
+
+        public void recipeInit2() {
+            User user = User.createUser("testerB", "testB", passwordEncoder.encode("B1234"), 20);
+            em.persist(user);
+
+            Recipe recipe1 = Recipe.createRecipe("함초 냉이 국수", "소면 50g, 함초 3g(1/2작은술), 노루궁뎅이버섯 25g(1/2개), 다시마 17g(15cm), 파 140g(1/2개), 양파 150g(1/2개), 무 250g(1/3개), 모시조개 150g(3/4컵), 냉이 35g, 간장 30g(2큰술), 달걀 50g(1개), 청고추 20g(1개), 실고추 2g", "면", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00131_1.png",
+                    "1. 함초, 노루궁뎅이버섯, 다시마, 파, 양파, 무를 물에 넣어 10분 끓이고 향이 강한 모시조개와 냉이를 넣고 30분  끓인 후 간장으로 색을 낸다. 2. 소면은 따로 삶는다. 3. 그릇에 삶은 소면을 담은 후 육수를 붓고 지단, 슬라이스한 청고추, 실고추를 올려 완성한다.", "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00131_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00131_4.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00131_5.png",
+                    0L, 45, 4.5, 2, user);
+            em.persist(recipe1);
+
+
+            Recipe recipe2 = Recipe.createRecipe("구운채소", "가지 20g(3cm), 호박 50g(1/3개), 새송이버섯 15g(3개), 양파 15g(1/8개), 발사믹크레마 15g(1큰술), 빨강 파프리카 3g(3×1cm), 노랑 파프리카 3g(3×1cm), 청피망 3g(3×1cm), 올리브유 약간, 저염간장 5g(1작은술), 식초 15g(1큰술), 설탕 10g(1큰술), 레몬즙 5g(1작은술)", "채소", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00093_1.png",
+                    "1. 저염간장, 식초, 레몬즙, 설탕을 혼합하여 간장레몬 소스를 만든다. 2. 호박, 가지, 새송이버섯은 3cm 길이로 자른 후 얇은 편으로 채 썰고, 양파, 파프리카, 피망은 호박 길이로 썬다. 3. 가지, 호박, 새송이버섯, 양파, 파프리카, 피망에 올리브유를 바르고 달궈진 그릴 팬에 구운 후 접시에 담고 발사믹 크레타를 뿌리고 간장레몬 소스를 곁들인다.", "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00093_1.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00093_2.png, http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00093_3.png",
+                    20L, 20, 5.0, 100, user);
+            em.persist(recipe2);
+
+            Review review1 = Review.createRecipeReview("함초 냉이 국수 후기", 0, 3.0, user, recipe1);
+            em.persist(review1);
+
+            Review review2 = Review.createRecipeReview("구운채소 후기", 0, 4.5, user, recipe2);
+            em.persist(review2);
+        }
+
+        public void registerRecipeInit1() {
+            ImageFile imageFile = ImageFile.createImageFile("만두 사진1", "jpg", null);
+            em.persist(imageFile);
+
+            Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기");
+            em.persist(gpt);
+
+            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30);
+            em.persist(user);
+
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+                    0L, 0, 0.0, 0, user, gpt, imageFile);
+            em.persist(registerRecipe);
+
+            Review review = Review.createRegisterReview("만두 후기", 0, 4.0, user, registerRecipe);
+            em.persist(review);
+        }
+
+        public void registerRecipeInit2() {
+            ImageFile imageFile = ImageFile.createImageFile("버섯구이 사진1", "jpg", null);
+            em.persist(imageFile);
+
+            Gpt gpt = Gpt.createGpt("버섯구이", "새송이 버섯, 올리브유, 소금", "1.버섯 썰기 2.굽기 3.먹기");
+            em.persist(gpt);
+
+            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30);
+            em.persist(user);
+
+
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "버섯을 먹어보아요", "고기랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
+                    0L, 0, 0.0, 0, user, gpt, imageFile);
+            em.persist(registerRecipe);
+
+            Review review = Review.createRegisterReview("버섯구이 후기", 0, 5.0, user, registerRecipe);
+            em.persist(review);
+        }
+    }
+}

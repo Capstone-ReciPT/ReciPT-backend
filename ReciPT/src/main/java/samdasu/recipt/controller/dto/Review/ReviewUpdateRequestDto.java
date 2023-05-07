@@ -15,4 +15,7 @@ public class ReviewUpdateRequestDto {
         this.comment = comment;
     }
 
+    public static ReviewUpdateRequestDto createReviewUpdateRequestDto(String comment) {
+        return new ReviewUpdateRequestDto(comment);
+    }
 }
