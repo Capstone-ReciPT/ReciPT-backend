@@ -18,23 +18,17 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
 
     /**
-     * 평점 추가: 평점 & 평점 준 사람 더하기
-     */
-    @Transactional
-    public void updateRatingScore(Long recipeId, ReviewRequestDto reviewRequestDto) { //리뷰에서 하달받기
-        Recipe recipe = findById(recipeId);
-        recipe.updateRating(reviewRequestDto.getInputRatingScore());
-    }
-
-    /**
      * 평점 평균 계산
      */
     @Transactional
-    public RecipeResponseDto calcRatingScore(Recipe recipe) {
-        Double avgDbRatingScore = recipe.calcRatingScore(recipe);
+    public RecipeResponseDto updateRatingScore(Long recipeId, ReviewRequestDto reviewRequestDto) { //리뷰에서 하달받기
+        Recipe recipe = findById(recipeId);
+        recipe.updateRating(reviewRequestDto.getInputRatingScore());
+
+        recipe.calcRatingScore(recipe);
 
         RecipeResponseDto recipeResponseDto = RecipeResponseDto.createRecipeResponseDto(recipe);
-        recipeResponseDto.setRatingResult(avgDbRatingScore);
+
         return recipeResponseDto;
     }
 

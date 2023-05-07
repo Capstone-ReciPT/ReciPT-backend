@@ -83,7 +83,7 @@ public class Recipe extends BaseTimeEntity {
     /**
      * DB 평점 계산
      */
-    public Double calcRatingScore(Recipe recipe) {
-        return Math.round(recipe.getRatingScore() / recipe.getRatingPeople() * 100) / 100.0;
+    public void calcRatingScore(Recipe recipe) {
+        recipe.ratingScore = Math.round(recipe.getRatingScore() / recipe.getRatingPeople() * 100) / 100.0;
     }
 }

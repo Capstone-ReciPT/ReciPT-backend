@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.controller.dto.Review.ReviewUpdateRequestDto;
 import samdasu.recipt.entity.Recipe;
+import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.entity.Review;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
@@ -27,11 +28,10 @@ public class ReviewService {
     private final RegisterRecipeRepository registerRecipeRepository;
 
     @Transactional
-    public Long saveRecipeReview(Long userId, Long reviewId, ReviewRequestDto reviewRequestDto) {
+    public Long saveRecipeReview(Long userId, Long recipeId, ReviewRequestDto reviewRequestDto) {
         //엔티티 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
-        Recipe recipe = recipeRepository.findById(reviewId)
+        User user = findUserById(userId);
+        Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
 
         Review review = Review.createRecipeReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, recipe);
@@ -39,6 +39,18 @@ public class ReviewService {
         return reviewRepository.save(review).getReviewId();
     }
 
+    @Transactional
+    public Long saveRegisterRecipeReview(Long userId, Long registerRecipeId, ReviewRequestDto reviewRequestDto) {
+        //엔티티 조회
+        User user = findUserById(userId);
+        RegisterRecipe registerRecipe = registerRecipeRepository.findById(registerRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
+
+        Review review = Review.createRegisterReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, registerRecipe);
+
+        return reviewRepository.save(review).getReviewId();
+    }
+    
     @Transactional
     public Long update(Long reviewId, ReviewUpdateRequestDto reviewUpdateRequestDto) {
         Review review = findById(reviewId);
@@ -63,7 +75,7 @@ public class ReviewService {
     public List<Review> recipeOrderByLike(Long selectRecipeId) {
         return reviewRepository.recipeOrderByLike(selectRecipeId);
     }
-    
+
 
     /**
      * 최신 순
@@ -89,5 +101,11 @@ public class ReviewService {
     private Review findById(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
+    }
+
+    private User findUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        return user;
     }
 }

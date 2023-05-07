@@ -23,7 +23,7 @@ public class RegisterRequestDto {
         this.category = category;
     }
 
-    public static RegisterRequestDto createGptDto(byte[] thumbnailImage, String title, String comment, String category) {
+    public static RegisterRequestDto createRegisterRequestDto(byte[] thumbnailImage, String title, String comment, String category) {
         return new RegisterRequestDto(thumbnailImage, title, comment, category);
     }
 
