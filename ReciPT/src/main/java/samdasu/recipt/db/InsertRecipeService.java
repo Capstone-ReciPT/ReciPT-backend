@@ -1,23 +1,21 @@
-//package samdasu.recipt.db;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Component;
-//import samdasu.recipt.entity.DbRecipe;
-//import samdasu.recipt.repository.Recipe.RecipeRepository;
-//
-//@Component
-//@RequiredArgsConstructor
-//public class InsertRecipeService {
-//
-//    private final RecipeRepository dbRecipeRepository;
-//
-//    public void insertRecipe(DbRecipe recipe) {
-//        Allergy allergy = new Allergy(recipe.getAllergy().getCategory(), recipe.getAllergy().getCausedIngredient());
-//        DbRecipe dbRecipe = new DbRecipe(recipe.getDbFoodName(), recipe.getDbIngredient(), recipe.getHowToCook(),
-//                recipe.getThumbnailImage(), recipe.getDbContext(), recipe.getDbImage(),
-//                recipe.getDbLikeCount(), recipe.getDbViewCount(),
-//                recipe.getDbRatingScore(), recipe.getDbRatingPeople(), allergy);
-//        dbRecipeRepository.save(dbRecipe);
-//    }
-//
-//}
+package samdasu.recipt.db;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import samdasu.recipt.entity.Recipe;
+import samdasu.recipt.repository.Recipe.RecipeRepository;
+
+@Component
+@RequiredArgsConstructor
+public class InsertRecipeService {
+
+    private final RecipeRepository dbRecipeRepository;
+
+    public void insertRecipe(Recipe recipe) {
+        Recipe saveRecipe = new Recipe(recipe.getFoodName(), recipe.getIngredient(), recipe.getCategory(),
+                recipe.getThumbnailImage(), recipe.getContext(), recipe.getImage(), recipe.getViewCount(),
+                recipe.getLikeCount(), recipe.getRatingScore(), recipe.getRatingPeople());
+        dbRecipeRepository.save(saveRecipe);
+    }
+
+}
