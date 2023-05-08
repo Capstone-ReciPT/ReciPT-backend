@@ -21,6 +21,10 @@ public class User extends BaseTimeEntity {
     private Long userId;
     @Column(nullable = false)
     private String username;
+
+    @Lob
+    @Column(name = "profile", length = 1000)
+    private byte[] profile;
     @Column(nullable = false, length = 255)
     private String loginId;
     @Column(nullable = false, length = 255)
@@ -30,7 +34,7 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
-    
+
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 
@@ -44,19 +48,21 @@ public class User extends BaseTimeEntity {
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
 
 
-    public User(String username, String loginId, String password, Integer age) {
+    public User(String username, byte[] profile, String loginId, String password, Integer age) {
         this.username = username;
+        this.profile = profile;
         this.loginId = loginId;
         this.password = password;
         this.age = age;
     }
 
-    public static User createUser(String username, String loginId, String password, Integer age) {
-        return new User(username, loginId, password, age);
+    public static User createUser(String username, byte[] profile, String loginId, String password, Integer age) {
+        return new User(username, profile, loginId, password, age);
     }
 
     //==비지니스 로직==//
     public void updateUserInfo(UserUpdateRequestDto requestDto) {
+        profile = requestDto.getProfile();
         password = requestDto.getPassword();
     }
 

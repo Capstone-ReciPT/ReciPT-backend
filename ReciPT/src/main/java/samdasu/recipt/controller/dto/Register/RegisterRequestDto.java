@@ -3,17 +3,17 @@ package samdasu.recipt.controller.dto.Register;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 public class RegisterRequestDto {
     private byte[] thumbnailImage;
-    @NotNull
+    @NotBlank(message = "제목을 입력해주세요")
     private String title;
-    @NotNull
+    @NotBlank(message = "1줄평 해주세요")
     private String comment;
-    @NotNull
+    @NotBlank(message = "카테고리를 입력해주세요")
     private String category;
 
     public RegisterRequestDto(byte[] thumbnailImage, String title, String comment, String category) {

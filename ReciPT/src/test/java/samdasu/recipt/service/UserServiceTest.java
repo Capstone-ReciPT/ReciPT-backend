@@ -90,7 +90,7 @@ public class UserServiceTest {
 
         //when
         //change password
-        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.createUpdateUserInfo("changePassword");
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.createUpdateUserInfo("changePassword", null);
         Long updateUserInfo = userService.update(testA.getUserId(), userUpdateRequestDto);
 
         //then
@@ -106,12 +106,12 @@ public class UserServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("testerA", "testA", "A1234", 30);
+        User user = User.createUser("testerA", null, "testA", "A1234", 30);
         em.persist(user);
         return user;
     }
 
     private static UserSignUpDto createUserSignUpDto(String tester, int age, String test1234) {
-        return new UserSignUpDto(tester, age, "testId", test1234, test1234);
+        return new UserSignUpDto(tester, null, age, "testId", test1234, test1234);
     }
 }

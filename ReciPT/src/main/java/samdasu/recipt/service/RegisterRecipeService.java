@@ -1,6 +1,7 @@
 package samdasu.recipt.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
@@ -16,6 +17,7 @@ import samdasu.recipt.repository.ImageFileRepository;
 import samdasu.recipt.repository.Register.RegisterRecipeRepository;
 import samdasu.recipt.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -61,6 +63,24 @@ public class RegisterRecipeService {
         return registerRecipeRepository.save(registerRecipe).getRegisterId();
     }
 
+    /**
+     * 등록한 레시피 삭제
+     */
+    @Transactional
+    public void deleteRegisterRecipe(Long registerRecipeId) {
+        RegisterRecipe registerRecipe = registerRecipeRepository.findById(registerRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No RegisterRecipe Info"));
+        registerRecipeRepository.delete(registerRecipe);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    @Transactional
+    public void resetViewCount() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime yesterday = now.minusDays(1);
+
+        registerRecipeRepository.resetViewCount(yesterday);
+    }
 
     public RegisterRecipe findByFoodName(String foodName) {
         return registerRecipeRepository.findByFoodName(foodName)
@@ -71,6 +91,7 @@ public class RegisterRecipeService {
         return registerRecipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
     }
 
+    //    List<String> RecommendByAge(int inputAge);
     @Transactional
     public void IncreaseViewCount(Long registerRecipeId) {
         RegisterRecipe registerRecipe = findById(registerRecipeId);
@@ -86,25 +107,20 @@ public class RegisterRecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No RegisterRecipe Info"));
     }
 
-    /**
-     * 좋아요 탑 10 조회
-     */
-    public List<RegisterRecipe> findTop10RegisterRecipeLike() {
-        return registerRecipeRepository.Top10RegisterRecipeLike();
+    public List<RegisterRecipe> findTop10RecentRegister() {
+        return registerRecipeRepository.Top10RecentRegister();
     }
 
-    /**
-     * 조회 수 탑 10 조회
-     */
-    public List<RegisterRecipe> findTop10RegisterRecipeView() {
-        return registerRecipeRepository.Top10RegisterRecipeView();
+    public List<RegisterRecipe> findTop10Like() {
+        return registerRecipeRepository.Top10Like();
+    }
+    
+    public List<RegisterRecipe> findTop10View() {
+        return registerRecipeRepository.Top10View();
     }
 
-    /**
-     * 평점 순 탑 10 조회
-     */
-    public List<RegisterRecipe> findTop10RegisterRecipeRatingScore() {
-        return registerRecipeRepository.Top10RegisterRecipeRatingScore();
+    public List<RegisterRecipe> findTop10RatingScore() {
+        return registerRecipeRepository.Top10RatingScore();
     }
 
 }

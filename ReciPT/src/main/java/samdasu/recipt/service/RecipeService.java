@@ -1,6 +1,7 @@
 package samdasu.recipt.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Recipe.RecipeResponseDto;
@@ -9,6 +10,7 @@ import samdasu.recipt.entity.Recipe;
 import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.Recipe.RecipeRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,6 +34,15 @@ public class RecipeService {
         return recipeResponseDto;
     }
 
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    @Transactional
+    public void resetViewCount() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime yesterday = now.minusDays(1);
+
+        recipeRepository.resetViewCount(yesterday);
+    }
+
     public Recipe findByFoodName(String foodName) {
         return recipeRepository.findByFoodName(foodName)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No Recipe Info"));
@@ -40,6 +51,8 @@ public class RecipeService {
     public List<Recipe> searchDynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
         return recipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
     }
+
+    //    List<String> RecommendByAge(int inputAge);
 
     @Transactional
     public void IncreaseViewCount(Long recipeId) {
@@ -54,6 +67,22 @@ public class RecipeService {
     public Recipe findById(Long recipeId) {
         return recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
+    }
+
+    public List<Recipe> findTop10RecentRegister() {
+        return recipeRepository.Top10RecentRegister();
+    }
+
+    public List<Recipe> findTop10Like() {
+        return recipeRepository.Top10Like();
+    }
+
+    public List<Recipe> findTop10View() {
+        return recipeRepository.Top10View();
+    }
+
+    public List<Recipe> findTop10RatingScore() {
+        return recipeRepository.Top10RatingScore();
     }
 
 }

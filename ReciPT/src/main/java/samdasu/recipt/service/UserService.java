@@ -22,7 +22,7 @@ public class UserService {
     @Transactional
     public Long join(UserSignUpDto signUpDto) { //회원가입
         validateLogin(signUpDto);
-        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge());
+        User user = User.createUser(signUpDto.getUsername(), signUpDto.getProfile(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge());
         return userRepository.save(user).getUserId();
     }
 

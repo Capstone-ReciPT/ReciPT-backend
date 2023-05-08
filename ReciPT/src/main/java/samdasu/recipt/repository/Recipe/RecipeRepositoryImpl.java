@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.entity.Recipe;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static samdasu.recipt.entity.QRecipe.recipe;
+import static samdasu.recipt.entity.QRegisterRecipe.registerRecipe;
+import static samdasu.recipt.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -69,6 +72,61 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
 
+    @Override
+    public List<Recipe> Top10Like() {
+        return queryFactory
+                .selectFrom(recipe)
+                .orderBy(recipe.likeCount.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<Recipe> Top10View() {
+        return queryFactory
+                .selectFrom(recipe)
+                .orderBy(recipe.viewCount.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<Recipe> Top10RatingScore() {
+        return queryFactory
+                .selectFrom(recipe)
+                .orderBy(recipe.ratingScore.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<Recipe> Top10RecentRegister() {
+        return queryFactory
+                .selectFrom(recipe)
+                .orderBy(recipe.createDate.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<String> RecommendByAge(int inputAge) {
+        return queryFactory
+                .select(registerRecipe.foodName)
+                .from(user)
+                .join(registerRecipe)
+                .on(user.userId.eq(registerRecipe.user.userId))
+                .where(user.age.goe(inputAge * 10).and(user.age.lt(inputAge * 10)))
+                .fetch();
+    }
+
+    @Override
+    public void resetViewCount(LocalDateTime yesterday) {
+        queryFactory
+                .update(recipe)
+                .set(recipe.viewCount, 0L)
+                .where(recipe.createDate.loe(yesterday))
+                .execute();
+    }
 //    @Override
 //    public List<Tuple> JoinTable() {
 //        List<Tuple> fetch = queryFactory

@@ -114,4 +114,5 @@ public class RegisterRecipe extends BaseTimeEntity {
     public void calcRatingScore(RegisterRecipe recipe) {
         recipe.ratingScore = Math.round(recipe.getRatingScore() / recipe.getRatingPeople() * 100) / 100.0;
     }
+
 }

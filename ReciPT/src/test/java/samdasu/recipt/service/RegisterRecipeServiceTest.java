@@ -103,7 +103,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> top10RegisterRecipeLike = registerRecipeService.findTop10RegisterRecipeLike();
+        List<RegisterRecipe> top10RegisterRecipeLike = registerRecipeService.findTop10Like();
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeLike) {
@@ -116,7 +116,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> top10RegisterRecipeView = registerRecipeService.findTop10RegisterRecipeView();
+        List<RegisterRecipe> top10RegisterRecipeView = registerRecipeService.findTop10View();
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeView) {
@@ -130,7 +130,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> top10RegisterRecipeRatingScore = registerRecipeService.findTop10RegisterRecipeRatingScore();
+        List<RegisterRecipe> top10RegisterRecipeRatingScore = registerRecipeService.findTop10RatingScore();
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeRatingScore) {
@@ -154,7 +154,7 @@ class RegisterRecipeServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", 10);
+        User user = User.createUser("tester1", null, "testId", "test1234", 10);
         em.persist(user);
 
         return user;
