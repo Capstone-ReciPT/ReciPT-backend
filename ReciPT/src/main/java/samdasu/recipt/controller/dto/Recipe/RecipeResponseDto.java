@@ -28,7 +28,7 @@ public class RecipeResponseDto {
     private String image; //레시피 볼 때
     private Integer likeCount; //다 필요
     private Long viewCount; //조회수 - 홈화면(탑 10)
-    private Double ratingResult;
+    private Double ratingScore;
     private Integer ratingPeople;
 
     private List<RecipeReviewResponseDto> reviewResponseDtos;
@@ -46,7 +46,7 @@ public class RecipeResponseDto {
         image = recipe.getImage();
         likeCount = recipe.getLikeCount();
         viewCount = recipe.getViewCount();
-        ratingResult = recipe.getRatingScore();
+        ratingScore = recipe.getRatingScore();
         ratingPeople = recipe.getRatingPeople();
         reviewResponseDtos = recipe.getReview().stream()
                 .map(review -> new RecipeReviewResponseDto(review))
