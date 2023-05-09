@@ -5,22 +5,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import samdasu.recipt.entity.User;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserSignUpDto {
-    @NotNull
+    @NotBlank
     private String username;
 
-    @NotNull
+    @NotBlank
     private Integer age;
-    @NotNull
+    @NotBlank
     private String loginId;
-    @NotNull
+    @NotBlank
     private String password;
-    @NotNull
+    @NotBlank
     private String passwordConfirm;
 
     public UserSignUpDto(String username, Integer age, String loginId, String password, String passwordConfirm) {

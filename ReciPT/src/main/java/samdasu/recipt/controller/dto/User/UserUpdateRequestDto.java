@@ -4,13 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserUpdateRequestDto {
-    @NotNull
+    @NotBlank
     private String password;
 
     public UserUpdateRequestDto(String password) {
