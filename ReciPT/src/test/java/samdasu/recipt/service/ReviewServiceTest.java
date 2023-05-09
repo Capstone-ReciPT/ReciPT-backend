@@ -133,7 +133,7 @@ class ReviewServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("tester1", null, "testId", "test1234", 10);
+        User user = User.createUser("tester1", "testId", "test1234", 10, null);
         em.persist(user);
 
         return user;

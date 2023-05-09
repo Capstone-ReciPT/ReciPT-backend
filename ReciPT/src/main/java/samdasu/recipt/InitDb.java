@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.entity.*;
+import samdasu.recipt.repository.ProfileRepository;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -13,6 +14,7 @@ import javax.persistence.EntityManager;
 @RequiredArgsConstructor
 public class InitDb {
     private final InitService initService;
+    private final ProfileRepository profileRepository;
 
     @PostConstruct
     public void init() {
@@ -31,7 +33,10 @@ public class InitDb {
         private final BCryptPasswordEncoder passwordEncoder;
 
         public void recipeInit1() {
-            User user = User.createUser("testerA", null, "testA", passwordEncoder.encode("A1234"), 10);
+            Profile profile = Profile.createProfile("profile", "jpg", null);
+            em.persist(profile);
+
+            User user = User.createUser("testerA", "testA", passwordEncoder.encode("A1234"), 10, profile);
             em.persist(user);
 
             Recipe recipe1 = Recipe.createRecipe("된장 부대찌개", "다시마 1g, 두부 10g, 떡국 떡 10g, 스팸(마일드) 10g, 다진 마늘 5g, 무 20g, 김치 15g, 소시지 10g(1/2개), 우민찌 5g(1작은술), 양파 5g, 저염된장 15g(1큰술), 베이컨 5g, 대파 5g, 청양고추 5g, 홍고추 1g", "찌개", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00138_1.png",
@@ -52,7 +57,10 @@ public class InitDb {
         }
 
         public void recipeInit2() {
-            User user = User.createUser("testerB", null, "testB", passwordEncoder.encode("B1234"), 20);
+            Profile profile = Profile.createProfile("file", "png", null);
+            em.persist(profile);
+
+            User user = User.createUser("testerB", "testB", passwordEncoder.encode("B1234"), 20, profile);
             em.persist(user);
 
             Recipe recipe1 = Recipe.createRecipe("함초 냉이 국수", "소면 50g, 함초 3g(1/2작은술), 노루궁뎅이버섯 25g(1/2개), 다시마 17g(15cm), 파 140g(1/2개), 양파 150g(1/2개), 무 250g(1/3개), 모시조개 150g(3/4컵), 냉이 35g, 간장 30g(2큰술), 달걀 50g(1개), 청고추 20g(1개), 실고추 2g", "면", "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00131_1.png",
@@ -80,7 +88,10 @@ public class InitDb {
             Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기");
             em.persist(gpt);
 
-            User user = User.createUser("testerC", null, "testC", passwordEncoder.encode("C1234"), 30);
+            Profile profile = Profile.createProfile("profile12", "jpg", null);
+            em.persist(profile);
+
+            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
             em.persist(user);
 
             RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
@@ -98,7 +109,10 @@ public class InitDb {
             Gpt gpt = Gpt.createGpt("버섯구이", "새송이 버섯, 올리브유, 소금", "1.버섯 썰기 2.굽기 3.먹기");
             em.persist(gpt);
 
-            User user = User.createUser("testerC", null, "testC", passwordEncoder.encode("C1234"), 30);
+            Profile profile = Profile.createProfile("profile1234", "png", null);
+            em.persist(profile);
+
+            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
             em.persist(user);
 
 

@@ -24,16 +24,14 @@ import java.util.stream.Collectors;
 public class UserResponseDto implements UserDetails {
     private Long userId;
     private String username;
-    private byte[] profile;
+    private byte[] profileData;
     private String loginId;
     private String password;
     private Integer age; //연령별: 레시피 탭에서 필요
     private List<RecipeHeartDto> recipeHeartDtos;
     private List<RegisterHeartDto> registerHeartDtos;
-
     private List<RecipeReviewResponseDto> recipeReviewResponseDtos;
     private List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos;
-
     private List<RegisterResponseDto> registerResponseDtos;
 
     /**
@@ -42,7 +40,7 @@ public class UserResponseDto implements UserDetails {
     public UserResponseDto(User user) {
         userId = user.getUserId();
         username = user.getUsername();
-        profile = user.getProfile();
+        profileData = user.getProfile().getProfileData();
         loginId = user.getLoginId();
         password = user.getPassword();
         age = user.getAge();
@@ -63,11 +61,9 @@ public class UserResponseDto implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-
     public static UserResponseDto createUserResponseDto(User user) {
         return new UserResponseDto(user);
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

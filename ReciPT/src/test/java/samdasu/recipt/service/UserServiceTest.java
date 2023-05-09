@@ -106,7 +106,7 @@ public class UserServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("testerA", null, "testA", "A1234", 30);
+        User user = User.createUser("testerA", "testA", "A1234", 30, null);
         em.persist(user);
         return user;
     }
