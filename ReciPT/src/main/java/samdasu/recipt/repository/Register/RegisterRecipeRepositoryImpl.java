@@ -73,7 +73,7 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     public List<RegisterRecipe> Top10RegisterRecipeLike() {
         return queryFactory
                 .selectFrom(registerRecipe)
-                .orderBy(registerRecipe.likeCount.desc())
+                .orderBy(registerRecipe.likeCount.desc(), registerRecipe.createDate.desc())
                 .limit(10)
                 .fetch();
     }
@@ -82,7 +82,7 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     public List<RegisterRecipe> Top10RegisterRecipeView() {
         return queryFactory
                 .selectFrom(registerRecipe)
-                .orderBy(registerRecipe.viewCount.desc())
+                .orderBy(registerRecipe.viewCount.desc(), registerRecipe.createDate.desc())
                 .limit(10)
                 .fetch();
     }
@@ -91,7 +91,7 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     public List<RegisterRecipe> Top10RegisterRecipeRatingScore() {
         return queryFactory
                 .selectFrom(registerRecipe)
-                .orderBy(registerRecipe.ratingScore.desc())
+                .orderBy(registerRecipe.ratingScore.desc(), registerRecipe.createDate.desc())
                 .limit(10)
                 .fetch();
     }

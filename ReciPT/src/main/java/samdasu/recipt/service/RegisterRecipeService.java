@@ -61,6 +61,15 @@ public class RegisterRecipeService {
         return registerRecipeRepository.save(registerRecipe).getRegisterId();
     }
 
+    /**
+     * 등록한 레시피 삭제
+     */
+    @Transactional
+    public void deleteRegisterRecipe(Long registerRecipeId) {
+        RegisterRecipe registerRecipe = registerRecipeRepository.findById(registerRecipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No RegisterRecipe Info"));
+        registerRecipeRepository.delete(registerRecipe);
+    }
 
     public RegisterRecipe findByFoodName(String foodName) {
         return registerRecipeRepository.findByFoodName(foodName)
