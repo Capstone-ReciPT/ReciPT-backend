@@ -4,6 +4,9 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  http:
+    multipart:
+      location: /data/upload_tmp
 
   jpa:
     hibernate:
@@ -43,4 +46,9 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
 # org.hibernate.type: trace      # 파라미터까지 볼 수 있음
+
+# 외 다른 내용은 GptConfig 에서 수정
+#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
+openai:
+  token: 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
 

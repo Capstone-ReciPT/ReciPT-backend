@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
+import samdasu.recipt.entity.Profile;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
+import samdasu.recipt.repository.ProfileRepository;
 import samdasu.recipt.repository.UserRepository;
 
 import java.util.List;
@@ -17,12 +19,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long join(UserSignUpDto signUpDto) { //회원가입
+    public Long join(UserSignUpDto signUpDto, Long profileId) { //회원가입
         validateLogin(signUpDto);
-        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge());
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Profile Info"));
+        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge(), profile);
+
         return userRepository.save(user).getUserId();
     }
 
@@ -39,8 +45,9 @@ public class UserService {
     @Transactional
     public Long update(Long userId, UserUpdateRequestDto updateRequestDto) {
         User user = findById(userId);
+        String newPassword = passwordEncoder.encode(updateRequestDto.getPassword());
 
-        user.updateUserInfo(updateRequestDto);
+        user.updateUserInfo(newPassword);
         return userId;
     }
 

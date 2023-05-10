@@ -6,13 +6,16 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import samdasu.recipt.entity.Heart;
-import samdasu.recipt.entity.RegisterRecipe;
-import samdasu.recipt.entity.Review;
+import samdasu.recipt.controller.dto.Heart.RecipeHeartDto;
+import samdasu.recipt.controller.dto.Heart.RegisterHeartDto;
+import samdasu.recipt.controller.dto.Register.RegisterResponseDto;
+import samdasu.recipt.controller.dto.Review.RecipeReviewResponseDto;
+import samdasu.recipt.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.entity.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,52 +24,45 @@ import java.util.List;
 public class UserResponseDto implements UserDetails {
     private Long userId;
     private String username;
+    private byte[] profileData;
     private String loginId;
     private String password;
+    private Integer age; //연령별: 레시피 탭에서 필요
+    private List<RecipeHeartDto> recipeHeartDtos;
+    private List<RegisterHeartDto> registerHeartDtos;
+    private List<RecipeReviewResponseDto> recipeReviewResponseDtos;
+    private List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos;
+    private List<RegisterResponseDto> registerResponseDtos;
 
-    private Integer age;
-
-    //연령별: 레시피 탭에서 필요
-
-    private List<Heart> hearts;
-
-    private List<Review> reviews;
-
-    private List<RegisterRecipe> registerRecipes;
-
+    /**
+     * 프로필 세팅 탭
+     */
     public UserResponseDto(User user) {
         userId = user.getUserId();
         username = user.getUsername();
+        profileData = user.getProfile().getProfileData();
         loginId = user.getLoginId();
         password = user.getPassword();
         age = user.getAge();
-
-
-//        dbHeartDto = user.getHearts().stream()
-//                .map(heart -> new RecipeHeartDto(heart))
-//                .collect(Collectors.toList());
-//        gptHeartDto = user.getHearts().stream()
-//                .map(heart -> new GptHeartDto(heart))
-//                .collect(Collectors.toList());
-//        reviewTitle = user.getReviews().stream()
-//                .map(review -> review.getTitle())
-//                .collect(Collectors.toList());
+        recipeHeartDtos = user.getHearts().stream()
+                .map(heart -> new RecipeHeartDto(heart))
+                .collect(Collectors.toList());
+        registerHeartDtos = user.getHearts().stream()
+                .map(heart -> new RegisterHeartDto(heart))
+                .collect(Collectors.toList());
+        recipeReviewResponseDtos = user.getReviews().stream()
+                .map(review -> new RecipeReviewResponseDto(review))
+                .collect(Collectors.toList());
+        registerRecipeReviewResponseDtos = user.getReviews().stream()
+                .map(review -> new RegisterRecipeReviewResponseDto(review))
+                .collect(Collectors.toList());
+        registerResponseDtos = user.getRegisterRecipes().stream()
+                .map(registerRecipe -> new RegisterResponseDto(registerRecipe))
+                .collect(Collectors.toList());
     }
 
-    public UserResponseDto(User user, Long userId) {
-        username = user.getUsername();
-        loginId = user.getLoginId();
-        password = user.getPassword();
-//        userAllergyResponseDto = user.getUserAllergies().stream()
-//                .map(userAllergy -> new UserAllergyResponseDto(userAllergy))
-//                .collect(Collectors.toList());
-//        reviewTitle = user.getReviews().stream()
-//                .map(review -> review.getTitle())
-//                .collect(Collectors.toList());
-    }
-
-    public static UserResponseDto createUserResponseDto(User user, Long userId) {
-        return new UserResponseDto(user, userId);
+    public static UserResponseDto createUserResponseDto(User user) {
+        return new UserResponseDto(user);
     }
 
     @Override

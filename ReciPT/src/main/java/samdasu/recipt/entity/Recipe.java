@@ -41,9 +41,7 @@ public class Recipe extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "recipe")
     private List<Heart> hearts = new ArrayList<>();
-
-    @OneToOne(mappedBy = "recipe")
-    private RegisterRecipe registerRecipes;
+    
 
     //==생성 메서드==/
     public Recipe(String foodName, String ingredient, String category, String thumbnailImage, String context, String image, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {

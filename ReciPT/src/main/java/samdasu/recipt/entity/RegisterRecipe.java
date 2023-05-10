@@ -21,9 +21,6 @@ public class RegisterRecipe extends BaseTimeEntity {
     private Long registerId;
     @Column(nullable = false)
     private String foodName;
-    @Lob
-    @Column(length = 1000)
-    private byte[] thumbnailImage;
     @Column(nullable = false, length = 100)
     private String title;
     @Column(nullable = false)
@@ -47,19 +44,18 @@ public class RegisterRecipe extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "gpt_id")
     private Gpt gpt;
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+
     @OneToMany(mappedBy = "registerRecipe")
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "registerRecipe")
     private List<Heart> hearts = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "registerRecipe")
     private List<ImageFile> imageFiles = new ArrayList<>();
 
+    @OneToOne(mappedBy = "registerRecipe")
+    private RegisterRecipeThumbnail registerRecipeThumbnail;
 
     //== 연관관계 편의 메서드 ==//
     public void addUser(User user) {
@@ -77,10 +73,14 @@ public class RegisterRecipe extends BaseTimeEntity {
         image.setRegisterRecipe(this);
     }
 
+    public void addThumbnail(RegisterRecipeThumbnail thumbnail) {
+        this.registerRecipeThumbnail = thumbnail;
+        thumbnail.setRegisterRecipe(this);
+    }
+
     //==생성 메서드==//
-    public RegisterRecipe(String foodName, byte[] thumbnailImage, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
+    public RegisterRecipe(String foodName, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
         this.foodName = foodName;
-        this.thumbnailImage = thumbnailImage;
         this.title = title;
         this.comment = comment;
         this.category = category;
@@ -92,10 +92,11 @@ public class RegisterRecipe extends BaseTimeEntity {
         this.ratingPeople = ratingPeople;
     }
 
-    public static RegisterRecipe createRegisterRecipe(String foodName, byte[] thumbnailImage, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, User user, Gpt gpt, ImageFile... imageFiles) {
-        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, thumbnailImage, title, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople);
+    public static RegisterRecipe createRegisterRecipe(String foodName, RegisterRecipeThumbnail thumbnail, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, User user, Gpt gpt, ImageFile... imageFiles) {
+        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, title, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople);
         registerRecipe.addUser(user);
         registerRecipe.addGpt(gpt);
+        registerRecipe.addThumbnail(thumbnail);
         for (ImageFile imageFile : imageFiles) {
             registerRecipe.addImageFile(imageFile);
         }
@@ -114,4 +115,5 @@ public class RegisterRecipe extends BaseTimeEntity {
     public void calcRatingScore(RegisterRecipe recipe) {
         recipe.ratingScore = Math.round(recipe.getRatingScore() / recipe.getRatingPeople() * 100) / 100.0;
     }
+
 }
