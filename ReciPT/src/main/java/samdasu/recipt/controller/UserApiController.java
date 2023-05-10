@@ -49,6 +49,9 @@ public class UserApiController {
         Long joinUserId = userService.join(userSignUpDto, savedProfileId);
 
         User findUser = userService.findById(joinUserId);
+        log.info("findUser.getProfile().getFilename() = {}", findUser.getProfile().getFilename());
+        log.info("findUser.getUsername = {}", findUser.getUsername());
+
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
         return new Result(1, new UserResponseDto(findUser), ResponseEntity.status(HttpStatus.OK)
@@ -91,18 +94,29 @@ public class UserApiController {
      */
     @PostMapping("/user/edit")
     public Result updateUser(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                             @RequestBody @Valid UserUpdateRequestDto request) {
-
+                             @Valid UserUpdateRequestDto request) throws JsonProcessingException {
         userService.update(userResponseDto.getUserId(), request);
+
         User findUser = userService.findById(userResponseDto.getUserId());
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
-        log.info("downloadImage = {}", downloadImage);
-        log.info("user.getProfile() = {}", findUser.getProfile());
+        log.info("user.getPassword() = {}", findUser.getPassword());
 
-        return new Result(1, new UserResponseDto(findUser), ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(downloadImage));
+        UserResponseDto responseDto = new UserResponseDto(findUser);
+        // JSON 데이터와 이미지 데이터를 하나의 JSON 객체에 담음
+        Map<String, Object> data = new HashMap<>();
+        data.put("image", downloadImage);
+
+        // JSON 객체를 byte[]로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        byte[] jsonData = objectMapper.writeValueAsBytes(data);
+
+        // HTTP 응답 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentLength(jsonData.length);
+
+        return new Result(1, responseDto, new ResponseEntity<>(jsonData, headers, HttpStatus.OK));
     }
 
     /**
@@ -111,6 +125,8 @@ public class UserApiController {
     @GetMapping("/user/like")
     public Result searchLikeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto) {
         User findUser = userService.findById(userResponseDto.getUserId());
+        UserResponseDto responseDto = new UserResponseDto(findUser);
+
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
         log.info("user.getUsername() = {}", findUser.getUsername());
@@ -128,7 +144,7 @@ public class UserApiController {
                 .collect(Collectors.toList());
 
 
-        return new Result(recipeHeart.size() + registerHeart.size(), new UserResponseDto(findUser), ResponseEntity.status(HttpStatus.OK)
+        return new Result(recipeHeart.size() + registerHeart.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadImage));
     }
@@ -139,6 +155,7 @@ public class UserApiController {
     @GetMapping("/user/register")
     public Result searchRegisterInfo(@AuthenticationPrincipal UserResponseDto userResponseDto) {
         User findUser = userService.findById(userResponseDto.getUserId());
+        UserResponseDto responseDto = new UserResponseDto(findUser);
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
         log.info("user.getUsername() = {}", findUser.getUsername());
@@ -149,7 +166,7 @@ public class UserApiController {
                 .map(RegisterResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new Result(collect.size(), new UserResponseDto(findUser), ResponseEntity.status(HttpStatus.OK)
+        return new Result(collect.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadImage));
     }
@@ -160,6 +177,7 @@ public class UserApiController {
     @GetMapping("/user/review")
     public Result searchReviewInfo(@AuthenticationPrincipal UserResponseDto userResponseDto) {
         User findUser = userService.findById(userResponseDto.getUserId());
+        UserResponseDto responseDto = new UserResponseDto(findUser);
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
         log.info("user.getUsername() = {}", findUser.getUsername());
@@ -174,7 +192,7 @@ public class UserApiController {
                 .map(RegisterRecipeReviewResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new Result(recipeReviewResponseDtos.size() + registerRecipeReviewResponseDtos.size(), new UserResponseDto(findUser), ResponseEntity.status(HttpStatus.OK)
+        return new Result(recipeReviewResponseDtos.size() + registerRecipeReviewResponseDtos.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadImage));
     }

@@ -30,8 +30,8 @@ class UserTest {
 
     @Test
     public void testEntity() {
-        User user1 = new User("user1", null, "id1", "pw1", 10);
-        User user2 = new User("user2", null, "id2", "pw2", 20);
+        User user1 = new User("user1", "id1", "pw1", 10);
+        User user2 = new User("user2", "id2", "pw2", 20);
         em.persist(user1);
         em.persist(user2);
 
@@ -42,11 +42,8 @@ class UserTest {
                 .getResultList();
 
         for (User user : users) {
-            System.out.println("user = " + user);
+            System.out.println("user.getUsername() = " + user.getUsername());
         }
 
-        User user = userRepository.findById(Long.valueOf(1))
-                .orElseThrow(() -> new IllegalArgumentException("Fail: Empty User Id 1"));
-        System.out.println("user.getUsername() = " + user.getUsername());
     }
 }

@@ -131,12 +131,12 @@ public class HomeApiController {
     @Data
     @AllArgsConstructor
     static class Result<T> {
-        private T data1;
-        private T data2;
-        private T data3;
-        private T data4;
-        private T data5;
-        private T data6;
+        private T popularThumbnail;
+        private T popularFoodName;
+        private T todayThumbnail;
+        private T todayFoodName;
+        private T recentThumbnail;
+        private T recentFoodName;
     }
 
 }

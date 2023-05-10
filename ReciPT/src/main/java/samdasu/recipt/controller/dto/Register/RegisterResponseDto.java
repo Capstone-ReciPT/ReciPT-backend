@@ -26,7 +26,7 @@ public class RegisterResponseDto {
 
     public RegisterResponseDto(RegisterRecipe registerRecipe) {
         registerId = registerRecipe.getRegisterId();
-        thumbnailImage = registerRecipe.getThumbnailImage();
+        thumbnailImage = registerRecipe.getRegisterRecipeThumbnail().getThumbnailData();
         foodName = registerRecipe.getFoodName();
         title = registerRecipe.getTitle();
         comment = registerRecipe.getComment();

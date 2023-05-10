@@ -28,6 +28,7 @@ public class UserService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Profile Info"));
         User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge(), profile);
+
         return userRepository.save(user).getUserId();
     }
 
@@ -44,8 +45,9 @@ public class UserService {
     @Transactional
     public Long update(Long userId, UserUpdateRequestDto updateRequestDto) {
         User user = findById(userId);
+        String newPassword = passwordEncoder.encode(updateRequestDto.getPassword());
 
-        user.updateUserInfo(updateRequestDto);
+        user.updateUserInfo(newPassword);
         return userId;
     }
 

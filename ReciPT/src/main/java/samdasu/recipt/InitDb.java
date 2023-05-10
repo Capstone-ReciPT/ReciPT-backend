@@ -5,7 +5,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.entity.*;
-import samdasu.recipt.repository.ProfileRepository;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -14,7 +13,6 @@ import javax.persistence.EntityManager;
 @RequiredArgsConstructor
 public class InitDb {
     private final InitService initService;
-    private final ProfileRepository profileRepository;
 
     @PostConstruct
     public void init() {
@@ -88,13 +86,16 @@ public class InitDb {
             Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기");
             em.persist(gpt);
 
+            RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("군만두 썸네일", "jpg", null);
+            em.persist(thumbnail);
+
             Profile profile = Profile.createProfile("profile12", "jpg", null);
             em.persist(profile);
 
             User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
             em.persist(user);
 
-            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
                     0L, 55, 0.0, 0, user, gpt, imageFile);
             em.persist(registerRecipe);
 
@@ -109,6 +110,9 @@ public class InitDb {
             Gpt gpt = Gpt.createGpt("버섯구이", "새송이 버섯, 올리브유, 소금", "1.버섯 썰기 2.굽기 3.먹기");
             em.persist(gpt);
 
+            RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("버섯 썸네일", "jpg", null);
+            em.persist(thumbnail);
+
             Profile profile = Profile.createProfile("profile1234", "png", null);
             em.persist(profile);
 
@@ -116,7 +120,7 @@ public class InitDb {
             em.persist(user);
 
 
-            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "버섯을 먹어보아요", "고기랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "버섯을 먹어보아요", "고기랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
                     0L, 35, 0.0, 0, user, gpt, imageFile);
             em.persist(registerRecipe);
 

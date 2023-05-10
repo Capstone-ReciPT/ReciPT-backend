@@ -28,6 +28,6 @@ public class RegisterRecipeReviewResponseDto {
         comment = review.getComment();
         likeCount = review.getLikeCount();
         ratingScore = review.getRatingScore();
-        registerThumbnailImage = review.getRegisterRecipe().getThumbnailImage();
+//        registerThumbnailImage = review.getRegisterRecipe().getThumbnailImage();
     }
 }

@@ -40,4 +40,5 @@ public class ProfileService {
 
         return ImageUtils.decompressImage(profile.getProfileData());
     }
+    
 }

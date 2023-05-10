@@ -3,7 +3,6 @@ package samdasu.recipt.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.global.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -65,11 +64,11 @@ public class User extends BaseTimeEntity {
         user.addProfile(profile);
         return user;
     }
-    
+
 
     //==비지니스 로직==//
-    public void updateUserInfo(UserUpdateRequestDto requestDto) {
-        password = requestDto.getPassword();
+    public void updateUserInfo(String newPassword) {
+        password = newPassword;
     }
 
 }

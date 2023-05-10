@@ -7,14 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
-import samdasu.recipt.entity.Gpt;
-import samdasu.recipt.entity.ImageFile;
-import samdasu.recipt.entity.RegisterRecipe;
-import samdasu.recipt.entity.User;
+import samdasu.recipt.entity.*;
 import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.GptRepository;
 import samdasu.recipt.repository.ImageFileRepository;
 import samdasu.recipt.repository.Register.RegisterRecipeRepository;
+import samdasu.recipt.repository.RegisterRecipeThumbnailRepository;
 import samdasu.recipt.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -27,6 +25,7 @@ public class RegisterRecipeService {
     private final RegisterRecipeRepository registerRecipeRepository;
     private final UserRepository userRepository;
     private final ImageFileRepository imageFileRepository;
+    private final RegisterRecipeThumbnailRepository thumbnailRepository;
     private final GptRepository gptRepository;
 
     /**
@@ -48,7 +47,7 @@ public class RegisterRecipeService {
      * 레시피 등록
      */
     @Transactional
-    public Long registerRecipeSave(Long userId, Long imageId, Long gptId, RegisterRequestDto requestDto) {
+    public Long registerRecipeSave(Long userId, Long imageId, Long gptId, Long thumbnailId, RegisterRequestDto requestDto) {
         //엔티티 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
@@ -56,8 +55,10 @@ public class RegisterRecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No ImageFile Info"));
         Gpt gpt = gptRepository.findById(gptId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Gpt Info"));
+        RegisterRecipeThumbnail thumbnail = thumbnailRepository.findById(thumbnailId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Thumbnail Info"));
 
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), requestDto.getThumbnailImage(), requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
                 gpt.getIngredient(), gpt.getContext(), 0L, 0, 0.0, 0, user, gpt, imageFile);
 
         return registerRecipeRepository.save(registerRecipe).getRegisterId();
@@ -114,7 +115,7 @@ public class RegisterRecipeService {
     public List<RegisterRecipe> findTop10Like() {
         return registerRecipeRepository.Top10Like();
     }
-    
+
     public List<RegisterRecipe> findTop10View() {
         return registerRecipeRepository.Top10View();
     }

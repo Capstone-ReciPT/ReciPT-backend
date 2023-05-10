@@ -9,6 +9,13 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
+/**
+ * profile & RegisterRecipe를 @Embeddable 타입으로 생성하지 않은 이유
+ * - profile과 RegisterRecipe save 할 때 이미지를 저장할려면 @setter를 각 entity에 넣어줘야함
+ * - 변경 지점이 많아져서 코드의 복잡성 증가
+ * <p>
+ * - 따라서 1 대 1 맵핑을 통해 변경 지점을 줄이기로 결정
+ */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
