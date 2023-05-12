@@ -24,6 +24,7 @@ import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.entity.Review;
 import samdasu.recipt.entity.User;
+import samdasu.recipt.service.HeartService;
 import samdasu.recipt.service.ProfileService;
 import samdasu.recipt.service.UserService;
 
@@ -122,31 +123,38 @@ public class UserApiController {
     /**
      * 유저가 누른 좋아요 보기
      */
+
+    private final HeartService heartService;
+
     @GetMapping("/user/like")
-    public Result searchLikeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto) {
+    public Result2 searchLikeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto) {
         User findUser = userService.findById(userResponseDto.getUserId());
+
+//        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 3L, "된장 부대찌개");
+//        RecipeHeartDto recipeHeartDto1 = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 10L, "구운채소");
+//        RecipeHeartDto recipeHeartDto2 = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 9L, "함초 냉이 국수");
+//        heartService.insertRecipeHeart(recipeHeartDto);
+//        heartService.insertRecipeHeart(recipeHeartDto1);
+//        heartService.insertRecipeHeart(recipeHeartDto2);
+
         UserResponseDto responseDto = new UserResponseDto(findUser);
-
-        byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
-
-        log.info("user.getUsername() = {}", findUser.getUsername());
-        log.info("user.RecipeHeartDto() = {}", findUser.getHearts().stream()
-                .map(RecipeHeartDto::new).collect(Collectors.toList()));
-        log.info("user.RegisterHeartDto() = {}", findUser.getHearts().stream()
-                .map(RegisterHeartDto::new).collect(Collectors.toList()));
-
+//        byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
         List<RecipeHeartDto> recipeHeart = findUser.getHearts().stream()
-                .map(RecipeHeartDto::new)
+                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
+                .map(heart -> new RecipeHeartDto(heart))
                 .collect(Collectors.toList());
         List<RegisterHeartDto> registerHeart = findUser.getHearts().stream()
-                .map(RegisterHeartDto::new)
+                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
+                .map(heart -> new RegisterHeartDto(heart))
                 .collect(Collectors.toList());
 
 
-        return new Result(recipeHeart.size() + registerHeart.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(downloadImage));
+//        return new Result(recipeHeart.size() + registerHeart.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
+//                .contentType(MediaType.valueOf("image/png"))
+//                .body(downloadImage));
+
+        return new Result2(recipeHeart.size() + registerHeart.size(), responseDto);
     }
 
     /**
@@ -185,10 +193,12 @@ public class UserApiController {
                 .map(Review::getComment).collect(Collectors.toList()));
 
         List<RecipeReviewResponseDto> recipeReviewResponseDtos = findUser.getReviews().stream()
+                .filter(review -> review != null && review.getRecipe() != null && review.getRecipe().getRecipeId() != null) // null 값 필터링
                 .map(RecipeReviewResponseDto::new)
                 .collect(Collectors.toList());
 
         List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos = findUser.getReviews().stream()
+                .filter(review -> review != null && review.getRegisterRecipe() != null && review.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
                 .map(RegisterRecipeReviewResponseDto::new)
                 .collect(Collectors.toList());
 
@@ -212,5 +222,6 @@ public class UserApiController {
         private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
         private T data;
     }
+
 }
 

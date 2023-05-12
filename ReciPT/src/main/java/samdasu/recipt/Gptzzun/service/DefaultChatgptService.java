@@ -1,0 +1,67 @@
+package samdasu.recipt.Gptzzun.service;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import samdasu.recipt.Gptzzun.dto.chat.MultiChatMessage;
+import samdasu.recipt.Gptzzun.dto.chat.MultiChatRequest;
+import samdasu.recipt.Gptzzun.dto.chat.MultiChatResponse;
+import samdasu.recipt.Gptzzun.exception.ChatgptException;
+import samdasu.recipt.Gptzzun.property.MultiChatProperties;
+
+import java.util.List;
+
+@Slf4j
+@Service
+public class DefaultChatgptService implements ChatgptService {
+
+    protected final MultiChatProperties multiChatProperties;
+
+    private final String AUTHORIZATION;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public DefaultChatgptService(MultiChatProperties multiChatProperties) {
+        this.multiChatProperties = multiChatProperties;
+        AUTHORIZATION = "Bearer " + multiChatProperties.getApiKey();
+    }
+
+    @Override
+    public String multiChat(List<MultiChatMessage> messages) {
+        MultiChatRequest multiChatRequest = new MultiChatRequest(multiChatProperties.getModel(), messages, multiChatProperties.getMaxTokens(), multiChatProperties.getTemperature(), multiChatProperties.getTopP());
+        MultiChatResponse multiChatResponse = this.getResponse(this.buildHttpEntity(multiChatRequest), MultiChatResponse.class, multiChatProperties.getUrl());
+        try {
+            return multiChatResponse.getChoices().get(0).getMessage().getContent();
+        } catch (Exception e) {
+            log.error("parse chatgpt message error", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public MultiChatResponse multiChatRequest(MultiChatRequest multiChatRequest) {
+        return this.getResponse(this.buildHttpEntity(multiChatRequest), MultiChatResponse.class, multiChatProperties.getUrl());
+    }
+
+    protected <T> HttpEntity<?> buildHttpEntity(T request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/json; charset=UTF-8"));
+        headers.add("Authorization", AUTHORIZATION);
+        return new HttpEntity<>(request, headers);
+    }
+
+    protected <T> T getResponse(HttpEntity<?> httpEntity, Class<T> responseType, String url) {
+        log.info("request url: {}, httpEntity: {}", url, httpEntity);
+        ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, responseType);
+        if (responseEntity.getStatusCodeValue() != HttpStatus.OK.value()) {
+            log.error("error response status: {}", responseEntity);
+            throw new ChatgptException("error response status :" + responseEntity.getStatusCodeValue());
+        } else {
+            log.info("response: {}", responseEntity);
+        }
+        return responseEntity.getBody();
+    }
+
+}

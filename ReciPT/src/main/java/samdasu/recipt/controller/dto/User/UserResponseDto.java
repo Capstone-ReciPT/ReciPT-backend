@@ -45,9 +45,11 @@ public class UserResponseDto implements UserDetails {
         password = user.getPassword();
         age = user.getAge();
         recipeHeartDtos = user.getHearts().stream()
+                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
                 .map(heart -> new RecipeHeartDto(heart))
                 .collect(Collectors.toList());
         registerHeartDtos = user.getHearts().stream()
+                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
                 .map(heart -> new RegisterHeartDto(heart))
                 .collect(Collectors.toList());
         recipeReviewResponseDtos = user.getReviews().stream()
@@ -59,6 +61,7 @@ public class UserResponseDto implements UserDetails {
         registerResponseDtos = user.getRegisterRecipes().stream()
                 .map(registerRecipe -> new RegisterResponseDto(registerRecipe))
                 .collect(Collectors.toList());
+        
     }
 
     public static UserResponseDto createUserResponseDto(User user) {
