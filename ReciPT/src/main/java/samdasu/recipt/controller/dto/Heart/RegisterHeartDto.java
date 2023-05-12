@@ -16,18 +16,22 @@ public class RegisterHeartDto {
     @NotBlank
     private Long registerId;
 
-    public RegisterHeartDto(Long userId, Long registerId) {
+    private String foodName;
+
+    public RegisterHeartDto(Long userId, Long registerId, String foodName) {
         this.userId = userId;
         this.registerId = registerId;
+        this.foodName = foodName;
     }
 
-    public static RegisterHeartDto createRegisterHeartDto(Long userId, Long registerId) {
-        return new RegisterHeartDto(userId, registerId);
+    public static RegisterHeartDto createRegisterHeartDto(Long userId, Long registerId, String foodName) {
+        return new RegisterHeartDto(userId, registerId, foodName);
     }
 
     public RegisterHeartDto(Heart heart) {
         userId = heart.getUser().getUserId();
         registerId = heart.getRegisterRecipe().getRegisterId();
+        foodName = heart.getRegisterRecipe().getFoodName();
     }
 
 

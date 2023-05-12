@@ -16,18 +16,22 @@ public class RecipeHeartDto {
     @NotBlank
     private Long recipeId;
 
-    public RecipeHeartDto(Long userId, Long recipeId) {
+    private String foodName;
+
+    public RecipeHeartDto(Long userId, Long recipeId, String foodName) {
         this.userId = userId;
         this.recipeId = recipeId;
+        this.foodName = foodName;
     }
 
-    public static RecipeHeartDto createRecipeHeartDto(Long userId, Long recipeId) {
-        return new RecipeHeartDto(userId, recipeId);
+    public static RecipeHeartDto createRecipeHeartDto(Long userId, Long recipeId, String foodName) {
+        return new RecipeHeartDto(userId, recipeId, foodName);
     }
 
     public RecipeHeartDto(Heart heart) {
         userId = heart.getUser().getUserId();
         recipeId = heart.getRecipe().getRecipeId();
+        foodName = heart.getRecipe().getFoodName();
     }
 }
 
