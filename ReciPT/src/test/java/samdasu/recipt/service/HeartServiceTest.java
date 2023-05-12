@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.controller.dto.Heart.RegisterHeartDto;
@@ -29,10 +28,11 @@ public class HeartServiceTest {
     HeartService heartService;
 
     @Test
-    @Rollback(value = false)
+//    @Rollback(value = false)
     public void Recipe_레시피_좋아요() throws Exception {
         //given
-        User user = createUser();
+        Profile profile = createProfile();
+        User user = createUser(profile);
         Recipe recipe = createRecipe();
 //         Review.createRecipeReview("새우두부계란찜 후기", 0, 3.0, user, recipe);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(user.getUserId(), recipe.getRecipeId());
@@ -47,10 +47,11 @@ public class HeartServiceTest {
     }
 
     @Test
-    @Rollback(value = false)
+//    @Rollback(value = false)
     public void Recipe_레시피_좋아요_취소() throws Exception {
         //given
-        User user = createUser();
+        Profile profile = createProfile();
+        User user = createUser(profile);
         Recipe recipe = createRecipe();
 
         createHeart(user, recipe); //Heart 저장
@@ -66,8 +67,12 @@ public class HeartServiceTest {
     @Test
     public void RegisterRecipe_레시피_좋아요() throws Exception {
         //given
-        User user = createUser();
-        RegisterRecipe registerRecipe = createRegisterRecipe(user);
+        Profile profile = createProfile();
+        User user = createUser(profile);
+        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        Gpt gpt = createGpt();
+        ImageFile imageFile = createImageFiles();
+        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
         RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId());
 
@@ -81,8 +86,12 @@ public class HeartServiceTest {
     @Test
     public void RegisterRecipe_레시피_좋아요_취소() throws Exception {
         //given
-        User user = createUser();
-        RegisterRecipe registerRecipe = createRegisterRecipe(user);
+        Profile profile = createProfile();
+        User user = createUser(profile);
+        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        Gpt gpt = createGpt();
+        ImageFile imageFile = createImageFiles();
+        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
         createHeart(user, registerRecipe); //Heart 저장
 
@@ -95,10 +104,11 @@ public class HeartServiceTest {
     }
 
     @Test
-    @Rollback(value = false)
+//    @Rollback(value = false)
     public void Review_레시피_좋아요() throws Exception {
         //given
-        User user = createUser();
+        Profile profile = createProfile();
+        User user = createUser(profile);
         Recipe recipe = createRecipe();
 
         Review recipeReview = createRecipeReview(user, recipe);
@@ -115,8 +125,12 @@ public class HeartServiceTest {
     @Test
     public void Review_레시피_좋아요_취소() throws Exception {
         //given
-        User user = createUser();
-        RegisterRecipe registerRecipe = createRegisterRecipe(user);
+        Profile profile = createProfile();
+        User user = createUser(profile);
+        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        Gpt gpt = createGpt();
+        ImageFile imageFile = createImageFiles();
+        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
         createHeart(user, registerRecipe); //Heart 저장
 
@@ -128,12 +142,6 @@ public class HeartServiceTest {
         assertThat(registerRecipe.getLikeCount()).isEqualTo(-1);
     }
 
-    private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", 10);
-        em.persist(user);
-
-        return user;
-    }
 
     private Recipe createRecipe() {
         Recipe recipe = Recipe.createRecipe("새우두부계란찜", "연두부 75g(3/4모), 칵테일새우 20g(5마리), 달걀 30g(1/2개), 생크림 13g(1큰술), 설탕 5g(1작은술), 무염버터 5g(1작은술), 고명, 시금치 10g(3줄기)",
@@ -145,10 +153,9 @@ public class HeartServiceTest {
         return recipe;
     }
 
-
-    private RegisterRecipe createRegisterRecipe(User user) {
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("만두", null, "만두 먹기!", "만두는 진리", "기타", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기",
-                0L, 0, 0.0, 0, user, null, null);
+    private RegisterRecipe createRegisterRecipe(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("만두", thumbnail, "만두 먹기!", "만두는 진리", "기타", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기",
+                0L, 0, 0.0, 0, user, gpt, imageFile);
 
         em.persist(registerRecipe);
 
@@ -158,11 +165,44 @@ public class HeartServiceTest {
         return registerRecipe;
     }
 
+    private User createUser(Profile profile) {
+        User user = User.createUser("tester1", "testId", "test1234", 10, profile);
+        em.persist(user);
+
+        return user;
+    }
+
+    private Profile createProfile() {
+        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
+        em.persist(profile);
+        return profile;
+    }
+
+    private RegisterRecipeThumbnail createThumbnail() {
+        RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("썸네일 사진", "png", null);
+        em.persist(thumbnail);
+        return thumbnail;
+    }
+
+    private Gpt createGpt() {
+        Gpt gpt = Gpt.createGpt("음식 이름", "식재료", "내용");
+        em.persist(gpt);
+
+        return gpt;
+    }
+
     private Review createRecipeReview(User user, Recipe recipe) {
         Review review = Review.createRecipeReview("새우두부계란찜 후기", 0, 3.0, user, recipe);
         em.persist(review);
 
         return review;
+    }
+
+    private ImageFile createImageFiles() {
+        ImageFile imageFile = ImageFile.createImageFile("음식 만드는 과정 사진", "png", null);
+        em.persist(imageFile);
+
+        return imageFile;
     }
 
     private Heart createHeart(User user, Recipe recipe) {

@@ -27,7 +27,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'junit:junit:4.13.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //    h2 DB
@@ -50,6 +50,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     testImplementation 'org.springframework.security:spring-security-test'
 
+    //open ai
+    implementation 'com.theokanning.openai-gpt3-java:api:0.11.1'
+    //implementation 'com.theokanning.openai-gpt3-java:client:0.11.1'
+    implementation 'com.theokanning.openai-gpt3-java:service:0.11.1'
 
     // queryDSL 설정
     implementation "com.querydsl:querydsl-jpa"

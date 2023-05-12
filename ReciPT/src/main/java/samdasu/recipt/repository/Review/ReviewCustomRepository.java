@@ -19,5 +19,4 @@ public interface ReviewCustomRepository {
 
     List<Review> recipeOrderByCreateDate(Long selectRecipeId);
 
-
 }

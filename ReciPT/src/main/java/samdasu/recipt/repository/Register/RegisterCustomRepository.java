@@ -2,6 +2,7 @@ package samdasu.recipt.repository.Register;
 
 import samdasu.recipt.entity.RegisterRecipe;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RegisterCustomRepository {
@@ -13,11 +14,17 @@ public interface RegisterCustomRepository {
 
     List<RegisterRecipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName);
 
-    List<RegisterRecipe> Top10RegisterRecipeLike();
+    List<RegisterRecipe> Top10Like();
 
-    List<RegisterRecipe> Top10RegisterRecipeView();
+    List<RegisterRecipe> Top10View();
 
-    List<RegisterRecipe> Top10RegisterRecipeRatingScore();
+    List<RegisterRecipe> Top10RatingScore();
+
+    List<RegisterRecipe> Top10RecentRegister();
+
+    List<String> RecommendByAge(int inputAge);
+
+    void resetViewCount(LocalDateTime yesterday);
 
 
 //    RegisterRecipe Top1registerRecipeLike();

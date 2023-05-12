@@ -8,10 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
-import samdasu.recipt.entity.Gpt;
-import samdasu.recipt.entity.ImageFile;
-import samdasu.recipt.entity.RegisterRecipe;
-import samdasu.recipt.entity.User;
+import samdasu.recipt.entity.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,10 +30,12 @@ class RegisterRecipeServiceTest {
     @Test
     public void 평점_갱신() throws Exception {
         //given
-        User user = createUser();
+        Profile profile = createProfile();
+        User user = createUser(profile);
         Gpt gpt = createGpt();
+        RegisterRecipeThumbnail thumbnail = createThumbnail();
         ImageFile imageFile = createImageFile();
-        RegisterRecipe recipe = createRecipe(user, gpt, imageFile);
+        RegisterRecipe recipe = createRecipe(user, gpt, thumbnail, imageFile);
         ReviewRequestDto reviewRequestDto = ReviewRequestDto.createReviewRequestDto("만두 맛있다.", 4.0);
 
         //when
@@ -50,13 +49,15 @@ class RegisterRecipeServiceTest {
     @Test
     public void 레시피_저장() throws Exception {
         //given
-        User user = createUser();
+        Profile profile = createProfile();
+        User user = createUser(profile);
         Gpt gpt = createGpt();
         ImageFile imageFile = createImageFile();
 
         //when
         RegisterRequestDto registerRequestDto = RegisterRequestDto.createRegisterRequestDto(null, "제목", "1줄평", "카테고리");
-        Long saveRegisterRecipeId = registerRecipeService.registerRecipeSave(user.getUserId(), imageFile.getImageId(), gpt.getGptId(), registerRequestDto);
+        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        Long saveRegisterRecipeId = registerRecipeService.registerRecipeSave(user.getUserId(), imageFile.getImageId(), gpt.getGptId(), thumbnail.getThumbnailId(), registerRequestDto);
 
         RegisterRecipe findById = registerRecipeService.findById(saveRegisterRecipeId);
 
@@ -103,7 +104,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> top10RegisterRecipeLike = registerRecipeService.findTop10RegisterRecipeLike();
+        List<RegisterRecipe> top10RegisterRecipeLike = registerRecipeService.findTop10Like();
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeLike) {
@@ -116,7 +117,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> top10RegisterRecipeView = registerRecipeService.findTop10RegisterRecipeView();
+        List<RegisterRecipe> top10RegisterRecipeView = registerRecipeService.findTop10View();
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeView) {
@@ -130,7 +131,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> top10RegisterRecipeRatingScore = registerRecipeService.findTop10RegisterRecipeRatingScore();
+        List<RegisterRecipe> top10RegisterRecipeRatingScore = registerRecipeService.findTop10RatingScore();
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeRatingScore) {
@@ -153,15 +154,27 @@ class RegisterRecipeServiceTest {
         return gpt;
     }
 
-    private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", 10);
+    private User createUser(Profile profile) {
+        User user = User.createUser("tester1", "testId", "test1234", 10, profile);
         em.persist(user);
 
         return user;
     }
 
-    private RegisterRecipe createRecipe(User user, Gpt gpt, ImageFile imageFile) {
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), null, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+    private Profile createProfile() {
+        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
+        em.persist(profile);
+        return profile;
+    }
+
+    private RegisterRecipeThumbnail createThumbnail() {
+        RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("썸네일 사진", "png", null);
+        em.persist(thumbnail);
+        return thumbnail;
+    }
+
+    private RegisterRecipe createRecipe(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
                 0L, 0, 5.0, 1, user, gpt, imageFile);
         em.persist(registerRecipe);
 

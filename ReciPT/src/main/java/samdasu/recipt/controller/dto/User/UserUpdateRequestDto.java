@@ -1,24 +1,23 @@
 package samdasu.recipt.controller.dto.User;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class UserUpdateRequestDto {
-    @NotBlank
-    private String password;
 
-    public UserUpdateRequestDto(String password) {
-        this.password = password;
+    private String password;
+    private byte[] profileData;
+
+    public UserUpdateRequestDto(String newPassword) {
+        password = newPassword;
     }
 
-    public static UserUpdateRequestDto createUpdateUserInfo(String password) {
-        return new UserUpdateRequestDto(password);
+    public static UserUpdateRequestDto createUpdateUserInfo(String newPassword) {
+        return new UserUpdateRequestDto(newPassword);
     }
 
 }

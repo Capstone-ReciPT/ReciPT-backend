@@ -5,4 +5,5 @@ import samdasu.recipt.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewCustomRepository {
 
+    
 }

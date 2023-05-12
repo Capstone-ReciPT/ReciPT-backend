@@ -42,11 +42,8 @@ class UserTest {
                 .getResultList();
 
         for (User user : users) {
-            System.out.println("user = " + user);
+            System.out.println("user.getUsername() = " + user.getUsername());
         }
 
-        User user = userRepository.findById(Long.valueOf(1))
-                .orElseThrow(() -> new IllegalArgumentException("Fail: Empty User Id 1"));
-        System.out.println("user.getUsername() = " + user.getUsername());
     }
 }

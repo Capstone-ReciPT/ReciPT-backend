@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.controller.dto.User.UserUpdateRequestDto;
+import samdasu.recipt.entity.Profile;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.UserRepository;
@@ -35,10 +36,10 @@ public class UserServiceTest {
     @Test
     public void 유저_회원가입() {
         //given
-        UserSignUpDto signUpDto = createUserSignUpDto("tester", 10, "test1234");
-
+        Profile profile = createProfile();
+        UserSignUpDto signUpDto = createUserSignUpDto("tester", profile, 10, "test1234");
         //when
-        Long savedId = userService.join(signUpDto);
+        Long savedId = userService.join(signUpDto, profile.getProfileId());
 
         //then
         User user = userRepository.findById(savedId)
@@ -49,19 +50,20 @@ public class UserServiceTest {
         assertThat(passwordEncoder.matches("test1234", user.getPassword())).isEqualTo(true);
     }
 
+
     @Test
     public void 유저_회원가입_중복회원() {
         // given
-        UserSignUpDto tester1 = createUserSignUpDto("tester", 10, "test1234");
-
-        userService.join(tester1);
+        Profile profile = createProfile();
+        UserSignUpDto tester1 = createUserSignUpDto("tester", profile, 10, "test1234");
+        userService.join(tester1, profile.getProfileId());
 
         // when
         // same loginId
-        UserSignUpDto tester2 = createUserSignUpDto("tester2", 20, "test5678");
+        UserSignUpDto tester2 = createUserSignUpDto("tester2", profile, 20, "test5678");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.join(tester2);
+            userService.join(tester2, profile.getProfileId());
         });
 
         // then
@@ -72,7 +74,8 @@ public class UserServiceTest {
     @Test
     public void 유저_회원정보_조회() {
         //given
-        User testA = createUser();
+        Profile profile = createProfile();
+        User testA = createUser(profile);
 
         //when
         UserResponseDto findUser = findUserResponseDtoById(testA.getUserId());
@@ -86,7 +89,8 @@ public class UserServiceTest {
     @Test
     public void 유저_업데이트() {
         //given
-        User testA = createUser();
+        Profile profile = createProfile();
+        User testA = createUser(profile);
 
         //when
         //change password
@@ -96,7 +100,7 @@ public class UserServiceTest {
         //then
         UserResponseDto updateUser = findUserResponseDtoById(updateUserInfo);
 
-        assertThat(updateUser.getPassword()).isEqualTo(userUpdateRequestDto.getPassword());
+        assertThat(updateUser.getPassword()).isEqualTo(testA.getPassword());
     }
 
     public UserResponseDto findUserResponseDtoById(Long userId) {
@@ -105,13 +109,19 @@ public class UserServiceTest {
         return new UserResponseDto(user);
     }
 
-    private User createUser() {
-        User user = User.createUser("testerA", "testA", "A1234", 30);
+    private User createUser(Profile profile) {
+        User user = User.createUser("testerA", "testA", "A1234", 30, profile);
         em.persist(user);
         return user;
     }
 
-    private static UserSignUpDto createUserSignUpDto(String tester, int age, String test1234) {
-        return new UserSignUpDto(tester, age, "testId", test1234, test1234);
+    private Profile createProfile() {
+        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
+        em.persist(profile);
+        return profile;
+    }
+
+    private static UserSignUpDto createUserSignUpDto(String tester, Profile profile, int age, String password) {
+        return new UserSignUpDto(tester, profile, age, "testId", password, password);
     }
 }
