@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class GptService {
+public class Prompt {
 
     private static OpenAiService openAiService;
 

@@ -6,6 +6,7 @@ import lombok.Setter;
 import samdasu.recipt.entity.Profile;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

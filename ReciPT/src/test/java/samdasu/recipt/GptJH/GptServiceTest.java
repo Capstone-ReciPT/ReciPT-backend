@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 class GptServiceTest {
     @Autowired
-    GptService gptService;
+    Prompt gptService;
 
     @Test
     public void gpt_response() throws Exception {
