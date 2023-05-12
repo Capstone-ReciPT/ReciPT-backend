@@ -6,12 +6,12 @@ import lombok.Setter;
 import samdasu.recipt.entity.Profile;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserSignUpDto {
+
     @NotBlank(message = "이름을 입력해주세요")
     private String username;
     private byte[] profileData;
@@ -22,6 +22,7 @@ public class UserSignUpDto {
     @NotBlank(message = "비밀번호를 입력해주세요")
     private String password;
     @NotBlank(message = "비밀번호가 일치하지 않습니다.")
+
     private String passwordConfirm;
 
     public UserSignUpDto(String username, Profile profile, Integer age, String loginId, String password, String passwordConfirm) {

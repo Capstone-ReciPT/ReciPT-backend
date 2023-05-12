@@ -69,6 +69,27 @@ public class RecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
     }
 
+    /**
+     * 좋아요 탑 10 조회
+     */
+    public List<Recipe> findTop10RecipeLike() {
+        return recipeRepository.Top10RecipeLike();
+    }
+
+    /**
+     * 조회 수 탑 10 조회
+     */
+    public List<Recipe> findTop10RecipeView() {
+        return recipeRepository.Top10RecipeView();
+    }
+
+    /**
+     * 평점 순 탑 10 조회
+     */
+    public List<Recipe> findTop10RecipeRatingScore() {
+        return recipeRepository.Top10RecipeRatingScore();
+    }
+
     public List<Recipe> findTop10RecentRegister() {
         return recipeRepository.Top10RecentRegister();
     }

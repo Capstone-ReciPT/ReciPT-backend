@@ -14,3 +14,4 @@ public class GptRequestDto {
         return new GptResponseDto(foodName, ingredient, context);
     }
 }
+
