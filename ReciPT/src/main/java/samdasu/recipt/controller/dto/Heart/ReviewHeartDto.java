@@ -16,18 +16,22 @@ public class ReviewHeartDto {
     @NotBlank
     private Long reviewId;
 
-    public ReviewHeartDto(Long userId, Long reviewId) {
+    private String comment;
+
+    public ReviewHeartDto(Long userId, Long reviewId, String comment) {
         this.userId = userId;
         this.reviewId = reviewId;
+        this.comment = comment;
     }
 
-    public static ReviewHeartDto createRecipeHeartDto(Long userId, Long reviewId) {
-        return new ReviewHeartDto(userId, reviewId);
+    public static ReviewHeartDto createRecipeHeartDto(Long userId, Long reviewId, String comment) {
+        return new ReviewHeartDto(userId, reviewId, comment);
     }
 
     public ReviewHeartDto(Heart heart) {
         userId = heart.getUser().getUserId();
         reviewId = heart.getReview().getReviewId();
+        comment = heart.getReview().getComment();
     }
 }
 

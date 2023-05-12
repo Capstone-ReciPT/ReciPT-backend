@@ -47,10 +47,10 @@ public class InitDb {
                     50L, 50, 4.0, 1);
             em.persist(recipe2);
 
-            Review review1 = Review.createRecipeReview("된장 부대찌개 후기", 0, 2.0, user, recipe1);
+            Review review1 = Review.createRecipeReview("된장 부대찌개 후기", 2, 2.0, user, recipe1);
             em.persist(review1);
 
-            Review review2 = Review.createRecipeReview("오렌지 당근 주스 후기", 0, 4.0, user, recipe2);
+            Review review2 = Review.createRecipeReview("오렌지 당근 주스 후기", 4, 4.0, user, recipe2);
             em.persist(review2);
         }
 
@@ -72,10 +72,10 @@ public class InitDb {
                     20L, 20, 5.0, 100);
             em.persist(recipe2);
 
-            Review review1 = Review.createRecipeReview("함초 냉이 국수 후기", 0, 3.0, user, recipe1);
+            Review review1 = Review.createRecipeReview("함초 냉이 국수 후기", 3, 3.0, user, recipe1);
             em.persist(review1);
 
-            Review review2 = Review.createRecipeReview("구운채소 후기", 0, 4.5, user, recipe2);
+            Review review2 = Review.createRecipeReview("구운채소 후기", 4, 4.5, user, recipe2);
             em.persist(review2);
         }
 
@@ -99,7 +99,7 @@ public class InitDb {
                     0L, 55, 0.0, 0, user, gpt, imageFile);
             em.persist(registerRecipe);
 
-            Review review = Review.createRegisterReview("만두 후기", 0, 4.0, user, registerRecipe);
+            Review review = Review.createRegisterReview("만두 후기", 4, 4.0, user, registerRecipe);
             em.persist(review);
         }
 
@@ -124,7 +124,7 @@ public class InitDb {
                     0L, 35, 0.0, 0, user, gpt, imageFile);
             em.persist(registerRecipe);
 
-            Review review = Review.createRegisterReview("버섯구이 후기", 0, 5.0, user, registerRecipe);
+            Review review = Review.createRegisterReview("버섯구이 후기", 50, 5.0, user, registerRecipe);
             em.persist(review);
         }
     }
