@@ -12,7 +12,7 @@ import java.util.List;
 @Configuration
 public class InsertInitData {
 
-    private static final String EXCEL_FILE_PATH = "/Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/test.xlsx";
+    private static final String EXCEL_FILE_PATH = "/Users/73630/data/test.xlsx";
 
     public static void insertInitData(ApplicationContext context, InsertRecipeService insertRecipeService) {
         try {

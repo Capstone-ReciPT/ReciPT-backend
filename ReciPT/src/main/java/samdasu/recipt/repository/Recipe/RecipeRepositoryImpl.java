@@ -71,6 +71,33 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
         return recipe.viewCount.goe(viewCond);
     }
 
+    @Override
+    public List<Recipe> Top10RecipeLike() {
+        return queryFactory
+                .selectFrom(recipe)
+                .orderBy(recipe.likeCount.desc(), recipe.createDate.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<Recipe> Top10RecipeView() {
+        return queryFactory
+                .selectFrom(recipe)
+                .orderBy(recipe.viewCount.desc(), recipe.createDate.desc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<Recipe> Top10RecipeRatingScore() {
+        return queryFactory
+                .selectFrom(recipe)
+                .where(recipe.ratingPeople.gt(0))
+                .orderBy(recipe.ratingScore.desc(), recipe.createDate.desc())
+                .limit(10)
+                .fetch();
+    }
 
     @Override
     public List<Recipe> Top10Like() {
