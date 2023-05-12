@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "chatgpt")
 public class MultiChatProperties {
 
-    private String apiKey = "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";
+    private String apiKey = "api-key";
     private String url = "https://api.openai.com/v1/chat/completions";
 
     private String model = "gpt-3.5-turbo";
