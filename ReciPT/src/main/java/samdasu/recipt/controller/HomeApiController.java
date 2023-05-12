@@ -7,15 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import samdasu.recipt.controller.dto.Recipe.RecipeResponseDto;
-import samdasu.recipt.controller.dto.Register.RegisterResponseDto;
+import samdasu.recipt.controller.dto.Recipe.RecipeHomeResponseDto;
+import samdasu.recipt.controller.dto.Register.RegisterHomeResponseDto;
 import samdasu.recipt.entity.Recipe;
 import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.service.RecipeService;
 import samdasu.recipt.service.RegisterRecipeService;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 인기 레세피 (좋아요 순)
@@ -49,94 +50,66 @@ public class HomeApiController {
         if (registerRecipes.size() < 10) {
             //인기 레세피 (좋아요 순)
             List<Recipe> recipeLike = recipeService.findTop10Like();
-
-            List<String> popularThumbnail = new ArrayList<>();
-            List<String> popularFoodName = new ArrayList<>();
-            for (int i = 0; i < recipeLike.size(); i++) {
-                RecipeResponseDto recipeResponseDto = RecipeResponseDto.createRecipeResponseDto(recipeLike.get(i));
-
-                popularThumbnail.add(recipeResponseDto.getThumbnailImage());
-                popularFoodName.add(recipeResponseDto.getFoodName());
-            }
+            Result2 top10Like = getRecipeTop10List(recipeLike);
 
             //오늘의 레시피 (조회수 순)
             List<Recipe> recipeView = recipeService.findTop10View();
-
-            List<String> todayThumbnail = new ArrayList<>();
-            List<String> todayFoodName = new ArrayList<>();
-            for (int i = 0; i < recipeView.size(); i++) {
-                RecipeResponseDto recipeResponseDto = RecipeResponseDto.createRecipeResponseDto(recipeView.get(i));
-
-                todayThumbnail.add(recipeResponseDto.getThumbnailImage());
-                todayFoodName.add(recipeResponseDto.getFoodName());
-            }
-
+            Result2 top10View = getRecipeTop10List(recipeView);
 
             //새로운 레시피(등록된지 24시간)
             List<Recipe> recipeRecent = recipeService.findTop10RecentRegister();
+            Result2 top10Recent = getRecipeTop10List(recipeRecent);
 
-            List<String> recentThumbnail = new ArrayList<>();
-            List<String> recentFoodName = new ArrayList<>();
-            for (int i = 0; i < recipeRecent.size(); i++) {
-                RecipeResponseDto recipeResponseDto = RecipeResponseDto.createRecipeResponseDto(recipeRecent.get(i));
-
-                recentThumbnail.add(recipeResponseDto.getThumbnailImage());
-                recentFoodName.add(recipeResponseDto.getFoodName());
-            }
-
-            return new Result(popularThumbnail, popularFoodName, todayThumbnail, todayFoodName, recentThumbnail, recentFoodName);
+            return new Result(top10Like, top10View, top10Recent);
         } else {
             //인기 레세피 (좋아요 순)
             List<RegisterRecipe> registerRecipeLike = registerRecipeService.findTop10Like();
-
-            List<byte[]> popularThumbnail = new ArrayList<>();
-            List<String> popularFoodName = new ArrayList<>();
-            for (int i = 0; i < registerRecipeLike.size(); i++) {
-                RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(registerRecipeLike.get(i));
-
-                popularThumbnail.add(registerResponseDto.getThumbnailImage());
-                popularFoodName.add(registerResponseDto.getTitle());
-            }
+            Result2 top10Like = getRegisterTop10List(registerRecipeLike);
 
             //오늘의 레시피 (조회수 순)
             List<RegisterRecipe> registerRecipeView = registerRecipeService.findTop10View();
-
-            List<byte[]> todayThumbnail = new ArrayList<>();
-            List<String> todayFoodName = new ArrayList<>();
-            for (int i = 0; i < registerRecipeLike.size(); i++) {
-                RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(registerRecipeLike.get(i));
-
-                todayThumbnail.add(registerResponseDto.getThumbnailImage());
-                todayFoodName.add(registerResponseDto.getFoodName());
-            }
-
+            Result2 top10View = getRegisterTop10List(registerRecipeView);
 
             //새로운 레시피(등록된지 24시간)
             List<RegisterRecipe> registerRecipeRecent = registerRecipeService.findTop10RecentRegister();
+            Result2 top10Recent = getRegisterTop10List(registerRecipeRecent);
 
-            List<byte[]> recentThumbnail = new ArrayList<>();
-            List<String> recentFoodName = new ArrayList<>();
-            for (int i = 0; i < registerRecipeRecent.size(); i++) {
-                RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(registerRecipeRecent.get(i));
-
-                recentThumbnail.add(registerResponseDto.getThumbnailImage());
-                recentFoodName.add(registerResponseDto.getFoodName());
-            }
-
-            return new Result(popularThumbnail, popularFoodName, todayThumbnail, todayFoodName, recentThumbnail, recentFoodName);
+            return new Result(top10Like, top10View, top10Recent);
         }
     }
 
+    private Result2 getRecipeTop10List(List<Recipe> top10RecipeList) {
+        Map<Integer, RecipeHomeResponseDto> collect = new HashMap<>();
+        for (int i = 0; i < top10RecipeList.size(); i++) {
+            RecipeHomeResponseDto homeInfo = RecipeHomeResponseDto.CreateRecipeHomeResponseDto(top10RecipeList.get(i));
+            collect.put(i, homeInfo);
+        }
+        return new Result2(collect.size(), collect);
+    }
+
+    private Result2 getRegisterTop10List(List<RegisterRecipe> top10RecipeList) {
+        Map<Integer, RegisterHomeResponseDto> collect = new HashMap<>();
+        for (int i = 0; i < top10RecipeList.size(); i++) {
+            RegisterHomeResponseDto homeInfo = RegisterHomeResponseDto.CreateRecipeHomeResponseDto(top10RecipeList.get(i));
+            collect.put(i, homeInfo);
+        }
+        return new Result2(collect.size(), collect);
+    }
 
     @Data
     @AllArgsConstructor
     static class Result<T> {
-        private T popularThumbnail;
-        private T popularFoodName;
-        private T todayThumbnail;
-        private T todayFoodName;
-        private T recentThumbnail;
-        private T recentFoodName;
+        private T like;
+        private T view;
+        private T recent;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result2<T> {
+        private int recipeCount; // 레시피 수
+        private T data;
     }
 
 }

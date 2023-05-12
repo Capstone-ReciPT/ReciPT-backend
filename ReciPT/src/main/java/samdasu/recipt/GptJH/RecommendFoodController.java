@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class RecommendFoodController {
 
     @Autowired
-    private GptService gptService;
+    private Prompt gptService;
 
     @GetMapping
     public String showForm() {
