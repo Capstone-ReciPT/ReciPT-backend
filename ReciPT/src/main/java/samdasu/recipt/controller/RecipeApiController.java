@@ -17,16 +17,18 @@ import samdasu.recipt.service.RecipeService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 카테고리마다 매핑주소 주기
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/db")
 public class DbRecipeApiController {
     private final RecipeService recipeService;
 
-    // 레시피 id값으로 조회
     @GetMapping("/{id}")
-    public Result1 showDbRecipeByRecipeId(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                          @PathVariable("id") Long recipeId) {
+    public Result1 eachRecipeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                                  @PathVariable("id") Long recipeId) {
         //조회수 증가
         recipeService.IncreaseViewCount(recipeId);
 
@@ -43,9 +45,17 @@ public class DbRecipeApiController {
         return new Result1(hearts.size(), reviews.size(), new RecipeResponseDto(findRecipe));
     }
 
-    // 전체 레시피 간단 조회
+    @GetMapping("/all")
+    public Result2 recipeDetailView() {
+        List<Recipe> findRecipes = recipeService.findRecipes();
+        List<RecipeResponseDto> collect = findRecipes.stream()
+                .map(RecipeResponseDto::new)
+                .collect(Collectors.toList());
+        return new Result2(collect.size(), collect);
+    }
+
     @GetMapping("/short")
-    public Result2 showDbRecipeSimpleList() {
+    public Result2 recipeSimpleView() {
         List<Recipe> findRecipes = recipeService.findRecipes();
         List<RecipeShortResponseDto> collect = findRecipes.stream()
                 .map(RecipeShortResponseDto::new)
@@ -53,15 +63,6 @@ public class DbRecipeApiController {
         return new Result2(collect.size(), collect);
     }
 
-    // 전체 레시피 조회
-    @GetMapping("/all")
-    public Result2 showDbRecipeAllList() {
-        List<Recipe> findRecipes = recipeService.findRecipes();
-        List<RecipeResponseDto> collect = findRecipes.stream()
-                .map(RecipeResponseDto::new)
-                .collect(Collectors.toList());
-        return new Result2(collect.size(), collect);
-    }
 
     // 좋아요 증가
 //    @PostMapping("db/update/like/{id}")

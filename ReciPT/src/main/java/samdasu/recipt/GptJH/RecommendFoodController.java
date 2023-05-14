@@ -3,27 +3,12 @@ package samdasu.recipt.GptJH;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-//@RestController
-//@RequestMapping("/recommend-food")
-//public class RecommendFoodController {
-//
-//    @Autowired
-//    private GptService gptService;
-//
-//    @GetMapping
-//    public RecommendFoodResponse recommendFood(
-//            @RequestParam("ingredients") String ingredients) {
-//
-//        return gptService.recommendFood(ingredients);
-//    }
-//}
-
 @RestController
 @RequestMapping("/recommend-food")
 public class RecommendFoodController {
 
     @Autowired
-    private Prompt gptService;
+    private RecommendFoodGptPrompt gptService;
 
     @GetMapping
     public String showForm() {
@@ -35,8 +20,8 @@ public class RecommendFoodController {
     }
 
     @PostMapping
-    public RecommendFoodResponse recommendFood(@RequestParam("ingredients") String ingredients, @RequestParam("commend") String commend) {
-        return gptService.recommendFood(ingredients, commend);
+    public RecommendFoodResponse recommendFood(@RequestParam("ingredients") String ingredients) {
+        return gptService.recommendFood(ingredients);
     }
 
 }
