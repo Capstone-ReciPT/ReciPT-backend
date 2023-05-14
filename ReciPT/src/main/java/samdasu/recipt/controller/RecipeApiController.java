@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import samdasu.recipt.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.controller.dto.Recipe.RecipeResponseDto;
 import samdasu.recipt.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.entity.Recipe;
+import samdasu.recipt.service.HeartService;
 import samdasu.recipt.service.RecipeService;
 
 import java.util.List;
@@ -23,8 +22,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/db")
-public class DbRecipeApiController {
+public class RecipeApiController {
     private final RecipeService recipeService;
+
+    private final HeartService heartService;
 
     @GetMapping("/{id}")
     public Result1 eachRecipeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto,
@@ -45,15 +46,6 @@ public class DbRecipeApiController {
         return new Result1(hearts.size(), reviews.size(), new RecipeResponseDto(findRecipe));
     }
 
-    @GetMapping("/all")
-    public Result2 recipeDetailView() {
-        List<Recipe> findRecipes = recipeService.findRecipes();
-        List<RecipeResponseDto> collect = findRecipes.stream()
-                .map(RecipeResponseDto::new)
-                .collect(Collectors.toList());
-        return new Result2(collect.size(), collect);
-    }
-
     @GetMapping("/short")
     public Result2 recipeSimpleView() {
         List<Recipe> findRecipes = recipeService.findRecipes();
@@ -63,11 +55,34 @@ public class DbRecipeApiController {
         return new Result2(collect.size(), collect);
     }
 
+    /**
+     * 카테고리별로 나눠서 보이는게 맞을듯
+     */
+    @GetMapping("/all")
+    public Result2 recipeDetailView() {
+        List<Recipe> findRecipes = recipeService.findRecipes();
+        List<RecipeResponseDto> collect = findRecipes.stream()
+                .map(RecipeResponseDto::new)
+                .collect(Collectors.toList());
+        return new Result2(collect.size(), collect);
+    }
 
-    // 좋아요 증가
-//    @PostMapping("db/update/like/{id}")
-//    public Result3 updateLikeDbRecipe(@PathVariable("id") Long recipeId, @RequestBody @Valid  ) {
-//    }
+
+    @PostMapping("/insert/{id}")
+    public void insertHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                            @PathVariable("id") Long recipeId) {
+        Recipe findRecipe = recipeService.findById(recipeId);
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
+        heartService.insertRecipeHeart(recipeHeartDto);
+    }
+
+    @PostMapping("/cancel/{id}")
+    public void deleteHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                            @PathVariable("id") Long recipeId) {
+        Recipe findRecipe = recipeService.findById(recipeId);
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
+        heartService.deleteRecipeHeart(recipeHeartDto);
+    }
 
     @Data
     @AllArgsConstructor

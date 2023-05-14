@@ -107,16 +107,6 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
                 .fetch();
     }
 
-    @Override
-    public List<String> RecommendByAge(int inputAge) {
-        return queryFactory
-                .select(registerRecipe.foodName)
-                .from(user)
-                .join(registerRecipe)
-                .on(user.userId.eq(registerRecipe.user.userId))
-                .where(user.age.goe(inputAge * 10).and(user.age.lt(inputAge * 10)))
-                .fetch();
-    }
 
     @Override
     public void resetViewCount(LocalDateTime yesterday) {
@@ -125,5 +115,20 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
                 .set(registerRecipe.viewCount, 0L)
                 .where(registerRecipe.createDate.loe(yesterday))
                 .execute();
+    }
+
+    @Override
+    public List<String> RecommendByAge(int userAge) {
+        return queryFactory
+                .select(registerRecipe.foodName)
+                .from(user)
+                .join(registerRecipe).fetchJoin()
+                .on(user.userId.eq(registerRecipe.user.userId))
+                .where(user.age.goe((userAge / 10) * 10).and(user.age.lt(((userAge / 10) * 10) + 10)))
+                .groupBy(registerRecipe.foodName)
+                .orderBy(registerRecipe.likeCount.sum().desc())
+                .limit(10)
+                .fetch();
+
     }
 }

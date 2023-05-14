@@ -44,6 +44,28 @@ public class UserApiController {
 
     private final ProfileService profileService;
 
+    @AllArgsConstructor
+    @Data
+    public class TestDto {
+        String name;
+        int age;
+        String favorite;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class TestResult<T> {
+        private T data;
+    }
+
+    @GetMapping("/test/connect")
+    public TestResult testConnect() {
+        String name = "son";
+        int age = 25;
+        String favorite = "IU";
+        return new TestResult(new TestDto(name, age, favorite));
+    }
+
     @PostMapping("/signup")
     public Result1 saveUser(@Valid UserSignUpDto userSignUpDto, @RequestParam(value = "profile") MultipartFile file) throws IOException {
         Long savedProfileId = profileService.uploadImage(file);
@@ -130,12 +152,17 @@ public class UserApiController {
     public Result2 searchLikeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto) {
         User findUser = userService.findById(userResponseDto.getUserId());
 
-//        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 3L, "된장 부대찌개");
-//        RecipeHeartDto recipeHeartDto1 = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 10L, "구운채소");
-//        RecipeHeartDto recipeHeartDto2 = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 9L, "함초 냉이 국수");
+//        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 3L, "된장 부대찌개", "찌개", "다시마 1g, 두부 10g, 떡국 떡 10g, 스팸(마일드) 10g, 다진 마늘 5g, 무 20g, 김치 15g, 소시지 10g(1/2개), 우민찌 5g(1작은술), 양파 5g, 저염된장 15g(1큰술), 베이컨 5g, 대파 5g, 청양고추 5g, 홍고추 1g");
+//        RecipeHeartDto recipeHeartDto1 = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 10L, "구운채소", "채소", "가지 20g(3cm), 호박 50g(1/3개), 새송이버섯 15g(3개), 양파 15g(1/8개), 발사믹크레마 15g(1큰술), 빨강 파프리카 3g(3×1cm), 노랑 파프리카 3g(3×1cm), 청피망 3g(3×1cm), 올리브유 약간, 저염간장 5g(1작은술), 식초 15g(1큰술), 설탕 10g(1큰술), 레몬즙 5g(1작은술)");
+//        RecipeHeartDto recipeHeartDto2 = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), 9L, "함초 냉이 국수", "면", "소면 50g, 함초 3g(1/2작은술), 노루궁뎅이버섯 25g(1/2개), 다시마 17g(15cm), 파 140g(1/2개), 양파 150g(1/2개), 무 250g(1/3개), 모시조개 150g(3/4컵), 냉이 35g, 간장 30g(2큰술), 달걀 50g(1개), 청고추 20g(1개), 실고추 2g");
 //        heartService.insertRecipeHeart(recipeHeartDto);
 //        heartService.insertRecipeHeart(recipeHeartDto1);
 //        heartService.insertRecipeHeart(recipeHeartDto2);
+//
+//        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(findUser.getUserId(), 18L, "만두", "기타", "고기피, 만두피");
+//        RegisterHeartDto registerHeartDto1 = RegisterHeartDto.createRegisterHeartDto(findUser.getUserId(), 25L, "버섯구이", "채소", "새송이 버섯, 올리브유, 소금");
+//        heartService.insertRegisterRecipeHeart(registerHeartDto);
+//        heartService.insertRegisterRecipeHeart(registerHeartDto1);
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
 //        byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
