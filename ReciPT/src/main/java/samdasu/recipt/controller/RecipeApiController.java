@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 카테고리마다 매핑주소 주기
+ * updateRatingScore
+ * IncreaseViewCount 위치 부정확
+ * resetViewCount 잘 되는지 미지수
  */
 @RestController
 @RequiredArgsConstructor

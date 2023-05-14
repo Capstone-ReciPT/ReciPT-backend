@@ -22,24 +22,7 @@ import javax.persistence.PersistenceUnitUtil;
 import java.util.List;
 
 /**
- * SELECT age_group, food_name, total_likes
- * FROM (
- * SELECT
- * CASE
- * WHEN users.age BETWEEN 10 AND 19 THEN '10대'
- * WHEN users.age BETWEEN 20 AND 29 THEN '20대'
- * -- 다른 연령대에 대한 CASE 문 추가
- * ELSE '기타'
- * END AS age_group,
- * register_recipe.food_name,
- * SUM(register_recipe.like_count) AS total_likes
- * FROM users
- * JOIN register_recipe ON users.user_Id = register_recipe.user_Id
- * GROUP BY age_group, register_recipe.food_name
- * ) AS subquery
- * WHERE age_group != '기타'
- * ORDER BY age_group, total_likes DESC
- * LIMIT 10;
+ * searchDynamicSearching
  */
 @Slf4j
 @RestController

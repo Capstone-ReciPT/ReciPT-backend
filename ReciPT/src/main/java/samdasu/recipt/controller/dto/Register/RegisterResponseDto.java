@@ -2,7 +2,9 @@ package samdasu.recipt.controller.dto.Register;
 
 import lombok.Getter;
 import lombok.Setter;
+import samdasu.recipt.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.controller.dto.ImageFile.ImageFileDto;
+import samdasu.recipt.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.entity.RegisterRecipe;
 
 import java.util.List;
@@ -23,6 +25,10 @@ public class RegisterResponseDto {
     private Double ratingResult;
     private Integer ratingPeople;
     private List<ImageFileDto> imageFiles;
+
+    private List<RegisterRecipeReviewResponseDto> reviewResponseDtos;
+
+    private List<RegisterHeartDto> heartDtos;
 
     public RegisterResponseDto(RegisterRecipe registerRecipe) {
         registerId = registerRecipe.getRegisterId();
