@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
@@ -31,7 +32,7 @@ class RegisterRecipeServiceTest {
     public void 평점_갱신() throws Exception {
         //given
         Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser10(profile);
         Gpt gpt = createGpt();
         RegisterRecipeThumbnail thumbnail = createThumbnail();
         ImageFile imageFile = createImageFile();
@@ -50,7 +51,7 @@ class RegisterRecipeServiceTest {
     public void 레시피_저장() throws Exception {
         //given
         Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser10(profile);
         Gpt gpt = createGpt();
         ImageFile imageFile = createImageFile();
 
@@ -135,8 +136,31 @@ class RegisterRecipeServiceTest {
 
         //then
         for (RegisterRecipe registerRecipe : top10RegisterRecipeRatingScore) {
-            log.info("registerRecipe.getLikeCount() = " + registerRecipe.getLikeCount());
+            log.info("registerRecipe.getLikeCount() = {}", registerRecipe.getLikeCount());
         }
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void 연령별_추천() throws Exception {
+        //given
+        Profile profile = createProfile();
+        User userAge10 = createUser10(profile);
+        User userAge20 = createUser20(profile);
+        Gpt gpt = createGpt();
+        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        ImageFile imageFile = createImageFile();
+        testRecommendByAge1(userAge10, gpt, thumbnail, imageFile);
+        testRecommendByAge2(userAge20, gpt, thumbnail, imageFile);
+
+        List<String> recommendByAge = registerRecipeService.RecommendByAge(15);
+        log.info("recommendByAge.size() = {}", recommendByAge.size());
+        //when
+        for (String recommend : recommendByAge) {
+            log.info("recommend = {}", recommend);
+        }
+
+        //then
     }
 
 
@@ -154,8 +178,15 @@ class RegisterRecipeServiceTest {
         return gpt;
     }
 
-    private User createUser(Profile profile) {
+    private User createUser10(Profile profile) {
         User user = User.createUser("tester1", "testId", "test1234", 10, profile);
+        em.persist(user);
+
+        return user;
+    }
+
+    private User createUser20(Profile profile) {
+        User user = User.createUser("tester1", "testId", "test1234", 20, profile);
         em.persist(user);
 
         return user;
@@ -179,5 +210,21 @@ class RegisterRecipeServiceTest {
         em.persist(registerRecipe);
 
         return registerRecipe;
+    }
+
+    private void testRecommendByAge1(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
+        for (int i = 0; i < 15; i++) {
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("10대가 좋아하는 음식" + i, thumbnail, "10대가 좋아하는 음식", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+                    (long) 20 + i, 20 + i, 5.0, 1, user, gpt, imageFile);
+            em.persist(registerRecipe);
+        }
+    }
+
+    private void testRecommendByAge2(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
+        for (int i = 0; i < 15; i++) {
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("20대가 좋아하는 음식" + i, thumbnail, "20대가 좋아하는 음식", "우유랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+                    (long) 50 + i, 50 + i, 4.0, 1, user, gpt, imageFile);
+            em.persist(registerRecipe);
+        }
     }
 }

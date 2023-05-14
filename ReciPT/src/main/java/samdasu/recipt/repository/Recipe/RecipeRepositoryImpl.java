@@ -1,6 +1,8 @@
 package samdasu.recipt.repository.Recipe;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static samdasu.recipt.entity.QRecipe.recipe;
-import static samdasu.recipt.entity.QRegisterRecipe.registerRecipe;
-import static samdasu.recipt.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -72,7 +72,7 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
     @Override
-    public List<Recipe> Top10RecipeLike() {
+    public List<Recipe> Top10Like() {
         return queryFactory
                 .selectFrom(recipe)
                 .orderBy(recipe.likeCount.desc(), recipe.createDate.desc())
@@ -81,7 +81,7 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
     @Override
-    public List<Recipe> Top10RecipeView() {
+    public List<Recipe> Top10View() {
         return queryFactory
                 .selectFrom(recipe)
                 .orderBy(recipe.viewCount.desc(), recipe.createDate.desc())
@@ -90,38 +90,11 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
     @Override
-    public List<Recipe> Top10RecipeRatingScore() {
+    public List<Recipe> Top10RatingScore() {
         return queryFactory
                 .selectFrom(recipe)
                 .where(recipe.ratingPeople.gt(0))
                 .orderBy(recipe.ratingScore.desc(), recipe.createDate.desc())
-                .limit(10)
-                .fetch();
-    }
-
-    @Override
-    public List<Recipe> Top10Like() {
-        return queryFactory
-                .selectFrom(recipe)
-                .orderBy(recipe.likeCount.desc())
-                .limit(10)
-                .fetch();
-    }
-
-    @Override
-    public List<Recipe> Top10View() {
-        return queryFactory
-                .selectFrom(recipe)
-                .orderBy(recipe.viewCount.desc())
-                .limit(10)
-                .fetch();
-    }
-
-    @Override
-    public List<Recipe> Top10RatingScore() {
-        return queryFactory
-                .selectFrom(recipe)
-                .orderBy(recipe.ratingScore.desc())
                 .limit(10)
                 .fetch();
     }
@@ -135,16 +108,6 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
                 .fetch();
     }
 
-    @Override
-    public List<String> RecommendByAge(int inputAge) {
-        return queryFactory
-                .select(registerRecipe.foodName)
-                .from(user)
-                .join(registerRecipe)
-                .on(user.userId.eq(registerRecipe.user.userId))
-                .where(user.age.goe(inputAge * 10).and(user.age.lt(inputAge * 10)))
-                .fetch();
-    }
 
     @Override
     public void resetViewCount(LocalDateTime yesterday) {
@@ -154,14 +117,26 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
                 .where(recipe.createDate.loe(yesterday))
                 .execute();
     }
-//    @Override
-//    public List<Tuple> JoinTable() {
-//        List<Tuple> fetch = queryFactory
-//                .select(registerRecipe.foodName, registerRecipe.ingredient, registerRecipe.category, registerRecipe.likeCount.as("total_like"),
-//                        recipe.foodName, recipe.ingredient, recipe.category, recipe.likeCount.as("total_like"))
-//                .from(recipe, registerRecipe)
-//                .orderBy(recipe.likeCount.desc())
-//                .fetch();
-//        return fetch;
-//    }
+
+
+    @Override
+    public List<String> RecommendByRandH2() {
+        return queryFactory
+                .select(recipe.foodName)
+                .from(recipe)
+                .orderBy(NumberExpression.random().asc())
+                .limit(10)
+                .fetch();
+    }
+
+    @Override
+    public List<String> RecommendByRandMySql() {
+        return queryFactory
+                .select(recipe.foodName)
+                .from(recipe)
+                .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
+                .limit(10)
+                .fetch();
+    }
+    
 }

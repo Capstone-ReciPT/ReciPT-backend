@@ -52,6 +52,12 @@ public class InitDb {
 
             Review review2 = Review.createRecipeReview("오렌지 당근 주스 후기", 4, 4.0, user, recipe2);
             em.persist(review2);
+
+            Heart recipeHeart1 = Heart.createRecipeHeart(user, recipe1);
+            em.persist(recipeHeart1);
+
+            Heart recipeHeart2 = Heart.createRecipeHeart(user, recipe2);
+            em.persist(recipeHeart2);
         }
 
         public void recipeInit2() {
@@ -77,6 +83,12 @@ public class InitDb {
 
             Review review2 = Review.createRecipeReview("구운채소 후기", 4, 4.5, user, recipe2);
             em.persist(review2);
+
+            Heart recipeHeart1 = Heart.createRecipeHeart(user, recipe1);
+            em.persist(recipeHeart1);
+
+            Heart recipeHeart2 = Heart.createRecipeHeart(user, recipe2);
+            em.persist(recipeHeart2);
         }
 
         public void registerRecipeInit1() {
@@ -101,6 +113,9 @@ public class InitDb {
 
             Review review = Review.createRegisterReview("만두 후기", 4, 4.0, user, registerRecipe);
             em.persist(review);
+
+            Heart regiterRecipeHeart = Heart.createRegiterRecipeHeart(user, registerRecipe);
+            em.persist(regiterRecipeHeart);
         }
 
         public void registerRecipeInit2() {
@@ -126,6 +141,9 @@ public class InitDb {
 
             Review review = Review.createRegisterReview("버섯구이 후기", 50, 5.0, user, registerRecipe);
             em.persist(review);
+
+            Heart regiterRecipeHeart = Heart.createRegiterRecipeHeart(user, registerRecipe);
+            em.persist(regiterRecipeHeart);
         }
     }
 }

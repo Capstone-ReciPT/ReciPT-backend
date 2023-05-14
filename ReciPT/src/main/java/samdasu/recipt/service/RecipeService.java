@@ -52,8 +52,6 @@ public class RecipeService {
         return recipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
     }
 
-    //    List<String> RecommendByAge(int inputAge);
-
     @Transactional
     public void IncreaseViewCount(Long recipeId) {
         Recipe recipe = findById(recipeId);
@@ -67,27 +65,6 @@ public class RecipeService {
     public Recipe findById(Long recipeId) {
         return recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
-    }
-
-    /**
-     * 좋아요 탑 10 조회
-     */
-    public List<Recipe> findTop10RecipeLike() {
-        return recipeRepository.Top10RecipeLike();
-    }
-
-    /**
-     * 조회 수 탑 10 조회
-     */
-    public List<Recipe> findTop10RecipeView() {
-        return recipeRepository.Top10RecipeView();
-    }
-
-    /**
-     * 평점 순 탑 10 조회
-     */
-    public List<Recipe> findTop10RecipeRatingScore() {
-        return recipeRepository.Top10RecipeRatingScore();
     }
 
     public List<Recipe> findTop10RecentRegister() {
@@ -106,4 +83,11 @@ public class RecipeService {
         return recipeRepository.Top10RatingScore();
     }
 
+    public List<String> RecommendByRandH2() {
+        return recipeRepository.RecommendByRandH2();
+    }
+
+    public List<String> RecommendByRandMySql() {
+        return recipeRepository.RecommendByRandMySql();
+    }
 }

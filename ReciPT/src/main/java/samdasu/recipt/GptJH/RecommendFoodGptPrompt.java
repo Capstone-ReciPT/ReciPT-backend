@@ -6,7 +6,6 @@ import com.theokanning.openai.service.OpenAiService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -15,23 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class Prompt {
+public class RecommendFoodGptPrompt {
 
     private static OpenAiService openAiService;
 
-    @Value("${openai.key}")
-    private String apiKey;
+    private String apiKey = "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";
 
-    @Value("${openai.timeout}")
-    private int apiTimeout;
-
+    private int apiTimeout = 300;
     private static final String GPT_MODEL = "gpt-3.5-turbo";
     //이제부터 넌 몇가지 식재료로 요리를 추천하고 그 요리의 레시피를 만들어주는 chefGPT야.
-//응답 형식은 다음과 같아.
-//1. 추천해준 음식이름
-//2. 그 음식을 만드는 레시피의 재료
-//3. 레시피
-//모든 응답은 한국어로 부탁해.
+    //응답 형식은 다음과 같아.
+    //1. 추천해준 음식이름
+    //2. 그 음식을 만드는 레시피의 재료
+    //3. 레시피
+    //모든 응답은 한국어로 부탁해.
     private static final String SYSTEM_TASK_MESSAGE = //JSON 형식
             "From now on, you are a chefGPT who recommends a dish with a few ingredients and creates a recipe for that dish. Your rules are as follows\n" +
                     "\n" +
@@ -74,10 +70,9 @@ public class Prompt {
 //6. 그리고 이 모든 조건을 n번으로 구분짓지 말고 같이 말해줘
 //7. “종료” 단어가 제시되면 이전의 레시피를 참고해서 답변하지말라는 뜻이야. 고객 요청이 끝나고, 새로운 고객이 온거라고 생각해.
 
-
-    public RecommendFoodResponse recommendFood(String ingredients, String commend) {
-        String prompt = String.format("Here are the %s I have and here are the %s."
-                , ingredients, commend);
+    public RecommendFoodResponse recommendFood(String ingredients) {
+        String prompt = String.format("Here are the %s I have."
+                , ingredients);
 
         /**
          * db내용 findby(foodname, ingredients, context) 같은 내용 찾기
@@ -104,7 +99,6 @@ public class Prompt {
                 builder.append(choice.getMessage().getContent());
             });
             String jsonResponse = builder.toString();
-
             System.out.println(jsonResponse);
 
 //            List<RecommendFood> recommendFoodResponses = makeJsonForm(jsonResponse);

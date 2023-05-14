@@ -124,4 +124,7 @@ public class RegisterRecipeService {
         return registerRecipeRepository.Top10RatingScore();
     }
 
+    public List<String> RecommendByAge(int userAge) {
+        return registerRecipeRepository.RecommendByAge(userAge);
+    }
 }

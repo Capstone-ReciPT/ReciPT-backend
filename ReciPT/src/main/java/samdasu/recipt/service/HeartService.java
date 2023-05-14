@@ -116,12 +116,12 @@ public class HeartService {
 
     private Recipe findRecipeById(RecipeHeartDto recipeHeartDto) {
         return recipeRepository.findById(recipeHeartDto.getRecipeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No DbRecipe Info"));
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
     }
 
     private RegisterRecipe findRegisterRecipeById(RegisterHeartDto registerHeartDto) {
         return registerRecipeRepository.findById(registerHeartDto.getRegisterId())
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No GptRecipe Info"));
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No RegisterRecipe Info"));
     }
 
     private Review findReviewById(ReviewHeartDto reviewHeartDto) {

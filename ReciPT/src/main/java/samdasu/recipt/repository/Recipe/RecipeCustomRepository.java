@@ -14,12 +14,6 @@ public interface RecipeCustomRepository {
 
     List<Recipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName);
 
-    List<Recipe> Top10RecipeLike();
-
-    List<Recipe> Top10RecipeView();
-
-    List<Recipe> Top10RecipeRatingScore();
-
     List<Recipe> Top10Like();
 
     List<Recipe> Top10View();
@@ -28,9 +22,9 @@ public interface RecipeCustomRepository {
 
     List<Recipe> Top10RecentRegister();
 
-    List<String> RecommendByAge(int inputAge);
-
     void resetViewCount(LocalDateTime yesterday);
 
-//    List<Tuple> JoinTable();
+    List<String> RecommendByRandH2(); //h2 DB
+
+    List<String> RecommendByRandMySql(); //MySql DB
 }

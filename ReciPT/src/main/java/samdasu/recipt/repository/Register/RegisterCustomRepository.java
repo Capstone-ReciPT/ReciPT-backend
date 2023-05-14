@@ -1,5 +1,6 @@
 package samdasu.recipt.repository.Register;
 
+import org.springframework.data.repository.query.Param;
 import samdasu.recipt.entity.RegisterRecipe;
 
 import java.time.LocalDateTime;
@@ -22,16 +23,7 @@ public interface RegisterCustomRepository {
 
     List<RegisterRecipe> Top10RecentRegister();
 
-    List<String> RecommendByAge(int inputAge);
-
     void resetViewCount(LocalDateTime yesterday);
 
-
-//    RegisterRecipe Top1registerRecipeLike();
-//
-//    RegisterRecipe Top1registerRecipeViewCount();
-//
-//    RegisterRecipe Top1registerRecipeRatingScore();
-//
-
+    List<String> RecommendByAge(@Param("userAge") int userAge);
 }
