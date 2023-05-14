@@ -92,7 +92,6 @@ public class RegisterRecipeService {
         return registerRecipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
     }
 
-    //    List<String> RecommendByAge(int inputAge);
     @Transactional
     public void IncreaseViewCount(Long registerRecipeId) {
         RegisterRecipe registerRecipe = findById(registerRecipeId);
