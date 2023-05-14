@@ -35,7 +35,7 @@ public class HeartServiceTest {
         User user = createUser(profile);
         Recipe recipe = createRecipe();
 //         Review.createRecipeReview("새우두부계란찜 후기", 0, 3.0, user, recipe);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(user.getUserId(), recipe.getRecipeId(), recipe.getFoodName());
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(user.getUserId(), recipe.getRecipeId(), recipe.getFoodName(), recipe.getCategory(), recipe.getIngredient());
 
         //when
         heartService.insertRecipeHeart(recipeHeartDto);
@@ -57,7 +57,7 @@ public class HeartServiceTest {
         createHeart(user, recipe); //Heart 저장
 
         //when
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(user.getUserId(), recipe.getRecipeId(), recipe.getFoodName());
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(user.getUserId(), recipe.getRecipeId(), recipe.getFoodName(), recipe.getCategory(), recipe.getIngredient());
         heartService.deleteRecipeHeart(recipeHeartDto);
 
         //then
@@ -74,7 +74,8 @@ public class HeartServiceTest {
         ImageFile imageFile = createImageFiles();
         RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
-        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName());
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName(), registerRecipe.getCategory(), registerRecipe.getIngredient());
+        ;
 
         //when
         heartService.insertRegisterRecipeHeart(registerHeartDto);
@@ -96,7 +97,7 @@ public class HeartServiceTest {
         createHeart(user, registerRecipe); //Heart 저장
 
         //when
-        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName());
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName(), registerRecipe.getCategory(), registerRecipe.getIngredient());
         heartService.deleteRegisterRecipeHeart(registerHeartDto);
 
         //then
@@ -135,7 +136,7 @@ public class HeartServiceTest {
         createHeart(user, registerRecipe); //Heart 저장
 
         //when
-        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName());
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName(), registerRecipe.getCategory(), registerRecipe.getIngredient());
         heartService.deleteRegisterRecipeHeart(registerHeartDto);
 
         //then
