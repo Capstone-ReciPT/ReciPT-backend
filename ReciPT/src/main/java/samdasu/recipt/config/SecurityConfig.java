@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/multi/send").permitAll()
                 .antMatchers("/recommend-food/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
+                .antMatchers("/api/search/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .anyRequest().permitAll()
                 .and()

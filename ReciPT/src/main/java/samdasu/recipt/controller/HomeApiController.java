@@ -18,24 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 인기 레세피 (좋아요 순)
- * 오늘의 레시피 (조회수 순)
- * 새로운 레시피(등록된지 24시간)
- * 검색 기능
- * - 처음에는 레시피에서만 인기, 오늘의 레시피, 새로운 레시피 보여주다가 나중에 레시피 등록한게 10개 이상 쌓이면 레시피 등록한것만 보여주게끔 change?
- * <p>
- * postmapping
- * yolo
- * gpt
- * 레시피 쓰기
- * 리뷰 작성
- * <p>
- * 홈
- * 레시피
- * 음식 추천
- * 마이페이지
- */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor

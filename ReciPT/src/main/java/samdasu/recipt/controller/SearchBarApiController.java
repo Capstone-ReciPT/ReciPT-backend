@@ -6,10 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.dialect.H2Dialect;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
+import samdasu.recipt.entity.Recipe;
 import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.service.RecipeService;
@@ -19,11 +18,9 @@ import samdasu.recipt.service.UserService;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.PersistenceUnitUtil;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * searchDynamicSearching
- */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +40,7 @@ public class SearchBarApiController {
         List<String> recommend;
 
 
-        if (registerRecipes.size() > 10) {
+        if (registerRecipes.size() < 10) {
             PersistenceUnitUtil persistenceUnitUtil = emf.getPersistenceUnitUtil();
             boolean isH2 = persistenceUnitUtil.getIdentifier(findUser) instanceof H2Dialect;
 
@@ -59,10 +56,30 @@ public class SearchBarApiController {
         return new Result(recommend.size(), recommend);
     }
 
+    @PostMapping("/search")
+    public Result searchingFood(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                                @RequestParam(value = "foodName", required = false) String foodName,
+                                @RequestParam(value = "like", required = false) Integer like,
+                                @RequestParam(value = "view", required = false) Long view) {
+        List<String> collect = new ArrayList<>();
+
+        List<Recipe> recipes = recipeService.searchDynamicSearching(foodName, like, view);
+
+        for (Recipe recipe : recipes) {
+            collect.add(recipe.getFoodName());
+        }
+        List<RegisterRecipe> registerRecipes = registerRecipeService.searchDynamicSearching(foodName, like, view);
+
+        for (RegisterRecipe registerRecipe : registerRecipes) {
+            collect.add(registerRecipe.getFoodName());
+        }
+        return new Result(recipes.size() + registerRecipes.size(), collect);
+    }
+
     @Data
     @AllArgsConstructor
     static class Result<T> {
         private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
-        private T data;
+        private T foodName;
     }
 }

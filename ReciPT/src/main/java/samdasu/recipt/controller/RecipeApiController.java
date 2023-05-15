@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 /**
  * updateRatingScore
- * IncreaseViewCount 위치 부정확
  * resetViewCount 잘 되는지 미지수
  */
 @RestController
@@ -56,19 +55,6 @@ public class RecipeApiController {
                 .collect(Collectors.toList());
         return new Result2(collect.size(), collect);
     }
-
-    /**
-     * 카테고리별로 나눠서 보이는게 맞을듯
-     */
-    @GetMapping("/all")
-    public Result2 recipeDetailView() {
-        List<Recipe> findRecipes = recipeService.findRecipes();
-        List<RecipeResponseDto> collect = findRecipes.stream()
-                .map(RecipeResponseDto::new)
-                .collect(Collectors.toList());
-        return new Result2(collect.size(), collect);
-    }
-
 
     @PostMapping("/insert/{id}")
     public void insertHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,

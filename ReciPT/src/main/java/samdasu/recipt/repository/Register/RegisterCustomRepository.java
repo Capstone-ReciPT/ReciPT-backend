@@ -13,7 +13,7 @@ public interface RegisterCustomRepository {
 
     void addRegisterRecipeViewCount(RegisterRecipe registerRecipe);
 
-    List<RegisterRecipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName);
+    List<RegisterRecipe> dynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond);
 
     List<RegisterRecipe> Top10Like();
 

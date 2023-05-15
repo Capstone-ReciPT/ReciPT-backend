@@ -26,6 +26,7 @@ import samdasu.recipt.entity.Review;
 import samdasu.recipt.entity.User;
 import samdasu.recipt.service.HeartService;
 import samdasu.recipt.service.ProfileService;
+import samdasu.recipt.service.RegisterRecipeService;
 import samdasu.recipt.service.UserService;
 
 import javax.validation.Valid;
@@ -41,30 +42,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class UserApiController {
     private final UserService userService;
-
     private final ProfileService profileService;
+    private final RegisterRecipeService registerRecipeService;
 
-    @AllArgsConstructor
-    @Data
-    public class TestDto {
-        String name;
-        int age;
-        String favorite;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class TestResult<T> {
-        private T data;
-    }
-
-    @GetMapping("/test/connect")
-    public TestResult testConnect() {
-        String name = "son";
-        int age = 25;
-        String favorite = "IU";
-        return new TestResult(new TestDto(name, age, favorite));
-    }
 
     @PostMapping("/signup")
     public Result1 saveUser(@Valid UserSignUpDto userSignUpDto, @RequestParam(value = "profile") MultipartFile file) throws IOException {
@@ -204,6 +184,16 @@ public class UserApiController {
         return new Result1(collect.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadImage));
+    }
+
+    /**
+     * 등록된 레시피 삭제
+     * - 삭제 후 redirect:/user/register
+     */
+    @PostMapping("/user/delete")
+    public void deleteRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto
+            , @RequestParam(value = "registerRecipeId") Long registerRecipeId) {
+        registerRecipeService.deleteRegisterRecipe(registerRecipeId);
     }
 
     /**

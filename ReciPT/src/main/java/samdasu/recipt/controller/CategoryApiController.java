@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 카테고리별로 나눠서 보이기
+ * - @RequestParam
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
