@@ -73,13 +73,15 @@ public class RegisterRecipeService {
         registerRecipeRepository.delete(registerRecipe);
     }
 
-    //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
 
     @Transactional
     public void resetViewCount() {
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime yesterday = now.minusDays(1);
+        LocalDateTime threeSecondsAgo = LocalDateTime.now().minusSeconds(3);
 
-        registerRecipeRepository.resetViewCount(now.minusDays(1));
+//        registerRecipeRepository.resetViewCount(threeSecondsAgo);
+        registerRecipeRepository.resetViewCount(yesterday);
     }
 
     public RegisterRecipe findByFoodName(String foodName) {
