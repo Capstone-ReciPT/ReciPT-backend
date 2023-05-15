@@ -21,6 +21,7 @@ public class InitDb {
 
         initService.registerRecipeInit1();
         initService.registerRecipeInit2();
+        initService.registerRecipeInit3();
     }
 
     @Component
@@ -140,6 +141,33 @@ public class InitDb {
             em.persist(registerRecipe);
 
             Review review = Review.createRegisterReview("버섯구이 후기", 50, 5.0, user, registerRecipe);
+            em.persist(review);
+
+            Heart regiterRecipeHeart = Heart.createRegiterRecipeHeart(user, registerRecipe);
+            em.persist(regiterRecipeHeart);
+        }
+        public void registerRecipeInit3() {
+            ImageFile imageFile = ImageFile.createImageFile("오이무침_사진", "jpg", null);
+            em.persist(imageFile);
+
+            Gpt gpt = Gpt.createGpt("오이무침", "오이, 양파, 설탕, 소금", "1.오이 자르기 2.양념장 만들기 3.버무리기");
+            em.persist(gpt);
+
+            RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("오이무침 썸네일", "jpg", null);
+            em.persist(thumbnail);
+
+            Profile profile = Profile.createProfile("profile1234", "png", null);
+            em.persist(profile);
+
+            User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
+            em.persist(user);
+
+
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "오이무침을 먹어보아요", "밥이랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
+                    500L, 35, 0.0, 0, user, gpt, imageFile);
+            em.persist(registerRecipe);
+
+            Review review = Review.createRegisterReview("오이무침 후기", 50, 5.0, user, registerRecipe);
             em.persist(review);
 
             Heart regiterRecipeHeart = Heart.createRegiterRecipeHeart(user, registerRecipe);
