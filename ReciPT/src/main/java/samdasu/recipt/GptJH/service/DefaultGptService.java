@@ -29,11 +29,11 @@ public class DefaultGptService implements GptService {
     }
 
     @Override
-    public String Chat(List<ChatMessage> messages) {
-        ChatRequest multiChatRequest = new ChatRequest(gptProperties.getModel(), messages, gptProperties.getMaxTokens(), gptProperties.getTemperature(), gptProperties.getTopP());
-        ChatResponse chatResponse = this.getResponse(this.buildHttpEntity(multiChatRequest), ChatResponse.class, gptProperties.getUrl());
+    public ChatMessage Chat(List<ChatMessage> messages) {
+        ChatRequest chatRequest = new ChatRequest(gptProperties.getModel(), messages, gptProperties.getMaxTokens(), gptProperties.getTemperature(), gptProperties.getTopP());
+        ChatResponse chatResponse = this.getResponse(this.buildHttpEntity(chatRequest), ChatResponse.class, gptProperties.getUrl());
         try {
-            return chatResponse.getChoices().get(0).getMessage().getContent();
+            return chatResponse.getChoices().get(0).getMessage();
         } catch (Exception e) {
             log.error("parse chatgpt message error", e);
             throw e;
