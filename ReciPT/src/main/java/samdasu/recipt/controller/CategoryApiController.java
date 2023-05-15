@@ -32,6 +32,7 @@ public class CategoryApiController {
     private final RecipeService recipeService;
     private final RegisterRecipeService registerRecipeService;
 
+    @GetMapping()
     public Result1 homeInfo() {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
         if (registerRecipes.size() < 10) {
