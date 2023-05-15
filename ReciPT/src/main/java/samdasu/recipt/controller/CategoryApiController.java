@@ -54,7 +54,7 @@ public class CategoryApiController {
     public Result2 searchRecipesByCategory(@AuthenticationPrincipal UserResponseDto userResponseDto,
                                            @RequestParam(value = "category") String category) {
         List<Recipe> recipeCategory = recipeService.findByCategory(category);
-        List<RecipeShortResponseDto> collect1 = getdbRecipesByCategory(recipeCategory);
+        List<RecipeShortResponseDto> collect1 = getRecipesByCategory(recipeCategory);
 
         List<RegisterRecipe> registerRecipeCategory = registerRecipeService.findByCategory(category);
         List<RegisterRecipeShortResponseDto> collect2 = getRegisterRecipesByCategory(registerRecipeCategory);
@@ -63,7 +63,7 @@ public class CategoryApiController {
     }
 
     @NotNull
-    private static List<RecipeShortResponseDto> getdbRecipesByCategory(List<Recipe> recipeCategory) {
+    private static List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
         List<RecipeShortResponseDto> collect1 = recipeCategory.stream()
                 .map(RecipeShortResponseDto::new)
                 .collect(Collectors.toList());
