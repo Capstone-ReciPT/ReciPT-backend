@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,16 +61,14 @@ public class CategoryApiController {
         return new Result2(collect1.size(), collect2.size(), collect1, collect2);
     }
 
-    @NotNull
-    private static List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
+    private List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
         List<RecipeShortResponseDto> collect1 = recipeCategory.stream()
                 .map(RecipeShortResponseDto::new)
                 .collect(Collectors.toList());
         return collect1;
     }
 
-    @NotNull
-    private static List<RegisterRecipeShortResponseDto> getRegisterRecipesByCategory(List<RegisterRecipe> registerRecipeCategory) {
+    private List<RegisterRecipeShortResponseDto> getRegisterRecipesByCategory(List<RegisterRecipe> registerRecipeCategory) {
         List<RegisterRecipeShortResponseDto> collect2 = registerRecipeCategory.stream()
                 .map(RegisterRecipeShortResponseDto::new)
                 .collect(Collectors.toList());
