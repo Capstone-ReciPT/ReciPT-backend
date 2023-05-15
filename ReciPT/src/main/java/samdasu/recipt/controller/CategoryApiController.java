@@ -4,11 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import samdasu.recipt.controller.dto.Recipe.RecipeHomeResponseDto;
+import samdasu.recipt.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.controller.dto.Register.RegisterHomeResponseDto;
+import samdasu.recipt.controller.dto.Register.RegisterRecipeShortResponseDto;
+import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.entity.Recipe;
 import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.service.RecipeService;
@@ -17,60 +23,92 @@ import samdasu.recipt.service.RegisterRecipeService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-/**
- * 카테고리별로 나눠서 보이기
- * - @RequestParam
- */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/category")
 public class CategoryApiController {
     private final RecipeService recipeService;
     private final RegisterRecipeService registerRecipeService;
 
-    @GetMapping("/category")
-    public Result homeInfo() {
+    public Result1 homeInfo() {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
         if (registerRecipes.size() < 10) {
             //레시피 리스트 뷰 (평점 순)
             List<Recipe> recipeLike = recipeService.findTop10RatingScore();
-            Result top10List = getRecipeTop10List(recipeLike);
+            Result1 top10List = getRecipeTop10List(recipeLike);
 
-            return new Result(recipeLike.size(), top10List);
+            return new Result1(recipeLike.size(), top10List);
         } else {
             //레시피 리스트 뷰 (평점 순)
             List<RegisterRecipe> registerRecipeLike = registerRecipeService.findTop10RatingScore();
-            Result top10List = getRegisterTop10List(registerRecipeLike);
+            Result1 top10List = getRegisterTop10List(registerRecipeLike);
 
-            return new Result(registerRecipeLike.size(), top10List);
+            return new Result1(registerRecipeLike.size(), top10List);
         }
     }
 
-    private Result getRecipeTop10List(List<Recipe> top10RecipeList) {
+    @GetMapping("/recipes")
+    public Result2 searchRecipesByCategory(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                                           @RequestParam(value = "category") String category) {
+        List<Recipe> recipeCategory = recipeService.findByCategory(category);
+        List<RecipeShortResponseDto> collect1 = getdbRecipesByCategory(recipeCategory);
+
+        List<RegisterRecipe> registerRecipeCategory = registerRecipeService.findByCategory(category);
+        List<RegisterRecipeShortResponseDto> collect2 = getRegisterRecipesByCategory(registerRecipeCategory);
+
+        return new Result2(collect1.size(), collect2.size(), collect1, collect2);
+    }
+
+    @NotNull
+    private static List<RecipeShortResponseDto> getdbRecipesByCategory(List<Recipe> recipeCategory) {
+        List<RecipeShortResponseDto> collect1 = recipeCategory.stream()
+                .map(RecipeShortResponseDto::new)
+                .collect(Collectors.toList());
+        return collect1;
+    }
+
+    @NotNull
+    private static List<RegisterRecipeShortResponseDto> getRegisterRecipesByCategory(List<RegisterRecipe> registerRecipeCategory) {
+        List<RegisterRecipeShortResponseDto> collect2 = registerRecipeCategory.stream()
+                .map(RegisterRecipeShortResponseDto::new)
+                .collect(Collectors.toList());
+        return collect2;
+    }
+
+    private Result1 getRecipeTop10List(List<Recipe> top10RecipeList) {
         Map<Integer, RecipeHomeResponseDto> collect = new HashMap<>();
         for (int i = 0; i < top10RecipeList.size(); i++) {
             RecipeHomeResponseDto homeInfo = RecipeHomeResponseDto.CreateRecipeHomeResponseDto(top10RecipeList.get(i));
             collect.put(i, homeInfo);
         }
-        return new Result(collect.size(), collect);
+        return new Result1(collect.size(), collect);
     }
 
-    private Result getRegisterTop10List(List<RegisterRecipe> top10RecipeList) {
+    private Result1 getRegisterTop10List(List<RegisterRecipe> top10RecipeList) {
         Map<Integer, RegisterHomeResponseDto> collect = new HashMap<>();
         for (int i = 0; i < top10RecipeList.size(); i++) {
             RegisterHomeResponseDto homeInfo = RegisterHomeResponseDto.CreateRecipeHomeResponseDto(top10RecipeList.get(i));
             collect.put(i, homeInfo);
         }
-        return new Result(collect.size(), collect);
+        return new Result1(collect.size(), collect);
     }
-
 
     @Data
     @AllArgsConstructor
-    static class Result<T> {
+    static class Result1<T> {
         private int count; // 레시피 수
         private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result2<T> {
+        private int dbRecipeCount; // 레시피 수
+        private int registerRecipeCount; // 레시피 수
+        private T data1;
+        private T data2;
     }
 }

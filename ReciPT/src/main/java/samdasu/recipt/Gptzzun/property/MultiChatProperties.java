@@ -2,6 +2,7 @@ package samdasu.recipt.Gptzzun.property;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "chatgpt")
 public class MultiChatProperties {
 
-    private String apiKey = "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";
+    @Value("${gpt.api.key}")
+    private String apiKey;
     private String url = "https://api.openai.com/v1/chat/completions";
 
     private String model = "gpt-3.5-turbo";

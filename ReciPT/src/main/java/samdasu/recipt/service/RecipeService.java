@@ -50,6 +50,11 @@ public class RecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No Recipe Info"));
     }
 
+    public List<Recipe> findByCategory(String category) {
+        return recipeRepository.findByCategory(category)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No Recipe Info For Category"));
+    }
+
     public List<Recipe> searchDynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond) {
         return recipeRepository.dynamicSearching(searchingFoodName, likeCond, viewCond);
     }

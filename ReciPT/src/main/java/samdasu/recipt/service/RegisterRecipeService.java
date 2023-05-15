@@ -89,6 +89,11 @@ public class RegisterRecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No RegisterRecipe Info"));
     }
 
+    public List<RegisterRecipe> findByCategory(String category) {
+        return registerRecipeRepository.findByCategory(category)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail:No Recipe Info For Category"));
+    }
+
     public List<RegisterRecipe> searchDynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond) {
         return registerRecipeRepository.dynamicSearching(searchingFoodName, likeCond, viewCond);
     }

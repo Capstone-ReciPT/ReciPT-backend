@@ -6,6 +6,7 @@ import com.theokanning.openai.service.OpenAiService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,7 +19,8 @@ public class RecommendFoodGptPrompt {
 
     private static OpenAiService openAiService;
 
-    private String apiKey = "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";
+    @Value("${gpt.api.key}")
+    private String apiKey;
 
     private int apiTimeout = 300;
     private static final String GPT_MODEL = "gpt-3.5-turbo";
