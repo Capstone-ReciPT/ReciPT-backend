@@ -25,13 +25,41 @@ public class ImageFileApiController {
                 .body(uploadImage);
     }
 
-    // 다운로드
+    // 다운로드 -> 파일 확장자로 콘텐츠 유형 동적으로 결정
     @GetMapping("/{fileName}")
     public ResponseEntity<?> downloadImage(@PathVariable("fileName") String fileName) {
         byte[] downloadImage = imageFileService.downloadImage(fileName);
+        String fileExtension = getFileExtension(fileName);
+
+        MediaType contentType;
+        if (fileExtension.equalsIgnoreCase("png")) {
+            contentType = MediaType.IMAGE_PNG;
+        } else if (fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg")) {
+            contentType = MediaType.IMAGE_JPEG;
+        } else {
+            contentType = MediaType.APPLICATION_OCTET_STREAM;
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
+                .contentType(contentType)
                 .body(downloadImage);
     }
+
+    private String getFileExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            return fileName.substring(dotIndex + 1).toLowerCase();
+        }
+        return "";
+    }
+
+//    // 다운로드
+//    @GetMapping("/{fileName}")
+//    public ResponseEntity<?> downloadImage(@PathVariable("fileName") String fileName) {
+//        byte[] downloadImage = imageFileService.downloadImage(fileName);
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(MediaType.valueOf("image/png"))
+//                .body(downloadImage);
+//    }
 }
 
