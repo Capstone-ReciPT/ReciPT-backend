@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface GptService {
 
-    String Chat(List<ChatMessage> messages);
+    ChatMessage Chat(List<ChatMessage> messages);
 
     ChatResponse ChatRequest(ChatRequest multiChatRequest);
 

@@ -2,19 +2,16 @@ package samdasu.recipt.GptJH.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.MapUtils;
 import samdasu.recipt.GptJH.controller.dto.ResponseModel;
 import samdasu.recipt.GptJH.dto.chat.ChatMessage;
 import samdasu.recipt.GptJH.service.GptService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @CrossOrigin
@@ -38,13 +35,7 @@ public class GptApiController {
 
     @PostMapping("/send")
     public ResponseModel<String> multiSend(HttpServletRequest request, @RequestBody List<ChatMessage> messages) {
-//        String gptMessage = messages.toString();
-//        if (!MapUtils.isEmpty(stockConversation)) {
-//            for (int i = 0; i < count; i++) {
-//                temp += stockConversation.get(i);
-//            }
-//            gptMessage = temp + gptMessage;
-//        }
+        temp = "";
         String requestId = sendMessage(request, messages);
         if (CollectionUtils.isEmpty(messages)) {
             return ResponseModel.fail("messages can not be empty");
@@ -57,24 +48,37 @@ public class GptApiController {
     private String sendMessage(HttpServletRequest request, List<ChatMessage> messages) {
         String gptMessage = messages.toString();
         if (!MapUtils.isEmpty(stockConversation)) {
-            for (int i = 0; i < count; i++) {
-                temp += stockConversation.get(i).toString();
+//            for (int i = 0; i < count; i++) {
+//                temp += stockConversation.get(i).toString();
+//            }
+            for (Integer key : stockConversation.keySet()) {
+                String value = stockConversation.get(key).toString();
+                temp += value;
             }
             gptMessage = temp + gptMessage;
         }
         stockConversation.put(count++, messages); //사용자의 요청 값 저장
+        String cleanedMessage = gptMessage.replaceAll("\\[|\\]", "");
+//        String sub = "";
+//        int index = cleanedMessage.indexOf("assistant");
+//        while (index != -1) {
+//            sub = cleanedMessage.substring(index - 17) + ", 붸";
+//            index = cleanedMessage.indexOf("assistant", index + 9);
+//        }
+
+        String message = "[" + cleanedMessage + "]";
 
         String requestId = UUID.randomUUID().toString();
-        log.info("requestId {}, ip {}, send messages : {}", requestId, request.getRemoteHost(), gptMessage);
+        log.info("requestId {}, ip {}, send messages : {}", requestId, request.getRemoteHost(), message);
         return requestId;
     }
 
     private String responseMessage(HttpServletRequest request, List<ChatMessage> messages, String requestId) {
-        stockConversation.put(count++, messages); //gpt 응답 값 저장
-        String responseMessage = gptService.Chat(messages);
+        ChatMessage response = gptService.Chat(messages);
+
+        stockConversation.put(count++, Collections.singletonList(response)); //gpt 응답 값 저장
+        String responseMessage = response.getContent().toString();
         log.info("requestId {}, ip {}\n get a reply : {}", requestId, request.getRemoteHost(), responseMessage);
         return responseMessage;
     }
-
-
 }
