@@ -45,3 +45,6 @@ gpt/logs/
 
 ### Spy log ###
 spy.log
+
+### GPT API-KEY & Excel File Path ###
+application.properties

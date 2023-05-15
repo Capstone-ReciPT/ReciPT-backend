@@ -1,5 +1,6 @@
 package samdasu.recipt.db;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import samdasu.recipt.entity.Recipe;
@@ -12,12 +13,16 @@ import java.util.List;
 @Configuration
 public class InsertInitData {
 
-    private static final String EXCEL_FILE_PATH = "/Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/test.xlsx";
+    private static String excelFilePath;
+
+    public InsertInitData(@Value("${excel.file.path}") String excelFilePath) {
+        InsertInitData.excelFilePath = excelFilePath;
+    }
 
     public static void insertInitData(ApplicationContext context, InsertRecipeService insertRecipeService) {
         try {
             // 엑셀 파일에서 데이터 읽기
-            List<Recipe> recipes = ExcelReader.readRecipesFromExcel(new File(EXCEL_FILE_PATH));
+            List<Recipe> recipes = ExcelReader.readRecipesFromExcel(new File(excelFilePath));
 
             // 읽은 데이터 DB에 삽입
             for (Recipe recipe : recipes) {
