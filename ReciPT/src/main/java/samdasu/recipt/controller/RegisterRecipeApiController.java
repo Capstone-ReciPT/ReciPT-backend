@@ -11,6 +11,7 @@ import samdasu.recipt.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.controller.dto.Register.RegisterResponseDto;
+import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.service.HeartService;
@@ -20,10 +21,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * updateRatingScore
- * resetViewCount 잘 되는지 미지수
- */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -94,7 +91,17 @@ public class RegisterRecipeApiController {
         heartService.deleteRecipeHeart(recipeHeartDto);
     }
 
-    @Scheduled(cron = "*/3 * * * * *")
+    /**
+     * reviewRequestDto 수정 가능성 있음
+     */
+    @PostMapping("/update/{id}")
+    public void updateRatingScore(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                                  @PathVariable("id") Long recipeId, @Valid ReviewRequestDto requestDto) {
+        registerRecipeService.updateRatingScore(recipeId, requestDto);
+    }
+
+    //    @Scheduled(cron = "*/3 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void resetView() {
         log.info("Reset ViewCount Complete!!");
         registerRecipeService.resetViewCount();

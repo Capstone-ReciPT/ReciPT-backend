@@ -39,7 +39,9 @@ public class RecipeService {
     public void resetViewCount() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime yesterday = now.minusDays(1);
+        LocalDateTime threeSecondsAgo = LocalDateTime.now().minusSeconds(3);
 
+//        registerRecipeRepository.resetViewCount(threeSecondsAgo);
         recipeRepository.resetViewCount(yesterday);
     }
 
