@@ -42,10 +42,10 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     }
 
     @Override
-    public List<RegisterRecipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
+    public List<RegisterRecipe> dynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond) {
         return queryFactory
                 .selectFrom(registerRecipe)
-                .where(searchByLikeGoe(likeCond), searchByViewGoe(viewCond), searchByFoodNameContain(searchingFoodName))
+                .where(searchByFoodNameContain(searchingFoodName), searchByLikeGoe(likeCond), searchByViewGoe(viewCond))
                 .fetch();
     }
 
@@ -60,10 +60,10 @@ public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
         if (likeCond == null) {
             return null;
         }
-        return registerRecipe.viewCount.goe(likeCond);
+        return registerRecipe.likeCount.goe(likeCond);
     }
 
-    private BooleanExpression searchByViewGoe(Integer viewCond) {
+    private BooleanExpression searchByViewGoe(Long viewCond) {
         if (viewCond == null) {
             return null;
         }

@@ -60,7 +60,7 @@ class RecipeServiceTest {
         Recipe recipe = createRecipe();
 
         //when
-        List<Recipe> findByFoodName = recipeService.searchDynamicSearching(0, 0, "계란찜");
+        List<Recipe> findByFoodName = recipeService.searchDynamicSearching("계란찜", 0, 0L);
 
         //then
         assertThat(findByFoodName.size()).isEqualTo(1);

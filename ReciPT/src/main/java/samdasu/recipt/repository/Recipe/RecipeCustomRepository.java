@@ -12,7 +12,7 @@ public interface RecipeCustomRepository {
 
     void addRecipeViewCount(Recipe recipe); //db 레시피 안에서 좋아요
 
-    List<Recipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName);
+    List<Recipe> dynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond);
 
     List<Recipe> Top10Like();
 

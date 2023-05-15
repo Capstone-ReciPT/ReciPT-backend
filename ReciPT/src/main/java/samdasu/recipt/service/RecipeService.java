@@ -48,8 +48,8 @@ public class RecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No Recipe Info"));
     }
 
-    public List<Recipe> searchDynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
-        return recipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
+    public List<Recipe> searchDynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond) {
+        return recipeRepository.dynamicSearching(searchingFoodName, likeCond, viewCond);
     }
 
     @Transactional

@@ -82,7 +82,7 @@ class RegisterRecipeServiceTest {
         //given
 
         //when
-        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.searchDynamicSearching(0, 0, "만두");
+        List<RegisterRecipe> findRegisterRecipes = registerRecipeService.searchDynamicSearching("만두", 0, 0L);
 
         //then
         assertThat(findRegisterRecipes.size()).isEqualTo(1);

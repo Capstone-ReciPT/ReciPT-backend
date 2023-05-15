@@ -1,7 +1,6 @@
 package samdasu.recipt.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
@@ -74,13 +73,13 @@ public class RegisterRecipeService {
         registerRecipeRepository.delete(registerRecipe);
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+
     @Transactional
     public void resetViewCount() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime yesterday = now.minusDays(1);
 
-        registerRecipeRepository.resetViewCount(yesterday);
+        registerRecipeRepository.resetViewCount(now.minusDays(1));
     }
 
     public RegisterRecipe findByFoodName(String foodName) {
@@ -88,8 +87,8 @@ public class RegisterRecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fail:No RegisterRecipe Info"));
     }
 
-    public List<RegisterRecipe> searchDynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
-        return registerRecipeRepository.dynamicSearching(likeCond, viewCond, searchingFoodName);
+    public List<RegisterRecipe> searchDynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond) {
+        return registerRecipeRepository.dynamicSearching(searchingFoodName, likeCond, viewCond);
     }
 
     @Transactional

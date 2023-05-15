@@ -43,10 +43,10 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
     }
 
     @Override
-    public List<Recipe> dynamicSearching(int likeCond, int viewCond, String searchingFoodName) {
+    public List<Recipe> dynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond) {
         return queryFactory
                 .selectFrom(recipe)
-                .where(searchByLikeGoe(likeCond), searchByViewGoe(viewCond), searchByFoodNameContain(searchingFoodName))
+                .where(searchByFoodNameContain(searchingFoodName), searchByLikeGoe(likeCond), searchByViewGoe(viewCond))
                 .fetch();
     }
 
@@ -64,7 +64,7 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
         return recipe.likeCount.goe(likeCond);
     }
 
-    private BooleanExpression searchByViewGoe(Integer viewCond) {
+    private BooleanExpression searchByViewGoe(Long viewCond) {
         if (viewCond == null) {
             return null;
         }
@@ -138,5 +138,5 @@ public class RecipeRepositoryImpl implements RecipeCustomRepository {
                 .limit(10)
                 .fetch();
     }
-    
+
 }

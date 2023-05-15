@@ -3,32 +3,52 @@ package samdasu.recipt.controller;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.controller.dto.Register.RegisterRecipeShortResponseDto;
+import samdasu.recipt.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.entity.RegisterRecipe;
 import samdasu.recipt.service.HeartService;
 import samdasu.recipt.service.RegisterRecipeService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * updateRatingScore
- * IncreaseViewCount 위치 부정확
  * resetViewCount 잘 되는지 미지수
- * registerRecipeSave
- * deleteRegisterRecipe
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/register")
 public class RegisterRecipeApiController {
     private final RegisterRecipeService registerRecipeService;
     private final HeartService heartService;
+
+    @PostMapping("/save")
+    public Result2 saveRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto
+            , @RequestParam(value = "imageId") Long imageId
+            , @RequestParam(value = "gptId") Long gptId
+            , @RequestParam(value = "thumbnailId") Long thumbnailId
+            , @Valid RegisterRequestDto requestDto) {
+        Long registerRecipeSave = registerRecipeService.registerRecipeSave(userResponseDto.getUserId(), imageId, gptId, thumbnailId, requestDto);
+
+        RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
+        RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);
+
+        List<RegisterResponseDto> images = findRegister.getImageFiles().stream()
+                .map(imageFile -> registerResponseDto)
+                .collect(Collectors.toList());
+
+        return new Result2(images.size(), new RegisterResponseDto(findRegister));
+    }
 
     @GetMapping("/{id}")
     public Result1 eachRecipeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto,
@@ -58,19 +78,6 @@ public class RegisterRecipeApiController {
         return new Result2(collect.size(), collect);
     }
 
-    /**
-     * 카테고리별로 나눠서 보이는게 맞을듯
-     */
-    @GetMapping("/all")
-    public Result2 recipeDetailView() {
-        List<RegisterRecipe> findRecipes = registerRecipeService.findRegisterRecipes();
-        List<RegisterResponseDto> collect = findRecipes.stream()
-                .map(RegisterResponseDto::new)
-                .collect(Collectors.toList());
-        return new Result2(collect.size(), collect);
-    }
-
-
     @PostMapping("/insert/{id}")
     public void insertHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
                             @PathVariable("id") Long recipeId) {
@@ -85,6 +92,12 @@ public class RegisterRecipeApiController {
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
         heartService.deleteRecipeHeart(recipeHeartDto);
+    }
+
+    @Scheduled(cron = "*/3 * * * * *")
+    public void resetView() {
+        log.info("Reset ViewCount Complete!!");
+        registerRecipeService.resetViewCount();
     }
 
     @Data
