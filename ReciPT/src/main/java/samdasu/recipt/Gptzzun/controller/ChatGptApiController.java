@@ -19,11 +19,11 @@ import java.util.UUID;
 @Slf4j
 @CrossOrigin
 @RestController
-public class GptApiController {
+public class ChatGptApiController {
 
     @Autowired
     private ChatgptService chatgptService;
-    
+
 
     @PostMapping("/multi/send")
     public ResponseModel<String> multiSend(HttpServletRequest request, @RequestBody List<MultiChatMessage> messages) {
