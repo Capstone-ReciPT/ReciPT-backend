@@ -1,5 +1,6 @@
 package samdasu.recipt.db;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -10,16 +11,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Configuration
 public class InsertInitData {
 
     private static String excelFilePath;
 
-    public InsertInitData(@Value("${excel.file.path}") String excelFilePath) {
-        InsertInitData.excelFilePath = excelFilePath;
+    public InsertInitData(@Value("${excel.file.path}") String excelFile) {
+        InsertInitData.excelFilePath = excelFile;
     }
 
     public static void insertInitData(ApplicationContext context, InsertRecipeService insertRecipeService) {
+        log.info("excelFilePath = {}", excelFilePath);
         try {
             // 엑셀 파일에서 데이터 읽기
             List<Recipe> recipes = ExcelReader.readRecipesFromExcel(new File(excelFilePath));

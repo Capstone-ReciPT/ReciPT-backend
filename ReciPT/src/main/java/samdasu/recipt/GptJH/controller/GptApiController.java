@@ -25,9 +25,9 @@ public class GptApiController {
     @Autowired
     private GptService gptService;
 
-    private Map<Integer, String> stockConversation = new HashMap<>();
+    private Map<Integer, List<ChatMessage>> stockConversation = new HashMap<>();
     private Integer count = 0;
-    private String temp = "";
+    private String temp;
 
     @PostMapping("/end")
     public void end() {
@@ -50,7 +50,6 @@ public class GptApiController {
             return ResponseModel.fail("messages can not be empty");
         }
         String responseMessage = responseMessage(request, messages, requestId);
-        stockConversation.put(count++, responseMessage);
 
         return ResponseModel.success(responseMessage);
     }
@@ -59,10 +58,11 @@ public class GptApiController {
         String gptMessage = messages.toString();
         if (!MapUtils.isEmpty(stockConversation)) {
             for (int i = 0; i < count; i++) {
-                temp += stockConversation.get(i);
+                temp += stockConversation.get(i).toString();
             }
             gptMessage = temp + gptMessage;
         }
+        stockConversation.put(count++, messages); //사용자의 요청 값 저장
 
         String requestId = UUID.randomUUID().toString();
         log.info("requestId {}, ip {}, send messages : {}", requestId, request.getRemoteHost(), gptMessage);
@@ -70,6 +70,7 @@ public class GptApiController {
     }
 
     private String responseMessage(HttpServletRequest request, List<ChatMessage> messages, String requestId) {
+        stockConversation.put(count++, messages); //gpt 응답 값 저장
         String responseMessage = gptService.Chat(messages);
         log.info("requestId {}, ip {}\n get a reply : {}", requestId, request.getRemoteHost(), responseMessage);
         return responseMessage;
