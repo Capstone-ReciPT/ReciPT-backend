@@ -34,12 +34,4 @@ public class UserSignUpDto {
         this.password = password;
         this.passwordConfirm = passwordConfirm;
     }
-
-//    public UserSignUpDto(User user, String passwordConfirm) {
-//        this.username = user.getUsername();
-//        this.profile = user.getProfile();
-//        this.loginId = user.getLoginId();
-//        this.password = user.getPassword();
-//        this.passwordConfirm = passwordConfirm;
-//    }
 }

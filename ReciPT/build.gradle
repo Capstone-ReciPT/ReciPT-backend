@@ -57,6 +57,7 @@ dependencies {
 
     //json 만들기
     implementation group: 'org.json', name: 'json', version: '20090211'
+    implementation 'com.google.code.gson:gson:2.8.9'
 
     // queryDSL 설정
     implementation "com.querydsl:querydsl-jpa"

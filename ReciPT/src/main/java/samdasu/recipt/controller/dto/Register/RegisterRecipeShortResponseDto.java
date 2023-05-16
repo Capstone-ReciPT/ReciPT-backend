@@ -8,7 +8,6 @@ import samdasu.recipt.entity.RegisterRecipe;
 @Getter
 @Setter
 public class RegisterRecipeShortResponseDto {
-
     private Long recipeId;
 
     private String foodName;
@@ -17,15 +16,17 @@ public class RegisterRecipeShortResponseDto {
 
     private Integer likeCount;
 
+    private String category;
+
     public RegisterRecipeShortResponseDto(RegisterRecipe recipe) {
         recipeId = recipe.getRegisterId();
         foodName = recipe.getFoodName();
         thumbnailImage = recipe.getRegisterRecipeThumbnail().getThumbnailData();
         likeCount = recipe.getLikeCount();
+        category = recipe.getCategory();
     }
 
     public static RegisterRecipeShortResponseDto CreateRecipeShortResponseDto(RegisterRecipe recipe) {
         return new RegisterRecipeShortResponseDto(recipe);
     }
-
 }

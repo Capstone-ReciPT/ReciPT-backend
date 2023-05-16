@@ -106,7 +106,7 @@ public class CategoryApiController {
     static class Result2<T> {
         private int dbRecipeCount; // 레시피 수
         private int registerRecipeCount; // 레시피 수
-        private T data1;
-        private T data2;
+        private T recipeList;
+        private T registerRecipeList;
     }
 }

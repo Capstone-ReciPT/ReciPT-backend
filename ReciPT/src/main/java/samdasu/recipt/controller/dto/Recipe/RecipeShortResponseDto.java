@@ -17,15 +17,17 @@ public class RecipeShortResponseDto {
 
     private Integer likeCount;
 
+    private String category;
+
     public RecipeShortResponseDto(Recipe recipe) {
         recipeId = recipe.getRecipeId();
         foodName = recipe.getFoodName();
         thumbnailImage = recipe.getThumbnailImage();
         likeCount = recipe.getLikeCount();
+        category = recipe.getCategory();
     }
 
     public static RecipeShortResponseDto CreateRecipeShortResponseDto(Recipe recipe) {
         return new RecipeShortResponseDto(recipe);
     }
-
 }
