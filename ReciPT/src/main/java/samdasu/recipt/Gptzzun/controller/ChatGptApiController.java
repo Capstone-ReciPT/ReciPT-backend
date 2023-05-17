@@ -15,7 +15,6 @@ import samdasu.recipt.Gptzzun.dto.chat.MultiChatMessage;
 import samdasu.recipt.Gptzzun.service.ChatgptService;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.service.GptService;
-import samdasu.recipt.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
