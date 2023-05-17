@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.dialect.H2Dialect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
@@ -15,11 +15,11 @@ import samdasu.recipt.service.RecipeService;
 import samdasu.recipt.service.RegisterRecipeService;
 import samdasu.recipt.service.UserService;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.PersistenceUnitUtil;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -30,30 +30,37 @@ public class SearchBarApiController {
     private final RecipeService recipeService;
     private final RegisterRecipeService registerRecipeService;
 
-    @PersistenceUnit
-    private final EntityManagerFactory emf;
+    @Autowired
+    private DataSource dataSource;
 
     @GetMapping("/search")
-    public Result recommendByAge(@AuthenticationPrincipal UserResponseDto userResponseDto) {
+    public Result recommendByAge(@AuthenticationPrincipal UserResponseDto userResponseDto) throws SQLException {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
-        User findUser = userService.findById(userResponseDto.getUserId());
         List<String> recommend;
 
-
-        if (registerRecipes.size() < 10) {
-            PersistenceUnitUtil persistenceUnitUtil = emf.getPersistenceUnitUtil();
-            boolean isH2 = persistenceUnitUtil.getIdentifier(findUser) instanceof H2Dialect;
-
-            if (isH2) {
-                recommend = recipeService.RecommendByRandH2();
+        if (Optional.ofNullable(userResponseDto).isPresent()) { //로그인 한 경우
+            User findUser = userService.findById(userResponseDto.getUserId());
+            if (registerRecipes.size() < 10) {
+                recommend = randomRecommend();
             } else {
-                recommend = recipeService.RecommendByRandMySql();
+                recommend = registerRecipeService.RecommendByAge(findUser.getAge());
             }
-        } else {
-            recommend = registerRecipeService.RecommendByAge(findUser.getAge());
+        } else { //로그인 하지 않은 경우
+            recommend = randomRecommend();
         }
-
         return new Result(recommend.size(), recommend);
+    }
+
+    private List<String> randomRecommend() throws SQLException {
+        List<String> recommend;
+        String databaseUrl = dataSource.getConnection().getMetaData().getURL();
+        log.info("databaseUrl = {}", databaseUrl);
+        if (databaseUrl.contains("h2")) {
+            recommend = recipeService.RecommendByRandH2();
+        } else {
+            recommend = recipeService.RecommendByRandMySql();
+        }
+        return recommend;
     }
 
     @PostMapping("/search")
