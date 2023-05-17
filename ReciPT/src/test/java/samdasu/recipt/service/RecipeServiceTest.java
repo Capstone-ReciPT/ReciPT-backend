@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.entity.Recipe;
@@ -75,26 +74,6 @@ class RecipeServiceTest {
 
         //then
         assertThat(recipes.size()).isEqualTo(4);
-    }
-
-    @Test
-    @Rollback(value = false)
-    public void 전체_조인() throws Exception {
-        //given
-
-        //when
-//        Page<RecipeProjection> result = dbRecipeRepository.Top10AllRecipeLike(PageRequest.of(0, 10));
-//        List<RecipeProjection> content = result.getContent();
-//        for (RecipeProjection recipeProjection : content) {
-//            System.out.println("recipeProjection = " + recipeProjection.getFoodName());
-//            System.out.println("recipeProjection.getIngredient() = " + recipeProjection.getIngredient());
-//        }
-        //then
-
-//        List<Tuple> result = dbRecipeRepository.JoinTable();
-//        for (Tuple tuple : result) {
-//            System.out.println("tuple = " + tuple);
-//        }
     }
 
     private Recipe createRecipe() {
