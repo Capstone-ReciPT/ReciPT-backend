@@ -2,18 +2,14 @@ package samdasu.recipt.Gptzzun.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.Gptzzun.controller.dto.ResponseModel;
 import samdasu.recipt.Gptzzun.dto.chat.MultiChatMessage;
 import samdasu.recipt.Gptzzun.service.ChatgptService;
-import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.service.GptService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +36,7 @@ public class ChatGptApiController {
     private List<MultiChatMessage> conversation = new ArrayList<>();
 
     @PostMapping("/send")
-    public ResponseModel<String> sendContent(@AuthenticationPrincipal UserResponseDto userResponseDto, HttpServletRequest request, @RequestBody String content) {
+    public ResponseModel<String> sendContent(HttpServletRequest request, @RequestBody String content) {
         try {
             if (StringUtils.isEmpty(content)) {
                 return ResponseModel.fail("Content is required.");
@@ -67,7 +63,7 @@ public class ChatGptApiController {
                     String jsonString = matcher.group();
 
                     try {
-                        Long gptRecipeId = saveGptPrompt(jsonString, userResponseDto.getUserId());
+                        Long gptRecipeId = saveGptPrompt(jsonString);
                         clearConversation();
                         log.info("Saved GptRecipe. foodName: {}", gptService.getGptRecipeByGptId(gptRecipeId).getFoodName());
                     } catch (IOException e) {
@@ -84,14 +80,15 @@ public class ChatGptApiController {
         }
     }
 
-    private Long saveGptPrompt(String jsonString, Long userId) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode responseJson = objectMapper.readTree(jsonString);
-        String foodName = responseJson.path("foodName").asText();
-        String ingredient = responseJson.path("ingredient").asText();
-        String context = responseJson.path("context").asText();
-        Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, userId);
-        return gptRecipeId;
+    private Long saveGptPrompt(String jsonString) throws JsonProcessingException {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        JsonNode responseJson = objectMapper.readTree(jsonString);
+//        String foodName = responseJson.path("foodName").asText();
+//        String ingredient = responseJson.path("ingredient").asText();
+//        String context = responseJson.path("context").asText();
+//        Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context);
+//        return gptRecipeId;
+        return 1L;
     }
 
     @PostMapping("/refresh")
