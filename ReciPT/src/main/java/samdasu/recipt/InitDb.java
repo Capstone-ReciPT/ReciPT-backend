@@ -96,8 +96,6 @@ public class InitDb {
             ImageFile imageFile = ImageFile.createImageFile("군만두_사진", "jpg", null);
             em.persist(imageFile);
 
-            Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기");
-            em.persist(gpt);
 
             RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("군만두 썸네일", "jpg", null);
             em.persist(thumbnail);
@@ -107,6 +105,9 @@ public class InitDb {
 
             User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
             em.persist(user);
+
+            Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기", user);
+            em.persist(gpt);
 
             RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
                     400L, 55, 0.0, 0, user, gpt, imageFile);
@@ -123,9 +124,6 @@ public class InitDb {
             ImageFile imageFile = ImageFile.createImageFile("새송이_버섯", "jpg", null);
             em.persist(imageFile);
 
-            Gpt gpt = Gpt.createGpt("버섯구이", "새송이 버섯, 올리브유, 소금", "1.버섯 썰기 2.굽기 3.먹기");
-            em.persist(gpt);
-
             RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("버섯 썸네일", "jpg", null);
             em.persist(thumbnail);
 
@@ -135,6 +133,8 @@ public class InitDb {
             User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
             em.persist(user);
 
+            Gpt gpt = Gpt.createGpt("버섯구이", "새송이 버섯, 올리브유, 소금", "1.버섯 썰기 2.굽기 3.먹기", user);
+            em.persist(gpt);
 
             RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "버섯을 먹어보아요", "고기랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
                     500L, 35, 0.0, 0, user, gpt, imageFile);
@@ -146,12 +146,10 @@ public class InitDb {
             Heart regiterRecipeHeart = Heart.createRegiterRecipeHeart(user, registerRecipe);
             em.persist(regiterRecipeHeart);
         }
+
         public void registerRecipeInit3() {
             ImageFile imageFile = ImageFile.createImageFile("오이무침_사진", "jpg", null);
             em.persist(imageFile);
-
-            Gpt gpt = Gpt.createGpt("오이무침", "오이, 양파, 설탕, 소금", "1.오이 자르기 2.양념장 만들기 3.버무리기");
-            em.persist(gpt);
 
             RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("오이무침 썸네일", "jpg", null);
             em.persist(thumbnail);
@@ -162,6 +160,8 @@ public class InitDb {
             User user = User.createUser("testerC", "testC", passwordEncoder.encode("C1234"), 30, profile);
             em.persist(user);
 
+            Gpt gpt = Gpt.createGpt("오이무침", "오이, 양파, 설탕, 소금", "1.오이 자르기 2.양념장 만들기 3.버무리기", user);
+            em.persist(gpt);
 
             RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "오이무침을 먹어보아요", "밥이랑 같이 먹어요", "채소", gpt.getIngredient(), gpt.getContext(),
                     500L, 35, 0.0, 0, user, gpt, imageFile);

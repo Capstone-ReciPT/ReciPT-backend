@@ -42,6 +42,9 @@ public class User extends BaseTimeEntity {
     @OneToOne(mappedBy = "user", fetch = LAZY)
     private Profile profile;
 
+    @OneToMany(mappedBy = "user")
+    private List<Gpt> gpt = new ArrayList<>();
+
     //== 연관관계 편의 메서드 ==//
     public void addProfile(Profile profile) {
         this.profile = profile;

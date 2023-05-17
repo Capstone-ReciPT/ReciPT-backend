@@ -45,7 +45,6 @@ public class UserApiController {
     private final ProfileService profileService;
     private final RegisterRecipeService registerRecipeService;
 
-
     @PostMapping("/signup")
     public Result1 saveUser(@Valid UserSignUpDto userSignUpDto, @RequestParam(value = "profile") MultipartFile file) throws IOException {
         Long savedProfileId = profileService.uploadImage(file);

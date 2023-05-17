@@ -70,7 +70,7 @@ public class HeartServiceTest {
         Profile profile = createProfile();
         User user = createUser(profile);
         RegisterRecipeThumbnail thumbnail = createThumbnail();
-        Gpt gpt = createGpt();
+        Gpt gpt = createGpt(user);
         ImageFile imageFile = createImageFiles();
         RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
@@ -90,7 +90,7 @@ public class HeartServiceTest {
         Profile profile = createProfile();
         User user = createUser(profile);
         RegisterRecipeThumbnail thumbnail = createThumbnail();
-        Gpt gpt = createGpt();
+        Gpt gpt = createGpt(user);
         ImageFile imageFile = createImageFiles();
         RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
@@ -129,7 +129,7 @@ public class HeartServiceTest {
         Profile profile = createProfile();
         User user = createUser(profile);
         RegisterRecipeThumbnail thumbnail = createThumbnail();
-        Gpt gpt = createGpt();
+        Gpt gpt = createGpt(user);
         ImageFile imageFile = createImageFiles();
         RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
 
@@ -185,8 +185,8 @@ public class HeartServiceTest {
         return thumbnail;
     }
 
-    private Gpt createGpt() {
-        Gpt gpt = Gpt.createGpt("음식 이름", "식재료", "내용");
+    private Gpt createGpt(User user) {
+        Gpt gpt = Gpt.createGpt("음식 이름", "식재료", "내용", user);
         em.persist(gpt);
 
         return gpt;

@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.entity.Gpt;
+import samdasu.recipt.entity.User;
+import samdasu.recipt.exception.ResourceNotFoundException;
 import samdasu.recipt.repository.GptRepository;
+import samdasu.recipt.repository.UserRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -12,9 +15,13 @@ import samdasu.recipt.repository.GptRepository;
 public class GptService {
     private final GptRepository gptRepository;
 
+    private final UserRepository userRepository;
+
     @Transactional
-    public Long createGptRecipe(String foodName, String ingredient, String context) {
-        Gpt gpt = Gpt.createGpt(foodName, ingredient, context);
+    public Long createGptRecipe(String foodName, String ingredient, String context, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        Gpt gpt = Gpt.createGpt(foodName, ingredient, context, user);
         gptRepository.save(gpt);
         return gpt.getGptId();
     }
