@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +14,11 @@ import samdasu.recipt.GptJH.dto.chat.ChatMessage;
 import samdasu.recipt.GptJH.service.GptService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @CrossOrigin
@@ -31,33 +29,27 @@ public class GptApiController {
     @Autowired
     private GptService gptService;
 
-    private Map<Integer, List<ChatMessage>> stockConversation = new HashMap<>();
-
-    private String recommendFoodName = ""; //사용자가 만들고자 하는 음식 이름
-    private Integer count = 0;
-    private String temp;
-    private boolean isFirstExecution = true;
+    private List<List<ChatMessage>> stock = new ArrayList<>();
 
     @PostMapping("/end")
-    public void end() {
-        log.info("저장된 대화 내용 삭제 완료!!");
-        stockConversation.clear();
-        count = 0;
-    }
+    public ResponseModel<String> end(HttpServletRequest request) {
+        log.info("대화 종료!!");
+        ChatMessage message = new ChatMessage();
+        message.setRole("user");
+        message.setContent("종료");
+        List<ChatMessage> messages = Arrays.asList(message);
 
-    @PostMapping("/send/recommendfood") //단순 음식 추천
-    public ResponseModel<String> recommendFood(HttpServletRequest request, @RequestBody List<ChatMessage> messages) {
-        String requestId = sendMessageFirst(request, messages);
+        String requestId = sendMessage(request, messages);
+        log.info("messages.stream().collect(Collectors.toList()) = {}", messages.stream().collect(Collectors.toList()));
         if (CollectionUtils.isEmpty(messages)) {
             return ResponseModel.fail("messages can not be empty");
         }
-        String responseMessage = responseMessageFirst(request, messages, requestId);
+        String responseMessage = responseMessage(request, messages, requestId);
         return ResponseModel.success(responseMessage);
     }
 
-    @PostMapping("/send/conversation") //인터렉티브 시작
-    public ResponseModel<String> conversation(HttpServletRequest request, @RequestBody List<ChatMessage> messages) {
-        temp = "";
+    @PostMapping("/send/recommendfood")
+    public ResponseModel<String> recommendFood(HttpServletRequest request, @RequestBody List<ChatMessage> messages) {
         String requestId = sendMessage(request, messages);
         if (CollectionUtils.isEmpty(messages)) {
             return ResponseModel.fail("messages can not be empty");
@@ -67,76 +59,37 @@ public class GptApiController {
     }
 
     private String sendMessage(HttpServletRequest request, List<ChatMessage> messages) {
-        String gptMessage = messages.toString();
-        if (!MapUtils.isEmpty(stockConversation)) {
-            for (Integer key : stockConversation.keySet()) {
-                String value = stockConversation.get(key).toString();
-                temp += value;
-            }
-            gptMessage = temp + gptMessage;
-        }
-        stockConversation.put(count++, messages); //사용자의 요청 값 저장
-        String cleanedMessage = gptMessage.replaceAll("\\[|\\]", "");
-        String message = "[" + cleanedMessage + "]";
-
-        log.info("message = {}", message);
-
-        // 정규식 패턴을 사용하여 ChatMessage를 찾습니다.
-        String pattern = "(ChatMessage\\(.*?\\))";
-
-        // 정규식 패턴과 매치되는 모든 문자열을 찾습니다.
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(message);
-
-        // 첫 번째 ChatMessage는 그대로 두고 이미 존재하는 ", "가 있는 ChatMessage는 제외하고
-        // 나머지 ChatMessage 앞에 ", "를 추가하여 결과를 생성합니다.
-        StringBuilder result = new StringBuilder();
-        if (matcher.find()) {
-            result.append(matcher.group()).append("\n");
-        }
-        boolean firstMatch = true;
-        while (matcher.find()) {
-            if (matcher.group().contains(", ")) {
-                result.append(matcher.group()).append("\n");
-            } else {
-                if (firstMatch) {
-                    firstMatch = false;
-                } else {
-                    result.append(", ");
-                }
-                result.append(matcher.group()).append("\n");
-            }
-        }
+//        String temp = "";
+//        String gptMessage = messages.toString();
+//
+//        if (!stock.isEmpty()) {
+//            for (List<ChatMessage> chatMessages : stock) {
+//                String str = chatMessages.toString();
+//                temp += str;
+//            }
+//            log.info("temp = {}", temp);
+//            gptMessage = temp + gptMessage;
+//        }
+//        stock.add(messages);
+//
+//        String output = gptMessage.replaceAll("\\]\\[", ", ");
+//
+//        for (List<ChatMessage> chatMessages : stock) {
+//            log.info("chatMessages.stream().toString() = {}", chatMessages.stream().collect(Collectors.toList()));
+//        }
 
         String requestId = UUID.randomUUID().toString();
-        log.info("requestId {}, ip {}, send messages : {}", requestId, request.getRemoteHost(), result);
+        log.info("requestId {}, ip {}, send messages : {}", requestId, request.getRemoteHost(), messages);
         return requestId;
     }
 
     private String responseMessage(HttpServletRequest request, List<ChatMessage> messages, String requestId) {
         ChatMessage response = gptService.Chat(messages);
 
-        String responseMessage = makeJson(response); //1번째 responseMessage() 메서드 실행시 음식 3가지 추천받음
+//        stock.add(Collections.singletonList(response));
 
-//        stockConversation.put(count++, Collections.singletonList(response)); //gpt 응답 값 저장
-
-
-        log.info("requestId {}, ip {}\n get a reply : {}", requestId, request.getRemoteHost(), responseMessage);
-        return responseMessage;
-    }
-
-    private String sendMessageFirst(HttpServletRequest request, List<ChatMessage> messages) {
-        String gptMessage = messages.toString();
-        String requestId = UUID.randomUUID().toString();
-        log.info("requestId {}, ip {}, send messages : {}", requestId, request.getRemoteHost(), gptMessage);
-        return requestId;
-    }
-
-    private String responseMessageFirst(HttpServletRequest request, List<ChatMessage> messages, String requestId) {
-        ChatMessage response = gptService.Chat(messages);
-        String responseMessage = makeJson(response); //1번째 responseMessage() 메서드 실행시 음식 3가지 추천받음
-        log.info("requestId {}, ip {}\n get a reply : {}", requestId, request.getRemoteHost(), responseMessage);
-        return responseMessage;
+        log.info("requestId {}, ip {}\n get a reply : {}", requestId, request.getRemoteHost(), response);
+        return response.getContent();
     }
 
     private String makeJson(ChatMessage response) {

@@ -33,7 +33,7 @@ class RegisterRecipeServiceTest {
         //given
         Profile profile = createProfile();
         User user = createUser10(profile);
-        Gpt gpt = createGpt();
+        Gpt gpt = createGpt(user);
         RegisterRecipeThumbnail thumbnail = createThumbnail();
         ImageFile imageFile = createImageFile();
         RegisterRecipe recipe = createRecipe(user, gpt, thumbnail, imageFile);
@@ -52,7 +52,7 @@ class RegisterRecipeServiceTest {
         //given
         Profile profile = createProfile();
         User user = createUser10(profile);
-        Gpt gpt = createGpt();
+        Gpt gpt = createGpt(user);
         ImageFile imageFile = createImageFile();
 
         //when
@@ -147,7 +147,7 @@ class RegisterRecipeServiceTest {
         Profile profile = createProfile();
         User userAge10 = createUser10(profile);
         User userAge20 = createUser20(profile);
-        Gpt gpt = createGpt();
+        Gpt gpt = createGpt(userAge10);
         RegisterRecipeThumbnail thumbnail = createThumbnail();
         ImageFile imageFile = createImageFile();
         testRecommendByAge1(userAge10, gpt, thumbnail, imageFile);
@@ -171,8 +171,8 @@ class RegisterRecipeServiceTest {
         return imageFile;
     }
 
-    private Gpt createGpt() {
-        Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기");
+    private Gpt createGpt(User user) {
+        Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기", user);
         em.persist(gpt);
 
         return gpt;

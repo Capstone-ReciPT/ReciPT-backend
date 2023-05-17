@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.controller.dto.User.UserResponseDto;
 import samdasu.recipt.entity.User;
-import samdasu.recipt.repository.ProfileRepository;
 import samdasu.recipt.repository.UserRepository;
 
 
@@ -18,7 +17,6 @@ import samdasu.recipt.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
 
     //loginId이 DB에 있는지 확인해줘야함
     @Override
