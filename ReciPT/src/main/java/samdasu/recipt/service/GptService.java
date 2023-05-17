@@ -24,7 +24,7 @@ public class GptService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Gpt Id:" + gptId));
     }
 
-    public Gpt getGptRecipeByGptId(String foodName) {
+    public Gpt getGptRecipeByGptFoodName(String foodName) {
         return gptRepository.findByFoodName(foodName)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid foodName:" + foodName));
     }
@@ -37,7 +37,7 @@ public class GptService {
     }
 
     @Transactional
-    public void deleteGptRecipeByGptId(String foodName) {
+    public void deleteGptRecipeByGptFoodName(String foodName) {
         Gpt gpt = gptRepository.findByFoodName(foodName)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid foodName:" + foodName));
         gptRepository.delete(gpt);

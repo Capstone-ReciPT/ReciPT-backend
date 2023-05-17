@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import samdasu.recipt.Gptzzun.dto.Usage;
 import samdasu.recipt.Gptzzun.dto.chat.MultiChatMessage;
 import samdasu.recipt.Gptzzun.dto.chat.MultiChatRequest;
 import samdasu.recipt.Gptzzun.dto.chat.MultiChatResponse;
+import samdasu.recipt.Gptzzun.dto.chat.MultiResponseChoice;
 import samdasu.recipt.Gptzzun.exception.ChatgptException;
 import samdasu.recipt.Gptzzun.property.MultiChatProperties;
 
@@ -29,11 +31,35 @@ public class DefaultChatgptService implements ChatgptService {
     }
 
     @Override
-    public String multiChat(List<MultiChatMessage> messages) {
-        MultiChatRequest multiChatRequest = new MultiChatRequest(multiChatProperties.getModel(), messages, multiChatProperties.getMaxTokens(), multiChatProperties.getTemperature(), multiChatProperties.getTopP());
-        MultiChatResponse multiChatResponse = this.getResponse(this.buildHttpEntity(multiChatRequest), MultiChatResponse.class, multiChatProperties.getUrl());
+    public String multiChat(List<MultiChatMessage> conversation) {
+        MultiChatRequest multiChatRequest = new MultiChatRequest(
+                multiChatProperties.getModel(),
+                conversation,
+                multiChatProperties.getMaxTokens(),
+                multiChatProperties.getTemperature(),
+                multiChatProperties.getTopP()
+        );
+        MultiChatResponse multiChatResponse = this.getResponse(
+                this.buildHttpEntity(multiChatRequest),
+                MultiChatResponse.class,
+                multiChatProperties.getUrl()
+        );
         try {
-            return multiChatResponse.getChoices().get(0).getMessage().getContent();
+            Usage usage = multiChatResponse.getUsage();
+            if (usage != null) {
+                Integer promptTokens = usage.getPromptTokens();
+                Integer completionTokens = usage.getCompletionTokens();
+                Integer totalTokens = usage.getTotalTokens();
+
+                log.info("Prompt Tokens: {}", promptTokens);
+                log.info("Completion Tokens: {}", completionTokens);
+                log.info("Total Tokens: {}", totalTokens);
+            }
+
+            MultiResponseChoice responseChoice = multiChatResponse.getChoices().get(0);
+            MultiChatMessage responseMessage = responseChoice.getMessage();
+            conversation.add(responseMessage);
+            return responseMessage.getContent();
         } catch (Exception e) {
             log.error("parse chatgpt message error", e);
             throw e;

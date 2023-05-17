@@ -58,8 +58,7 @@ public class CategoryApiController {
 
         List<RegisterRecipe> registerRecipeCategory = registerRecipeService.findByCategory(category);
         List<RegisterRecipeShortResponseDto> collect2 = getRegisterRecipesByCategory(registerRecipeCategory);
-
-        return new Result2(collect1.size(), collect2.size(), collect1, collect2);
+        return new Result2(category, collect1.size(), collect2.size(), collect1, collect2);
     }
 
     private List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
@@ -104,9 +103,10 @@ public class CategoryApiController {
     @Data
     @AllArgsConstructor
     static class Result2<T> {
-        private int dbRecipeCount; // 레시피 수
+        private String category;
+        private int recipeCount; // 레시피 수
         private int registerRecipeCount; // 레시피 수
-        private T data1;
-        private T data2;
+        private T recipeList;
+        private T registerRecipeList;
     }
 }

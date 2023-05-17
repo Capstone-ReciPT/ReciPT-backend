@@ -39,18 +39,4 @@ public class Gpt extends BaseTimeEntity {
     public static Gpt createGpt(String foodName, String ingredient, String context) {
         return new Gpt(foodName, ingredient, context);
     }
-
-
-    //==비지니스 로직==//
-//    public void updateRating(Double ratingScore) {
-//        dbRatingScore += ratingScore;
-//        dbRatingPeople++;
-//    }
-//
-//    /**
-//     * DB 평점 계산
-//     */
-//    public Double calcDbRatingScore(DbRecipe dbRecipe) {
-//        return Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
-//    }
 }
