@@ -51,14 +51,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     testImplementation 'org.springframework.security:spring-security-test'
 
-    //open ai
-    implementation 'com.theokanning.openai-gpt3-java:api:0.11.1'
-    //implementation 'com.theokanning.openai-gpt3-java:client:0.11.1'
-    implementation 'com.theokanning.openai-gpt3-java:service:0.11.1'
-
-    //json 만들기
-    implementation group: 'org.json', name: 'json', version: '20090211'
-    implementation 'com.google.code.gson:gson:2.8.9'
+    // 엑셀파일 DB 삽입
+    implementation 'org.apache.poi:poi:5.0.0'
+    implementation 'org.apache.poi:poi-ooxml:5.0.0'
+    implementation 'com.opencsv:opencsv:5.5.2'
 
     // queryDSL 설정
     implementation "com.querydsl:querydsl-jpa"
@@ -89,22 +85,6 @@ dependencies {
     clean {
         delete file(generated)
     }
-
-
-//    STT & TTS
-    implementation platform('com.google.cloud:libraries-bom:26.1.4')
-    implementation 'com.google.cloud:google-cloud-speech'
-
-    implementation platform('com.google.cloud:libraries-bom:26.1.4')
-    implementation 'com.google.cloud:google-cloud-texttospeech'
-
-//    형태소 분석
-    implementation 'com.github.shin285:KOMORAN:3.3.4'
-
-// 엑셀파일 DB 삽입
-    implementation 'org.apache.poi:poi:5.0.0'
-    implementation 'org.apache.poi:poi-ooxml:5.0.0'
-    implementation 'com.opencsv:opencsv:5.5.2'
 }
 
 tasks.named('test') {
