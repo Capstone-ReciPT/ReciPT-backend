@@ -8,13 +8,7 @@ import java.util.List;
 
 public interface ChatgptService {
 
-    String multiChat(List<MultiChatMessage> messages);
+    String multiChat(List<MultiChatMessage> conversation);
 
     MultiChatResponse multiChatRequest(MultiChatRequest multiChatRequest);
-
-    /**
-     * @param prompt A text description of the desired image(s). The maximum length is 1000 characters.
-     * @return generated image url
-     */
-
 }

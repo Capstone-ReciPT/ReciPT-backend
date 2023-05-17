@@ -52,18 +52,4 @@ public class Gpt extends BaseTimeEntity {
         gpt.addUser(user);
         return gpt;
     }
-
-
-    //==비지니스 로직==//
-//    public void updateRating(Double ratingScore) {
-//        dbRatingScore += ratingScore;
-//        dbRatingPeople++;
-//    }
-//
-//    /**
-//     * DB 평점 계산
-//     */
-//    public Double calcDbRatingScore(DbRecipe dbRecipe) {
-//        return Math.round(dbRecipe.getDbRatingScore() / dbRecipe.getDbRatingPeople() * 100) / 100.0;
-//    }
 }

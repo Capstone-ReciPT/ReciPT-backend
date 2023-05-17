@@ -18,9 +18,9 @@ public class MultiChatProperties {
 
     private String model = "gpt-3.5-turbo";
 
-    private Integer maxTokens = 2000;
+    private Integer maxTokens = 600;
 
-    private Double temperature = 1.0;
+    private Double temperature = 0.7;
 
-    private Double topP = 1.0;
+    private Double topP = 0.7;
 }
