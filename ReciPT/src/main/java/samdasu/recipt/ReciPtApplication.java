@@ -1,15 +1,11 @@
 package samdasu.recipt;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import samdasu.recipt.db.InsertInitData;
-import samdasu.recipt.db.InsertRecipeService;
-
-import javax.persistence.EntityManager;
+import samdasu.recipt.api.db.InsertInitData;
+import samdasu.recipt.api.db.InsertRecipeService;
 
 @EnableScheduling
 @SpringBootApplication
@@ -18,10 +14,5 @@ public class ReciPtApplication {
         ApplicationContext context = SpringApplication.run(ReciPtApplication.class, args);
         InsertRecipeService insertRecipeService = context.getBean(InsertRecipeService.class);
         InsertInitData.insertInitData(context, insertRecipeService);
-    }
-
-    @Bean
-    JPAQueryFactory jpaQueryFactory(EntityManager em) {
-        return new JPAQueryFactory(em);
     }
 }
