@@ -21,6 +21,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * /short 대신 카테고리별로 /short
+ * 평점 갱신 테스트 안해봄
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor

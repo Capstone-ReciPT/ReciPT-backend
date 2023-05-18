@@ -20,6 +20,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * /short 대신 카테고리별로 /short
+ * 평점 갱신 테스트 안해봄
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -63,6 +67,7 @@ public class RecipeApiController {
         Recipe findRecipe = recipeService.findById(recipeId);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.insertRecipeHeart(recipeHeartDto);
+        log.info("좋아요 추가 성공");
     }
 
     @PostMapping("/cancel/{id}")
@@ -71,6 +76,7 @@ public class RecipeApiController {
         Recipe findRecipe = recipeService.findById(recipeId);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.deleteRecipeHeart(recipeHeartDto);
+        log.info("좋아요 삭제 성공");
     }
 
     /**

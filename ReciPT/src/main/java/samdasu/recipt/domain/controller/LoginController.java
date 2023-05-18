@@ -45,7 +45,7 @@ public class LoginController {
         if (session != null) {
             session.invalidate();
         }
-        log.info("로그아웃 완료!");
+        log.info("Logout successful!");
         return status(OK).build();
     }
 }
