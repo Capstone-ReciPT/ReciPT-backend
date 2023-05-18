@@ -6,9 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.controller.dto.User.UserResponseDto;
-import samdasu.recipt.entity.User;
-import samdasu.recipt.repository.UserRepository;
+import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
+import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.repository.UserRepository;
 
 
 @Service

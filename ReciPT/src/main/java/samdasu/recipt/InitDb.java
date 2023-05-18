@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import samdasu.recipt.entity.*;
+import samdasu.recipt.domain.entity.*;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
