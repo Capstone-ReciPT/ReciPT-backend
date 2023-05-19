@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
+import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.RegisterRecipe;
@@ -20,11 +22,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/search")
 public class SearchBarApiController {
     private final UserService userService;
     private final RecipeService recipeService;
@@ -33,7 +36,7 @@ public class SearchBarApiController {
     @Autowired
     private DataSource dataSource;
 
-    @GetMapping("/search")
+    @GetMapping
     public Result recommendByAge(@AuthenticationPrincipal UserResponseDto userResponseDto) throws SQLException {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
         List<String> recommend;
@@ -63,24 +66,32 @@ public class SearchBarApiController {
         return recommend;
     }
 
-    @PostMapping("/search")
-    public Result searchingFood(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                @RequestParam(value = "foodName", required = false) String foodName,
-                                @RequestParam(value = "like", required = false) Integer like,
-                                @RequestParam(value = "view", required = false) Long view) {
-        List<String> collect = new ArrayList<>();
-
+    @GetMapping("/recipes")
+    public Result2 searchingRecipes(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                                    @RequestParam(value = "foodName", required = false) String foodName,
+                                    @RequestParam(value = "like", required = false) Integer like,
+                                    @RequestParam(value = "view", required = false) Long view) {
         List<Recipe> recipes = recipeService.searchDynamicSearching(foodName, like, view);
+        List<RecipeShortResponseDto> collect1 = getRecipesByCategory(recipes);
 
-        for (Recipe recipe : recipes) {
-            collect.add(recipe.getFoodName());
-        }
         List<RegisterRecipe> registerRecipes = registerRecipeService.searchDynamicSearching(foodName, like, view);
+        List<RegisterRecipeShortResponseDto> collect2 = getRegisterRecipesByCategory(registerRecipes);
 
-        for (RegisterRecipe registerRecipe : registerRecipes) {
-            collect.add(registerRecipe.getFoodName());
-        }
-        return new Result(recipes.size() + registerRecipes.size(), collect);
+        return new Result2(collect1.size(), collect2.size(), collect1, collect2);
+    }
+
+    private List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
+        List<RecipeShortResponseDto> collect1 = recipeCategory.stream()
+                .map(RecipeShortResponseDto::new)
+                .collect(Collectors.toList());
+        return collect1;
+    }
+
+    private List<RegisterRecipeShortResponseDto> getRegisterRecipesByCategory(List<RegisterRecipe> registerRecipeCategory) {
+        List<RegisterRecipeShortResponseDto> collect2 = registerRecipeCategory.stream()
+                .map(RegisterRecipeShortResponseDto::new)
+                .collect(Collectors.toList());
+        return collect2;
     }
 
     @Data
@@ -88,5 +99,14 @@ public class SearchBarApiController {
     static class Result<T> {
         private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
         private T foodName;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result2<T> {
+        private int recipeCount; // 레시피 수
+        private int registerRecipeCount; // 레시피 수
+        private T recipeList;
+        private T registerRecipeList;
     }
 }
