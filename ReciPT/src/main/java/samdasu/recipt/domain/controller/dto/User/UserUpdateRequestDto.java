@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class UserUpdateRequestDto {
-
+    
     private String password;
-    private byte[] profileData;
+//    private byte[] profileData;
 
     public UserUpdateRequestDto(String newPassword) {
         password = newPassword;

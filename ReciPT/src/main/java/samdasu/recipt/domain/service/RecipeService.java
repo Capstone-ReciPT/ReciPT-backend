@@ -23,7 +23,7 @@ public class RecipeService {
      * 평점 평균 계산
      */
     @Transactional
-    public RecipeResponseDto updateRatingScore(Long recipeId, ReviewRequestDto reviewRequestDto) { //리뷰에서 하달받기
+    public RecipeResponseDto updateRatingScore(Long recipeId, ReviewRequestDto reviewRequestDto) {
         Recipe recipe = findById(recipeId);
         recipe.updateRating(reviewRequestDto.getInputRatingScore());
 

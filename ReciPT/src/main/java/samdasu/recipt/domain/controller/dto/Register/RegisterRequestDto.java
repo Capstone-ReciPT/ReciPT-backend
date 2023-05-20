@@ -1,12 +1,14 @@
 package samdasu.recipt.domain.controller.dto.Register;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class RegisterRequestDto {
     private byte[] thumbnailImage;
     @NotBlank(message = "제목을 입력해주세요")
