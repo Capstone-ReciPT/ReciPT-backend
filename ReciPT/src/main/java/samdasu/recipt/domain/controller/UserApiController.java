@@ -24,10 +24,7 @@ import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.entity.User;
-import samdasu.recipt.domain.service.HeartService;
-import samdasu.recipt.domain.service.ProfileService;
-import samdasu.recipt.domain.service.RegisterRecipeService;
-import samdasu.recipt.domain.service.UserService;
+import samdasu.recipt.domain.service.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -44,6 +41,8 @@ public class UserApiController {
     private final UserService userService;
     private final ProfileService profileService;
     private final RegisterRecipeService registerRecipeService;
+
+    private final ReviewService reviewService;
 
     @PostMapping("/signup")
     public Result1 saveUser(@Valid UserSignUpDto userSignUpDto, @RequestParam(value = "profile") MultipartFile file) throws IOException {
@@ -203,6 +202,8 @@ public class UserApiController {
         User findUser = userService.findById(userResponseDto.getUserId());
         UserResponseDto responseDto = new UserResponseDto(findUser);
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
+
+//        List<Review> reviews = reviewService.findReviewByWriter(userResponseDto.getUsername());
 
         log.info("user.getUsername() = {}", findUser.getUsername());
         log.info("user.getReviews.getComment() = {}", findUser.getReviews().stream()

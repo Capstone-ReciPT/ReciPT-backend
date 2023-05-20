@@ -15,23 +15,21 @@ import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RecipeService;
+import samdasu.recipt.domain.service.ReviewService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * /short 대신 카테고리별로 /short
- * 평점 갱신 테스트 안해봄
- */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/db")
 public class RecipeApiController {
     private final RecipeService recipeService;
-
     private final HeartService heartService;
+    private final ReviewService reviewService;
 
     @GetMapping("/{id}")
     public Result1 eachRecipeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto,
@@ -80,11 +78,12 @@ public class RecipeApiController {
     }
 
     /**
-     * reviewRequestDto 수정 가능성 있음
+     * 리뷰 저장 + 평점 갱신
      */
-    @PostMapping("/update/{id}")
-    public void updateRatingScore(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                  @PathVariable("id") Long recipeId, @Valid ReviewRequestDto requestDto) {
+    @PostMapping("/save/review/{id}")
+    public void saveReview(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                           @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
+        reviewService.saveRecipeReview(userResponseDto.getUserId(), recipeId, requestDto);
         recipeService.updateRatingScore(recipeId, requestDto);
     }
 

@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * 리뷰 작성 필요
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor

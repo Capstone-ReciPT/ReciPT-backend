@@ -4,9 +4,9 @@ package samdasu.recipt.api.gpt.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +29,13 @@ import static samdasu.recipt.api.gpt.constant.ChatConstants.*;
 @Slf4j
 @CrossOrigin
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/chat")
 public class ChatGptApiController {
 
-    @Autowired
-    private ChatGptService chatgptService;
-    @Autowired
-    private GptService gptService;
+    private final ChatGptService chatgptService;
+
+    private final GptService gptService;
 
     private List<Message> conversation = new ArrayList<>();
 
@@ -83,6 +83,7 @@ public class ChatGptApiController {
             return ResponseModel.fail("Error occurred during the request.");
         }
     }
+
 
     private Long saveGptPrompt(String jsonString, Long userId) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

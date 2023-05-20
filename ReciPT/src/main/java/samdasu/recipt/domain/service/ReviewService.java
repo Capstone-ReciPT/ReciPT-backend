@@ -98,14 +98,13 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    private Review findById(Long reviewId) {
+    public Review findById(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
     }
 
     private User findUserById(Long userId) {
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
-        return user;
     }
 }
