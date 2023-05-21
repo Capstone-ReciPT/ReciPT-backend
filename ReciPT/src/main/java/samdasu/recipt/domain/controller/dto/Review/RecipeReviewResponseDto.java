@@ -23,4 +23,8 @@ public class RecipeReviewResponseDto {
         recipeThumbnailImage = review.getRecipe().getThumbnailImage();
     }
 
+    public static RecipeReviewResponseDto createRecipeReviewResponseDto(Review review) {
+        return new RecipeReviewResponseDto(review);
+    }
+
 }

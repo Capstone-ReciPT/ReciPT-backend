@@ -64,6 +64,9 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
+    public List<Review> findRecipeReviews(Long selectRecipeId) {
+        return reviewRepository.findRecipeReviews(selectRecipeId);
+    }
 
     /**
      * 좋아요 많은 순
@@ -76,6 +79,9 @@ public class ReviewService {
         return reviewRepository.recipeOrderByLike(selectRecipeId);
     }
 
+    public List<Review> findRegisterRecipeReviews(Long selectRegisterId) {
+        return reviewRepository.findRegisterRecipeReviews(selectRegisterId);
+    }
 
     /**
      * 최신 순

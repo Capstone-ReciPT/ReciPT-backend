@@ -9,6 +9,10 @@ public interface ReviewCustomRepository {
 
     void subReviewLikeCount(Review review);
 
+    List<Review> findRecipeReviews(Long selectRecipeId);
+
+    List<Review> findRegisterRecipeReviews(Long selectRegisterId);
+
     List<Review> findReviewByWriter(String username);//글쓴이 조회
 
     List<Review> registerOrderByLike(Long selectRegisterId);

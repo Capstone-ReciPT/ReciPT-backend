@@ -5,12 +5,15 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
+import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
+import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.service.ReviewService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -21,17 +24,12 @@ public class ReviewApiController {
 
     /**
      * 리뷰 내용 변경
-     * - reviewId로 찾아서 변경해줄려고 했는데... 만약 recipe & 등록한 recipe id가 같으면??
+     * - 로그인 한 본인이 쓴 리뷰가 아닌 리뷰는 수정 불가능하다! -> 로직 미생성
      */
 //    @PostMapping("/edit")
-//    public Result2 updateReview(@AuthenticationPrincipal UserResponseDto userResponseDto
-//            , @RequestParam(value = "reviewId") Long reviewId, @Valid ReviewUpdateRequestDto requestDto) {
-//        List<Review> reviews = reviewService.findReviewByWriter(userResponseDto.getUsername());
-//        Long updateId = reviewService.update(reviewId, requestDto);
-//        Review review = reviewService.findById(updateId);
-//
-//
-//        return new Result2(1, review);
+//    public void updateReview(@AuthenticationPrincipal UserResponseDto userResponseDto
+//                             ,@Valid ReviewUpdateRequestDto requestDto) {
+//        reviewService.update(userResponseDto.get, requestDto);
 //    }
     @PostMapping("/delete")
     public void deleteReview(@AuthenticationPrincipal UserResponseDto userResponseDto
@@ -39,19 +37,76 @@ public class ReviewApiController {
         reviewService.delete(reviewId);
     }
 
+    @GetMapping("/recipe/{id}")
+    public Result recipeReviewInfo(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+        List<Review> recipeReviews = reviewService.findRecipeReviews(recipeId);
 
-    @Data
-    @AllArgsConstructor
-    static class Result1<T> {
-        private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
-        private T data;
-        private T profile;
+        List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
+
+        return new Result(collect.size(), collect);
+    }
+
+    @GetMapping("/register/{id}")
+    public Result registerRecipeReviewInfo(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+        List<Review> registerRecipeReviews = reviewService.findRegisterRecipeReviews(recipeId);
+
+        List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
+
+        return new Result(collect.size(), collect);
+    }
+
+    @GetMapping("/recipe/sort/like/{id}")
+    public Result sortRecipeReviewByLikeCount(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+        List<Review> recipeReviews = reviewService.recipeOrderByLike(recipeId);
+
+        List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
+
+        return new Result(collect.size(), collect);
+    }
+
+    @GetMapping("/register/sort/like/{id}")
+    public Result sortRegisterRecipeReviewByLikeCount(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+        List<Review> registerRecipeReviews = reviewService.registerOrderByLike(recipeId);
+
+        List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
+
+        return new Result(collect.size(), collect);
+    }
+
+    @GetMapping("/recipe/sort/create/{id}")
+    public Result sortRecipeReviewByCreateDate(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+        List<Review> recipeReviews = reviewService.recipeOrderByCreateDate(recipeId);
+
+        List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
+
+        return new Result(collect.size(), collect);
+    }
+
+    @GetMapping("/register/sort/create/{id}")
+    public Result sortRegisterRecipeReviewByCreateDate(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+        List<Review> registerRecipeReviews = reviewService.registerOrderByCreateDate(recipeId);
+
+        List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
+
+        return new Result(collect.size(), collect);
+    }
+
+    private List<RecipeReviewResponseDto> getRecipeReviewResponseDtos(List<Review> recipeReviews) {
+        return recipeReviews.stream()
+                .map(RecipeReviewResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    private List<RegisterRecipeReviewResponseDto> getRegisterRecipeReviewResponseDtos(List<Review> registerRecipeReviews) {
+        return registerRecipeReviews.stream()
+                .map(RegisterRecipeReviewResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Data
     @AllArgsConstructor
-    static class Result2<T> {
-        private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
+    static class Result<T> {
+        private int count;
         private T data;
     }
 }

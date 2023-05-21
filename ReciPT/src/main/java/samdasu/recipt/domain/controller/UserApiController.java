@@ -16,8 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
-import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
-import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
@@ -203,23 +201,13 @@ public class UserApiController {
         UserResponseDto responseDto = new UserResponseDto(findUser);
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
 
-//        List<Review> reviews = reviewService.findReviewByWriter(userResponseDto.getUsername());
+        List<Review> reviews = reviewService.findReviewByWriter(userResponseDto.getUsername());
 
         log.info("user.getUsername() = {}", findUser.getUsername());
         log.info("user.getReviews.getComment() = {}", findUser.getReviews().stream()
                 .map(Review::getComment).collect(Collectors.toList()));
 
-        List<RecipeReviewResponseDto> recipeReviewResponseDtos = findUser.getReviews().stream()
-                .filter(review -> review != null && review.getRecipe() != null && review.getRecipe().getRecipeId() != null) // null 값 필터링
-                .map(RecipeReviewResponseDto::new)
-                .collect(Collectors.toList());
-
-        List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos = findUser.getReviews().stream()
-                .filter(review -> review != null && review.getRegisterRecipe() != null && review.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
-                .map(RegisterRecipeReviewResponseDto::new)
-                .collect(Collectors.toList());
-
-        return new Result1(recipeReviewResponseDtos.size() + registerRecipeReviewResponseDtos.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
+        return new Result1(reviews.size(), responseDto, ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadImage));
     }

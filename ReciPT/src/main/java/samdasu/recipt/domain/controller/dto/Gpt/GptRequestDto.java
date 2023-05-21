@@ -15,8 +15,8 @@ public class GptRequestDto {
         this.ingredient = ingredient;
     }
 
-    public static GptResponseDto createGptResponseDto(String foodName, String ingredient, String context) {
-        return new GptResponseDto(foodName, ingredient, context);
+    public static GptRequestDto createGptRequestDto(String ingredient) {
+        return new GptRequestDto(ingredient);
     }
 }
 
