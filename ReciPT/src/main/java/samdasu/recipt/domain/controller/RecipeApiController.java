@@ -94,6 +94,7 @@ public class RecipeApiController {
         recipeService.resetViewCount();
     }
 
+
     @Data
     @AllArgsConstructor
     static class Result1<T> {

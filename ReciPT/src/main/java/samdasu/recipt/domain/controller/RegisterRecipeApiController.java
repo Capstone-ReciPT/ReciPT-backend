@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 public class RegisterRecipeApiController {
     private final RegisterRecipeService registerRecipeService;
     private final HeartService heartService;
-
     private final ReviewService reviewService;
 
     @PostMapping("/save")

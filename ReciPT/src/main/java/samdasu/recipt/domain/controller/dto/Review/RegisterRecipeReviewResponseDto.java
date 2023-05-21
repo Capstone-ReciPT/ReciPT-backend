@@ -30,4 +30,8 @@ public class RegisterRecipeReviewResponseDto {
         ratingScore = review.getRatingScore();
         registerThumbnailImage = review.getRegisterRecipe().getRegisterRecipeThumbnail().getThumbnailData();
     }
+
+    public static RegisterRecipeReviewResponseDto createRegisterRecipeReviewResponseDto(Review review) {
+        return new RegisterRecipeReviewResponseDto(review);
+    }
 }

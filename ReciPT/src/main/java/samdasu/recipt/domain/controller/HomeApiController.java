@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static samdasu.recipt.domain.controller.constant.ControllerStandard.STANDARD;
+
 /**
  * 리뷰 작성 필요
  */
@@ -32,7 +34,7 @@ public class HomeApiController {
     @GetMapping("/home")
     public Result homeInfo() {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
-        if (registerRecipes.size() < 10) {
+        if (registerRecipes.size() < STANDARD) {
             //인기 레세피 (좋아요 순)
             List<Recipe> recipeLike = recipeService.findTop10Like();
             Result2 top10Like = getRecipeTop10List(recipeLike);
