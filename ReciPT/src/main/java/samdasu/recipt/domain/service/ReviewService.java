@@ -64,6 +64,9 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
+    public List<Review> findRecipeReviews(Long selectRecipeId) {
+        return reviewRepository.findRecipeReviews(selectRecipeId);
+    }
 
     /**
      * 좋아요 많은 순
@@ -76,6 +79,9 @@ public class ReviewService {
         return reviewRepository.recipeOrderByLike(selectRecipeId);
     }
 
+    public List<Review> findRegisterRecipeReviews(Long selectRegisterId) {
+        return reviewRepository.findRegisterRecipeReviews(selectRegisterId);
+    }
 
     /**
      * 최신 순
@@ -98,14 +104,13 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    private Review findById(Long reviewId) {
+    public Review findById(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Review Info"));
     }
 
     private User findUserById(Long userId) {
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
-        return user;
     }
 }

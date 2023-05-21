@@ -23,7 +23,6 @@ public class UserSignUpDto {
     @NotBlank(message = "비밀번호를 입력해주세요")
     private String password;
     @NotBlank(message = "비밀번호가 일치하지 않습니다.")
-
     private String passwordConfirm;
 
     public UserSignUpDto(String username, Profile profile, Integer age, String loginId, String password, String passwordConfirm) {
