@@ -4,9 +4,9 @@ package samdasu.recipt.api.gpt.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static samdasu.recipt.api.gpt.constant.ChatConstants.*;
 
@@ -29,12 +27,12 @@ import static samdasu.recipt.api.gpt.constant.ChatConstants.*;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/chat")
+@RequiredArgsConstructor
 public class ChatGptApiController {
 
-    @Autowired
-    private ChatGptService chatgptService;
-    @Autowired
-    private GptService gptService;
+    private final ChatGptService chatgptService;
+
+    private final GptService gptService;
 
     private List<Message> conversation = new ArrayList<>();
 
