@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static samdasu.recipt.domain.controller.constant.ControllerStandard.STANDARD;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class CategoryApiController {
     @GetMapping()
     public Result1 homeInfo() {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
-        if (registerRecipes.size() < 10) {
+        if (registerRecipes.size() < STANDARD) {
             //레시피 리스트 뷰 (평점 순)
             List<Recipe> recipeLike = recipeService.findTop10RatingScore();
             Result1 top10List = getRecipeTop10List(recipeLike);

@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
@@ -19,10 +22,11 @@ import samdasu.recipt.domain.service.UserService;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static samdasu.recipt.domain.controller.constant.ControllerStandard.STANDARD;
 
 @Slf4j
 @RestController
@@ -43,7 +47,7 @@ public class SearchBarApiController {
 
         if (Optional.ofNullable(userResponseDto).isPresent()) { //로그인 한 경우
             User findUser = userService.findById(userResponseDto.getUserId());
-            if (registerRecipes.size() < 10) {
+            if (registerRecipes.size() < STANDARD) {
                 recommend = randomRecommend();
             } else {
                 recommend = registerRecipeService.RecommendByAge(findUser.getAge());

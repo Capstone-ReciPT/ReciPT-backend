@@ -44,10 +44,18 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     }
 
     @Override
+    public List<Review> findRegisterRecipeReviews(Long selectRegisterId) {
+        return queryFactory
+                .selectFrom(review)
+                .where(review.registerRecipe.registerId.eq(selectRegisterId))
+                .fetch();
+    }
+
+    @Override
     public List<Review> registerOrderByLike(Long selectRegisterId) {
         return queryFactory
                 .selectFrom(review)
-                .join(registerRecipe.reviews, review).fetchJoin()
+                .join(review.registerRecipe, registerRecipe).fetchJoin()
                 .where(registerRecipe.registerId.eq(selectRegisterId))
                 .orderBy(review.likeCount.desc())
                 .fetch();
@@ -57,9 +65,17 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     public List<Review> registerOrderByCreateDate(Long selectRegisterId) {
         return queryFactory
                 .selectFrom(review)
-                .join(registerRecipe.reviews, review).fetchJoin()
+                .join(review.registerRecipe, registerRecipe).fetchJoin()
                 .where(registerRecipe.registerId.eq(selectRegisterId))
                 .orderBy(registerRecipe.createDate.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Review> findRecipeReviews(Long selectRecipeId) {
+        return queryFactory
+                .selectFrom(review)
+                .where(review.recipe.recipeId.eq(selectRecipeId))
                 .fetch();
     }
 
@@ -67,7 +83,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     public List<Review> recipeOrderByLike(Long selectRecipeId) {
         return queryFactory
                 .selectFrom(review)
-                .join(recipe.review, review).fetchJoin()
+                .join(review.recipe, recipe).fetchJoin()
                 .where(recipe.recipeId.eq(selectRecipeId))
                 .orderBy(review.likeCount.desc())
                 .fetch();
@@ -77,9 +93,9 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
     public List<Review> recipeOrderByCreateDate(Long selectRecipeId) {
         return queryFactory
                 .selectFrom(review)
-                .join(recipe.review, review).fetchJoin()
+                .join(review.recipe, recipe).fetchJoin()
                 .where(recipe.recipeId.eq(selectRecipeId))
-                .orderBy(registerRecipe.createDate.desc())
+                .orderBy(recipe.createDate.desc())
                 .fetch();
     }
 }

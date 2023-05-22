@@ -16,15 +16,13 @@ import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
+import samdasu.recipt.domain.service.ReviewService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * /short 대신 카테고리별로 /short
- * 평점 갱신 테스트 안해봄
- */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -32,13 +30,14 @@ import java.util.stream.Collectors;
 public class RegisterRecipeApiController {
     private final RegisterRecipeService registerRecipeService;
     private final HeartService heartService;
+    private final ReviewService reviewService;
 
     @PostMapping("/save")
     public Result2 saveRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto
             , @RequestParam(value = "imageId") Long imageId
             , @RequestParam(value = "gptId") Long gptId
             , @RequestParam(value = "thumbnailId") Long thumbnailId
-            , @Valid RegisterRequestDto requestDto) {
+            , @Valid @RequestBody RegisterRequestDto requestDto) {
         Long registerRecipeSave = registerRecipeService.registerRecipeSave(userResponseDto.getUserId(), imageId, gptId, thumbnailId, requestDto);
 
         RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
@@ -96,11 +95,12 @@ public class RegisterRecipeApiController {
     }
 
     /**
-     * reviewRequestDto 수정 가능성 있음
+     * 리뷰 저장 + 평점 갱신
      */
-    @PostMapping("/update/{id}")
-    public void updateRatingScore(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                  @PathVariable("id") Long recipeId, @Valid ReviewRequestDto requestDto) {
+    @PostMapping("/save/review/{id}")
+    public void saveReview(@AuthenticationPrincipal UserResponseDto userResponseDto,
+                           @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
+        reviewService.saveRegisterRecipeReview(userResponseDto.getUserId(), recipeId, requestDto);
         registerRecipeService.updateRatingScore(recipeId, requestDto);
     }
 

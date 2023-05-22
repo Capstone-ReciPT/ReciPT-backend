@@ -49,7 +49,7 @@ public class RecipeResponseDto {
         ratingScore = recipe.getRatingScore();
         ratingPeople = recipe.getRatingPeople();
         reviewResponseDtos = recipe.getReview().stream()
-                .map(review -> new RecipeReviewResponseDto(review))
+                .map(RecipeReviewResponseDto::new)
                 .collect(Collectors.toList());
         heartDtos = recipe.getHearts().stream()
                 .map(heart -> new RecipeHeartDto(heart))
