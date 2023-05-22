@@ -47,10 +47,10 @@ public class ChatGptApiController {
             String requestId = UUID.randomUUID().toString();
             log.info("requestId {}, ip {}, send content: {}", requestId, request.getRemoteHost(), content);
 
-            Message userMessage = new Message(USER, content);
+            Message userMessage = new Message(ROLE_USER, content);
 
             if (CollectionUtils.isEmpty(conversation)) {
-                Message systemMessage = new Message(SYSTEM, SYSTEM_TASK_MESSAGE);
+                Message systemMessage = new Message(ROLE_SYSTEM, JSON_SYSTEM_TASK_MESSAGE);
                 conversation.add(systemMessage);
             }
 
@@ -75,10 +75,10 @@ public class ChatGptApiController {
             String requestId = UUID.randomUUID().toString();
             log.info("requestId {}, ip {}, send content: {}", requestId, request.getRemoteHost(), content);
 
-            Message userMessage = new Message(USER, content);
+            Message userMessage = new Message(ROLE_USER, content);
 
             if (CollectionUtils.isEmpty(conversation)) {
-                Message systemMessage = new Message(SYSTEM, SEARCHBAR_SYSTEM_TASK_MESSAGE);
+                Message systemMessage = new Message(ROLE_SYSTEM, JSON_SEARCHBAR_SYSTEM_TASK_MESSAGE);
                 conversation.add(systemMessage);
             }
             conversation.add(userMessage);
@@ -105,7 +105,7 @@ public class ChatGptApiController {
             if (StringUtils.isEmpty(content)) {
                 return ResponseModel.fail("Content is required.");
             }
-            Message userMessage = new Message(USER, "[수정] " + content);
+            Message userMessage = new Message(ROLE_USER, EDIT_COMMAND_MESSAGE + content);
             conversation.add(userMessage);
             String responseMessage = chatgptService.getResponse(conversation);
             return ResponseModel.success(responseMessage);
@@ -118,7 +118,7 @@ public class ChatGptApiController {
     @PostMapping("/save")
     public ResponseModel<String> saveGptRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto) {
         try {
-            Message userMessage = new Message(USER, SAVE_APPEND_MESSAGE + "[저장]");
+            Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);
             conversation.add(userMessage);
             String responseMessage = chatgptService.getResponse(conversation);
 
@@ -132,8 +132,8 @@ public class ChatGptApiController {
 
                 String jsonResponse = responseMessage.substring(startIndex, endIndex + 1);
 
-                Long gptRecipeId = saveGptPrompt_V2(jsonResponse, userResponseDto);
-//                Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, 2L);
+//                Long gptRecipeId = saveGptResponse(jsonResponse, 2L);
+                Long gptRecipeId = saveGptResponse(jsonResponse, userResponseDto.getUserId());
                 clearConversation();
                 log.info("Saved GptRecipe. foodName: {}", gptService.getGptRecipeByGptId(gptRecipeId).getFoodName());
             }
@@ -172,7 +172,7 @@ public class ChatGptApiController {
         }
     }
 
-    private Long saveGptPrompt_V2(String jsonResponse, UserResponseDto userResponseDto) throws JsonProcessingException {
+    private Long saveGptResponse(String jsonResponse, Long userId) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode responseJson = objectMapper.readTree(jsonResponse);
         String foodName = responseJson.path("foodName").asText();
@@ -184,19 +184,19 @@ public class ChatGptApiController {
             throw new IllegalArgumentException("Missing required fields in JSON response");
         }
 
-        Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, userResponseDto.getUserId());
-        return gptRecipeId;
-    }
-
-    private Long saveGptPrompt(String jsonString, Long userId) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode responseJson = objectMapper.readTree(jsonString);
-        String foodName = responseJson.path("foodName").asText();
-        String ingredient = responseJson.path("ingredient").asText();
-        String context = responseJson.path("context").asText();
         Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, userId);
         return gptRecipeId;
     }
+
+//    private Long saveGptPrompt(String jsonString, Long userId) throws JsonProcessingException {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        JsonNode responseJson = objectMapper.readTree(jsonString);
+//        String foodName = responseJson.path("foodName").asText();
+//        String ingredient = responseJson.path("ingredient").asText();
+//        String context = responseJson.path("context").asText();
+//        Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, userId);
+//        return gptRecipeId;
+//    }
 
     private void clearConversation() {
         conversation.clear();
