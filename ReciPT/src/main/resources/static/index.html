@@ -1,48 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RecPT Test</title>
+    <title>ReciPT Test</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: #f5f5f5;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .chat-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
         .message-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .user-message {
-            background-color: #e7f3fe;
-            padding: 5px 10px;
-            border-radius: 5px;
+        .user-message,
+        .assistant-message,
+        .save-message {
+            max-width: 50%;
+            padding: 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
         }
 
-        .system-message {
-            background-color: #f5f5f5;
-            padding: 5px 10px;
-            border-radius: 5px;
+        .user-message {
+            align-self: flex-end;
+            background-color: #e7f3fe;
+            color: #000;
+            align-self: flex-end;
+            text-align: right;
+            margin-left: auto;
         }
 
         .assistant-message {
-            background-color: #d3d3d3;
-            padding: 5px 10px;
-            border-radius: 5px;
-            white-space: pre-wrap;
+            align-self: flex-start;
+            background-color: #fffd8a;
+            color: #000;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+
+        .save-message {
+            align-self: center;
+            text-align: center;
+            background-color: #95f5a7;
+            color: #000;
+            margin: 0 auto;
         }
 
         .form-container {
             display: flex;
             gap: 10px;
+            margin-top: 10px;
+        }
+
+        .form-container input[type="text"] {
+            flex-grow: 1;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .action-buttons button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-<div class="message-container" id="messageContainer"></div>
-<form id="messageForm" class="form-container">
-    <input type="text" id="message" name="message" required>
-    <button type="submit">Send</button>
-</form>
-<button id="editButton" type="button">Edit</button>
-<button id="saveButton" type="button">Save</button>
-<button id="refreshButton" type="button">Refresh</button>
+<div class="chat-container">
+    <div class="header">
+        <h1>ReciPT Test</h1>
+    </div>
+    <div class="chat-area" id="messageContainer"></div>
+    <div class="action-buttons">
+        <button id="editButton" type="button">Edit</button>
+        <button id="saveButton" type="button">Save</button>
+        <button id="refreshButton" type="button">Refresh</button>
+    </div>
+    <form id="messageForm" class="form-container">
+        <input type="text" id="message" name="message" required>
+        <button type="submit">Send</button>
+    </form>
+</div>
 
 <script>
     const messageContainer = document.getElementById('messageContainer');
@@ -68,19 +138,24 @@
     editButton.addEventListener('click', async () => {
         const message = messageInput.value;
         messageInput.value = '';
-        editMessage(message);
-        const response = await sendMessage(message);
+        addMessage('user', message);
+
+        const response = await editMessage(message);
         addMessage('assistant', response);
     });
 
     saveButton.addEventListener('click', async () => {
         const response = await saveConversation();
-        addMessage('assistant', response);
+        addMessage('save', 'Saved Recipe');
     });
 
     refreshButton.addEventListener('click', async () => {
         const response = await refreshConversation();
-        responseDiv.textContent = response
+        messageContainer.innerHTML = '';
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = 'Conversation cleared.';
+        messageDiv.classList.add('assistant-message');
+        messageContainer.appendChild(messageDiv);
     });
 
     function addMessage(role, content) {
@@ -90,10 +165,14 @@
         if (role === 'assistant') {
             messageDiv.classList.add('assistant-message');
         }
+        if (role === 'save') {
+            messageDiv.classList.add('save-message');
+        }
 
         messageDiv.textContent = content;
 
         messageContainer.appendChild(messageDiv);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
     }
 
     async function sendMessage(message) {
@@ -145,22 +224,237 @@
 
         const lines = responseMessage.split('\n');
 
-        // messageContainer.innerHTML = '';
-
-        // lines.forEach((line) => {
-        //     const messageDiv = document.createElement('div');
-        //     messageDiv.classList.add('system-message');
-        //     messageDiv.textContent = line;
-        //
-        //     messageContainer.appendChild(messageDiv);
-        // });
-
         return responseMessage;
     }
 
 </script>
 </body>
 </html>
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>RecPT Test</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+
+<!--        .chat-container {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            height: 100vh;-->
+<!--        }-->
+
+<!--        .header {-->
+<!--            background-color: #f5f5f5;-->
+<!--            padding: 10px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .chat-area {-->
+<!--            flex-grow: 1;-->
+<!--            overflow-y: auto;-->
+<!--            padding: 10px;-->
+<!--        }-->
+
+<!--        .message-container {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        .user-message,-->
+<!--        .assistant-message,-->
+<!--        .save-message {-->
+<!--            max-width: 70%;-->
+<!--            padding: 10px;-->
+<!--            border-radius: 20px;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        .user-message {-->
+<!--            align-self: flex-end;-->
+<!--            background-color: #e7f3fe;-->
+<!--            color: #000;-->
+<!--        }-->
+
+<!--        .assistant-message {-->
+<!--            align-self: flex-start;-->
+<!--            background-color: #f7f56a;-->
+<!--            color: #000;-->
+<!--        }-->
+
+<!--        .save-message {-->
+<!--            align-self: center;-->
+<!--            background-color: #95f5a7;-->
+<!--            color: #000;-->
+<!--        }-->
+
+<!--        .form-container {-->
+<!--            display: flex;-->
+<!--            gap: 10px;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+
+<!--        .form-container input[type="text"] {-->
+<!--            flex-grow: 1;-->
+<!--            padding: 5px;-->
+<!--            border-radius: 5px;-->
+<!--        }-->
+
+<!--        .form-container button {-->
+<!--            padding: 5px 10px;-->
+<!--            border-radius: 5px;-->
+<!--        }-->
+
+<!--        .action-buttons {-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+
+<!--        .action-buttons button {-->
+<!--            margin: 0 5px;-->
+<!--            padding: 5px 10px;-->
+<!--            border-radius: 5px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="message-container" id="messageContainer"></div>-->
+<!--<form id="messageForm" class="form-container">-->
+<!--    <input type="text" id="message" name="message" required>-->
+<!--    <button type="submit">Send</button>-->
+<!--</form>-->
+<!--<button id="editButton" type="button">Edit</button>-->
+<!--<button id="saveButton" type="button">Save</button>-->
+<!--<button id="refreshButton" type="button">Refresh</button>-->
+
+<!--<script>-->
+<!--    const messageContainer = document.getElementById('messageContainer');-->
+<!--    const form = document.getElementById('messageForm');-->
+<!--    const messageInput = document.getElementById('message');-->
+<!--    const editButton = document.getElementById('editButton');-->
+<!--    const saveButton = document.getElementById('saveButton');-->
+<!--    const refreshButton = document.getElementById('refreshButton');-->
+<!--    let conversation = [];-->
+
+<!--    form.addEventListener('submit', async (e) => {-->
+<!--        e.preventDefault();-->
+
+<!--        const message = messageInput.value;-->
+<!--        messageInput.value = '';-->
+
+<!--        addMessage('user', message);-->
+
+<!--        const response = await sendMessage(message);-->
+<!--        addMessage('assistant', response);-->
+<!--    });-->
+
+<!--    editButton.addEventListener('click', async () => {-->
+<!--        const message = messageInput.value;-->
+<!--        messageInput.value = '';-->
+<!--        addMessage('user', message);-->
+
+<!--        const response = await editMessage(message);-->
+<!--        addMessage('assistant', response);-->
+<!--    });-->
+
+<!--    saveButton.addEventListener('click', async () => {-->
+<!--        const response = await saveConversation();-->
+<!--        addMessage('save', 'saved Recipe');-->
+<!--    });-->
+
+<!--    refreshButton.addEventListener('click', async () => {-->
+<!--        const response = await refreshConversation();-->
+<!--        const messageDiv = document.createElement('div');-->
+<!--        messageDiv.textContent = "대화내용 clear"-->
+<!--    });-->
+
+<!--    function addMessage(role, content) {-->
+<!--        const messageDiv = document.createElement('div');-->
+<!--        messageDiv.classList.add(role.toLowerCase() + '-message');-->
+
+<!--        if (role === 'assistant') {-->
+<!--            messageDiv.classList.add('assistant-message');-->
+<!--        }-->
+<!--        if (role === 'save') {-->
+<!--            messageDiv.classList.add('save-message');-->
+<!--        }-->
+
+<!--        messageDiv.textContent = content;-->
+
+<!--        messageContainer.appendChild(messageDiv);-->
+<!--    }-->
+
+<!--    async function sendMessage(message) {-->
+<!--        const response = await fetch('/api/chat/send', {-->
+<!--            method: 'post',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json'-->
+<!--            },-->
+<!--            body: JSON.stringify(message)-->
+<!--        });-->
+
+<!--        const data = await response.json();-->
+<!--        return data.data;-->
+<!--    }-->
+
+<!--    async function editMessage(content) {-->
+<!--        const response = await fetch('/api/chat/edit', {-->
+<!--            method: 'post',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json'-->
+<!--            },-->
+<!--            body: JSON.stringify(content)-->
+<!--        });-->
+
+<!--        const data = await response.json();-->
+<!--        return data.data;-->
+<!--    }-->
+
+<!--    async function refreshConversation() {-->
+<!--        const response = await fetch('/api/chat/refresh', {-->
+<!--            method: 'post',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json'-->
+<!--            }-->
+<!--        });-->
+<!--        return response;-->
+<!--    }-->
+
+<!--    async function saveConversation() {-->
+<!--        const response = await fetch('/api/chat/save', {-->
+<!--            method: 'post',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json'-->
+<!--            }-->
+<!--        });-->
+
+<!--        const data = await response.json();-->
+<!--        const responseMessage = data.data;-->
+
+<!--        const lines = responseMessage.split('\n');-->
+
+<!--        // messageContainer.innerHTML = '';-->
+
+<!--        // lines.forEach((line) => {-->
+<!--        //     const messageDiv = document.createElement('div');-->
+<!--        //     messageDiv.classList.add('system-message');-->
+<!--        //     messageDiv.textContent = line;-->
+<!--        //-->
+<!--        //     messageContainer.appendChild(messageDiv);-->
+<!--        // });-->
+
+<!--        return responseMessage;-->
+<!--    }-->
+
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
 
 <!--<!DOCTYPE html>-->
 <!--<html>-->
