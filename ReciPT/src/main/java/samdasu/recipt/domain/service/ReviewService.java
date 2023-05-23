@@ -9,6 +9,7 @@ import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.exception.DuplicateContextException;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
 import samdasu.recipt.domain.repository.Recipe.RecipeRepository;
 import samdasu.recipt.domain.repository.Register.RegisterRecipeRepository;
@@ -34,10 +35,19 @@ public class ReviewService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
 
-        Review review = Review.createRecipeReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, recipe);
+        List<Review> reviews = reviewRepository.findAll();
 
-        return reviewRepository.save(review).getReviewId();
+        Review createreview = Review.createRecipeReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, recipe);
+
+        for (Review review : reviews) {
+            if (review.getComment().equals(reviewRequestDto.getComment())) {
+                throw new DuplicateContextException("중복된 리뷰입니다!");
+            }
+        }
+
+        return reviewRepository.save(createreview).getReviewId();
     }
+
 
     @Transactional
     public Long saveRegisterRecipeReview(Long userId, Long registerRecipeId, ReviewRequestDto reviewRequestDto) {
@@ -46,9 +56,16 @@ public class ReviewService {
         RegisterRecipe registerRecipe = registerRecipeRepository.findById(registerRecipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
 
-        Review review = Review.createRegisterReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, registerRecipe);
+        List<Review> reviews = reviewRepository.findAll();
 
-        return reviewRepository.save(review).getReviewId();
+        Review createReview = Review.createRegisterReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, registerRecipe);
+
+        for (Review review : reviews) {
+            if (review.getComment().equals(reviewRequestDto.getComment())) {
+                throw new DuplicateContextException("중복된 리뷰입니다!");
+            }
+        }
+        return reviewRepository.save(createReview).getReviewId();
     }
 
     @Transactional

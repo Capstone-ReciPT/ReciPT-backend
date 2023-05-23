@@ -4,16 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import samdasu.recipt.domain.controller.dto.Heart.ReviewHeartDto;
 import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
+import samdasu.recipt.domain.entity.Heart;
 import samdasu.recipt.domain.entity.Review;
+import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.ReviewService;
+import samdasu.recipt.domain.service.UserService;
+import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.ResponseEntity.status;
 
 @Slf4j
 @RestController
@@ -21,6 +31,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/review")
 public class ReviewApiController {
     private final ReviewService reviewService;
+    private final UserService userService;
+    private final HeartService heartService;
 
     /**
      * 리뷰 내용 변경
@@ -32,13 +44,30 @@ public class ReviewApiController {
 //        reviewService.update(userResponseDto.get, requestDto);
 //    }
     @PostMapping("/delete")
-    public void deleteReview(@AuthenticationPrincipal UserResponseDto userResponseDto
+    public ResponseEntity<String> deleteReview(Authentication authentication
             , @RequestParam(value = "reviewId") Long reviewId) {
-        reviewService.delete(reviewId);
+        boolean isDelete = false;
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findById(principal.getUser().getUserId());
+        List<Review> reviews = findUser.getReviews();
+
+        for (Review review : reviews) {
+            if (review.getReviewId().equals(reviewId)) {
+                isDelete = true;
+                List<Heart> hearts = review.getHearts();
+                for (Heart heart : hearts) {
+                    ReviewHeartDto reviewHeartDto = ReviewHeartDto.createRecipeHeartDto(heart);
+                    heartService.deleteReviewHeart(reviewHeartDto);
+                }
+                reviewService.delete(reviewId);
+                return ResponseEntity.status(OK).body("리뷰 삭제 완료!");
+            }
+        }
+        return status(FORBIDDEN).body("리뷰 삭제 권한이 없습니다!");
     }
 
     @GetMapping("/recipe/{id}")
-    public Result recipeReviewInfo(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+    public Result recipeReviewInfo(@PathVariable("id") Long recipeId) {
         List<Review> recipeReviews = reviewService.findRecipeReviews(recipeId);
 
         List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
@@ -47,7 +76,7 @@ public class ReviewApiController {
     }
 
     @GetMapping("/register/{id}")
-    public Result registerRecipeReviewInfo(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+    public Result registerRecipeReviewInfo(@PathVariable("id") Long recipeId) {
         List<Review> registerRecipeReviews = reviewService.findRegisterRecipeReviews(recipeId);
 
         List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
@@ -56,7 +85,7 @@ public class ReviewApiController {
     }
 
     @GetMapping("/recipe/sort/like/{id}")
-    public Result sortRecipeReviewByLikeCount(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+    public Result sortRecipeReviewByLikeCount(@PathVariable("id") Long recipeId) {
         List<Review> recipeReviews = reviewService.recipeOrderByLike(recipeId);
 
         List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
@@ -65,7 +94,7 @@ public class ReviewApiController {
     }
 
     @GetMapping("/register/sort/like/{id}")
-    public Result sortRegisterRecipeReviewByLikeCount(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+    public Result sortRegisterRecipeReviewByLikeCount(@PathVariable("id") Long recipeId) {
         List<Review> registerRecipeReviews = reviewService.registerOrderByLike(recipeId);
 
         List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
@@ -74,7 +103,7 @@ public class ReviewApiController {
     }
 
     @GetMapping("/recipe/sort/create/{id}")
-    public Result sortRecipeReviewByCreateDate(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+    public Result sortRecipeReviewByCreateDate(@PathVariable("id") Long recipeId) {
         List<Review> recipeReviews = reviewService.recipeOrderByCreateDate(recipeId);
 
         List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
@@ -83,7 +112,7 @@ public class ReviewApiController {
     }
 
     @GetMapping("/register/sort/create/{id}")
-    public Result sortRegisterRecipeReviewByCreateDate(@AuthenticationPrincipal UserResponseDto userResponseDto, @PathVariable("id") Long recipeId) {
+    public Result sortRegisterRecipeReviewByCreateDate(@PathVariable("id") Long recipeId) {
         List<Review> registerRecipeReviews = reviewService.registerOrderByCreateDate(recipeId);
 
         List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);

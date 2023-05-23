@@ -5,18 +5,18 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
+import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.ReviewService;
+import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -33,12 +33,13 @@ public class RegisterRecipeApiController {
     private final ReviewService reviewService;
 
     @PostMapping("/save")
-    public Result2 saveRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto
+    public Result2 saveRecipe(Authentication authentication
             , @RequestParam(value = "imageId") Long imageId
             , @RequestParam(value = "gptId") Long gptId
             , @RequestParam(value = "thumbnailId") Long thumbnailId
             , @Valid @RequestBody RegisterRequestDto requestDto) {
-        Long registerRecipeSave = registerRecipeService.registerRecipeSave(userResponseDto.getUserId(), imageId, gptId, thumbnailId, requestDto);
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        Long registerRecipeSave = registerRecipeService.registerRecipeSave(principal.getUser().getUserId(), imageId, gptId, thumbnailId, requestDto);
 
         RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
         RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);
@@ -51,8 +52,7 @@ public class RegisterRecipeApiController {
     }
 
     @GetMapping("/{id}")
-    public Result1 eachRecipeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                  @PathVariable("id") Long recipeId) {
+    public Result1 eachRecipeInfo(@PathVariable("id") Long recipeId) {
         //조회수 증가
         registerRecipeService.IncreaseViewCount(recipeId);
 
@@ -79,28 +79,30 @@ public class RegisterRecipeApiController {
     }
 
     @PostMapping("/insert/{id}")
-    public void insertHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                            @PathVariable("id") Long recipeId) {
+    public void insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
-        heartService.insertRecipeHeart(recipeHeartDto);
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
+        heartService.insertRegisterRecipeHeart(registerHeartDto);
     }
 
     @PostMapping("/cancel/{id}")
-    public void deleteHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
+    public void deleteHeart(Authentication authentication,
                             @PathVariable("id") Long recipeId) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
-        heartService.deleteRecipeHeart(recipeHeartDto);
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
+        heartService.deleteRegisterRecipeHeart(registerHeartDto);
     }
 
     /**
      * 리뷰 저장 + 평점 갱신
      */
     @PostMapping("/save/review/{id}")
-    public void saveReview(@AuthenticationPrincipal UserResponseDto userResponseDto,
+    public void saveReview(Authentication authentication,
                            @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
-        reviewService.saveRegisterRecipeReview(userResponseDto.getUserId(), recipeId, requestDto);
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        reviewService.saveRegisterRecipeReview(principal.getUser().getUserId(), recipeId, requestDto);
         registerRecipeService.updateRatingScore(recipeId, requestDto);
     }
 
