@@ -17,6 +17,16 @@ spring:
         format_sql: true
         use_sql_comments: true #실행되는 JPQL 보기
 
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+
   #server:
   #  address: localhost
   #  port: 3307
@@ -34,7 +44,7 @@ spring:
   #    show-sql: true
   #    hibernate:
   #      ddl-auto: create
-
+  
   
   data:
     web:

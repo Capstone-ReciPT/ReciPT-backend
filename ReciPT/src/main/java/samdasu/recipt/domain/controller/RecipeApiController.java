@@ -5,17 +5,17 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeResponseDto;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RecipeService;
 import samdasu.recipt.domain.service.ReviewService;
+import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,8 +32,7 @@ public class RecipeApiController {
     private final ReviewService reviewService;
 
     @GetMapping("/{id}")
-    public Result1 eachRecipeInfo(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                  @PathVariable("id") Long recipeId) {
+    public Result1 eachRecipeInfo(@PathVariable("id") Long recipeId) {
         //조회수 증가
         recipeService.IncreaseViewCount(recipeId);
 
@@ -60,19 +59,19 @@ public class RecipeApiController {
     }
 
     @PostMapping("/insert/{id}")
-    public void insertHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                            @PathVariable("id") Long recipeId) {
+    public void insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         Recipe findRecipe = recipeService.findById(recipeId);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(principal.getUser().getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.insertRecipeHeart(recipeHeartDto);
         log.info("좋아요 추가 성공");
     }
 
     @PostMapping("/cancel/{id}")
-    public void deleteHeart(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                            @PathVariable("id") Long recipeId) {
+    public void deleteHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         Recipe findRecipe = recipeService.findById(recipeId);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(userResponseDto.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(principal.getUser().getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.deleteRecipeHeart(recipeHeartDto);
         log.info("좋아요 삭제 성공");
     }
@@ -81,9 +80,10 @@ public class RecipeApiController {
      * 리뷰 저장 + 평점 갱신
      */
     @PostMapping("/save/review/{id}")
-    public void saveReview(@AuthenticationPrincipal UserResponseDto userResponseDto,
+    public void saveReview(Authentication authentication,
                            @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
-        reviewService.saveRecipeReview(userResponseDto.getUserId(), recipeId, requestDto);
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        reviewService.saveRecipeReview(principal.getUser().getUserId(), recipeId, requestDto);
         recipeService.updateRatingScore(recipeId, requestDto);
     }
 

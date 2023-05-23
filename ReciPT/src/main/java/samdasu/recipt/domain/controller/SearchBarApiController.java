@@ -5,25 +5,21 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.RecipeService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.UserService;
+import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static samdasu.recipt.domain.controller.constant.ControllerStandard.STANDARD;
@@ -41,12 +37,13 @@ public class SearchBarApiController {
     private DataSource dataSource;
 
     @GetMapping
-    public Result recommendByAge(@AuthenticationPrincipal UserResponseDto userResponseDto) throws SQLException {
+    public Result recommendByAge(Authentication authentication) throws SQLException {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
         List<String> recommend;
 
-        if (Optional.ofNullable(userResponseDto).isPresent()) { //로그인 한 경우
-            User findUser = userService.findById(userResponseDto.getUserId());
+        if (authentication != null && authentication.isAuthenticated()) { //로그인 한 경우
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            User findUser = userService.findById(principal.getUser().getUserId());
             if (registerRecipes.size() < STANDARD) {
                 recommend = randomRecommend();
             } else {
@@ -55,6 +52,7 @@ public class SearchBarApiController {
         } else { //로그인 하지 않은 경우
             recommend = randomRecommend();
         }
+
         return new Result(recommend.size(), recommend);
     }
 
@@ -70,11 +68,11 @@ public class SearchBarApiController {
         return recommend;
     }
 
-    @GetMapping("/recipes")
-    public Result2 searchingRecipes(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                    @RequestParam(value = "foodName", required = false) String foodName,
-                                    @RequestParam(value = "like", required = false) Integer like,
-                                    @RequestParam(value = "view", required = false) Long view) {
+    @PostMapping("/recipes")
+    public Result2 searchingRecipes(
+            @RequestParam(value = "foodName", required = false) String foodName,
+            @RequestParam(value = "like", required = false) Integer like,
+            @RequestParam(value = "view", required = false) Long view) {
         List<Recipe> recipes = recipeService.searchDynamicSearching(foodName, like, view);
         List<RecipeShortResponseDto> collect1 = getRecipesByCategory(recipes);
 

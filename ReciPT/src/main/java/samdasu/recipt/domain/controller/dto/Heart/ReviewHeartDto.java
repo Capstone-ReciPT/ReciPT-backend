@@ -33,6 +33,11 @@ public class ReviewHeartDto {
         reviewId = heart.getReview().getReviewId();
         comment = heart.getReview().getComment();
     }
+
+    public static ReviewHeartDto createRecipeHeartDto(Heart heart) {
+        return new ReviewHeartDto(heart);
+    }
+
 }
 
 

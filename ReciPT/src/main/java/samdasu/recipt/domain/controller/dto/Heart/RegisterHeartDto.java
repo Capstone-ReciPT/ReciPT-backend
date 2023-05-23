@@ -42,6 +42,10 @@ public class RegisterHeartDto {
         ingredient = heart.getRegisterRecipe().getIngredient();
     }
 
+    public static RegisterHeartDto createRegisterHeartDto(Heart heart) {
+        return new RegisterHeartDto(heart);
+    }
+
 
 }
 

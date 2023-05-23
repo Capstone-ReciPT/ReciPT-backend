@@ -1,12 +1,14 @@
 package samdasu.recipt.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.*;
+import samdasu.recipt.domain.exception.DuplicateContextException;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
 import samdasu.recipt.domain.repository.GptRepository;
 import samdasu.recipt.domain.repository.ImageFileRepository;
@@ -17,6 +19,7 @@ import samdasu.recipt.domain.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -57,10 +60,17 @@ public class RegisterRecipeService {
         RegisterRecipeThumbnail thumbnail = thumbnailRepository.findById(thumbnailId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Thumbnail Info"));
 
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
+        List<RegisterRecipe> registerRecipes = registerRecipeRepository.findAll();
+
+        RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
                 gpt.getIngredient(), gpt.getContext(), 0L, 0, 0.0, 0, user, gpt, imageFile);
 
-        return registerRecipeRepository.save(registerRecipe).getRegisterId();
+        for (RegisterRecipe recipe : registerRecipes) {
+            if (recipe.getFoodName().equals(gpt.getFoodName()) && recipe.getTitle().equals(requestDto.getTitle())) {
+                throw new DuplicateContextException("이미 저장된 레시피가 있습니다!");
+            }
+        }
+        return registerRecipeRepository.save(createRecipe).getRegisterId();
     }
 
     /**

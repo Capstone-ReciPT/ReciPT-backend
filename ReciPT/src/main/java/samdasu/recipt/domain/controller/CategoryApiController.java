@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +12,6 @@ import samdasu.recipt.domain.controller.dto.Recipe.RecipeHomeResponseDto;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterHomeResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.service.RecipeService;
@@ -53,8 +51,7 @@ public class CategoryApiController {
     }
 
     @GetMapping("/recipes")
-    public Result2 searchRecipesByCategory(@AuthenticationPrincipal UserResponseDto userResponseDto,
-                                           @RequestParam(value = "category") String category) {
+    public Result2 searchRecipesByCategory(@RequestParam(value = "category") String category) {
         List<Recipe> recipeCategory = recipeService.findByCategory(category);
         List<RecipeShortResponseDto> collect1 = getRecipesByCategory(recipeCategory);
 
