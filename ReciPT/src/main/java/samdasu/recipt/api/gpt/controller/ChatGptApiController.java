@@ -7,14 +7,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.api.gpt.controller.dto.ResponseModel;
 import samdasu.recipt.api.gpt.dto.chat.Message;
 import samdasu.recipt.api.gpt.service.ChatGptService;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
+import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.GptService;
+import samdasu.recipt.domain.service.UserService;
+import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -33,11 +35,12 @@ public class ChatGptApiController {
     private final ChatGptService chatgptService;
 
     private final GptService gptService;
+    private final UserService userService;
 
     private List<Message> conversation = new ArrayList<>();
 
     @PostMapping("/send")
-    public ResponseModel<String> sendContent(@AuthenticationPrincipal UserResponseDto userResponseDto, HttpServletRequest request, @RequestBody String content) {
+    public ResponseModel<String> sendContent(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
         try {
             if (StringUtils.isEmpty(content)) {
                 return ResponseModel.fail("Content is required.");
@@ -65,7 +68,7 @@ public class ChatGptApiController {
     }
 
     @PostMapping("/search")
-    public ResponseModel<String> searchFoodRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto, HttpServletRequest request, @RequestBody String content) {
+    public ResponseModel<String> searchFoodRecipe(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
         try {
             if (StringUtils.isEmpty(content)) {
                 return ResponseModel.fail("Content is required.");
@@ -98,7 +101,7 @@ public class ChatGptApiController {
     }
 
     @PostMapping("/edit")
-    public ResponseModel<String> editGptRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto, @RequestBody String content) {
+    public ResponseModel<String> editGptRecipe(Authentication authentication, @RequestBody String content) {
         try {
             if (StringUtils.isEmpty(content)) {
                 return ResponseModel.fail("Content is required.");
@@ -114,7 +117,9 @@ public class ChatGptApiController {
     }
 
     @PostMapping("/save")
-    public ResponseModel<String> saveGptRecipe(@AuthenticationPrincipal UserResponseDto userResponseDto) {
+    public ResponseModel<String> saveGptRecipe(Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findById(principal.getUser().getUserId());
         try {
             Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);
             conversation.add(userMessage);
@@ -131,7 +136,7 @@ public class ChatGptApiController {
                 String jsonResponse = responseMessage.substring(startIndex, endIndex + 1);
 
 //                Long gptRecipeId = saveGptResponse(jsonResponse, 2L);
-                Long gptRecipeId = saveGptResponse(jsonResponse, userResponseDto.getUserId());
+                Long gptRecipeId = saveGptResponse(jsonResponse, findUser.getUserId());
                 clearConversation();
                 log.info("Saved GptRecipe. foodName: {}", gptService.getGptRecipeByGptId(gptRecipeId).getFoodName());
             }
