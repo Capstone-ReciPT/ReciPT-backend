@@ -33,7 +33,6 @@ import static samdasu.recipt.api.gpt.constant.ChatConstants.*;
 public class ChatGptApiController {
 
     private final ChatGptService chatgptService;
-
     private final GptService gptService;
     private final UserService userService;
 

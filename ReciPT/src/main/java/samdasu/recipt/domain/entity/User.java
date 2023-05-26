@@ -23,13 +23,16 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false, length = 255)
+    //    @Column(nullable = false, length = 255)
     private String loginId;
-    @Column(nullable = false, length = 255)
+    //    @Column(nullable = false, length = 255)
     private String password;
-    @Column(nullable = false)
+    //    @Column(nullable = false)
     private Integer age;
 
+    private String oauthId;
+    private String email;
+    private String imgUrl;
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
 
@@ -68,10 +71,26 @@ public class User extends BaseTimeEntity {
         return user;
     }
 
+    public User(String oauthId, String username, String email, String imgUrl) {
+        this.oauthId = oauthId;
+        this.username = username;
+        this.email = email;
+        this.imgUrl = imgUrl;
+    }
+
+    public static User createOauth(String oauthId, String username, String email, String imgUrl) {
+        return new User(oauthId, username, email, imgUrl);
+    }
 
     //==비지니스 로직==//
     public void updateUserInfo(String newPassword) {
         password = newPassword;
     }
 
+    public User update(String username, String email, String imgUrl) {
+        this.username = username;
+        this.email = email;
+        this.imgUrl = imgUrl;
+        return this;
+    }
 }

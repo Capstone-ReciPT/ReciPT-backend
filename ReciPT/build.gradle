@@ -56,10 +56,13 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.0.0'
     implementation 'com.opencsv:opencsv:5.5.2'
 
-
+    //  JWT 토큰
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation 'com.auth0:java-jwt:4.3.0'
-    
+
+    //    oauth
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     // queryDSL 설정
     implementation "com.querydsl:querydsl-jpa"
     implementation "com.querydsl:querydsl-core"

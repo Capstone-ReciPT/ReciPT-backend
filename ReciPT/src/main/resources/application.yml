@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: oauth
   datasource:
     url: jdbc:h2:tcp://localhost/~/h2_DB/ReciPT
     username: sa
@@ -17,14 +19,6 @@ spring:
         format_sql: true
         use_sql_comments: true #실행되는 JPQL 보기
 
-server:
-  port: 8080
-  servlet:
-    context-path: /
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
 
 
   #server:

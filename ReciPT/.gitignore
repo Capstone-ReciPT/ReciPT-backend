@@ -48,3 +48,6 @@ spy.log
 
 ### GPT API-KEY & Excel File Path ###
 application.properties
+
+### oauth-setting ###
+applicaiton-oauth.yml
