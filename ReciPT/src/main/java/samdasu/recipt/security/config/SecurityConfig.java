@@ -27,8 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring()
-                    .antMatchers("/api/signup")
-                    .antMatchers("/api/chat/**");
+//                    .antMatchers("/api/signup")
+//                    .antMatchers("/api/chat/**");
+                    .antMatchers("/**");
         };
     }
 
@@ -45,28 +46,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
-                .antMatchers("/api/home").permitAll()
-
-                .antMatchers("/api/search").permitAll()
-
-                .antMatchers("/api/review/recipe/**").permitAll()
-                .antMatchers("/api/review/register/**").permitAll()
-
-                .antMatchers("/api/register/**").permitAll()
-                .antMatchers("/api/register/save/**").authenticated()
-                .antMatchers("/api/register/insert/**").authenticated()
-                .antMatchers("/api/register/cancel/**").authenticated()
-
-                .antMatchers("/api/db/**").permitAll()
-                .antMatchers("/api/db/save/**").authenticated()
-                .antMatchers("/api/db/insert/**").authenticated()
-                .antMatchers("/api/db/cancel/**").authenticated()
-
-                .antMatchers("/api/category/**").permitAll()
+//                .antMatchers("/api/home").permitAll()
+//
+//                .antMatchers("/api/search").permitAll()
+//
+//                .antMatchers("/api/review/recipe/**").permitAll()
+//                .antMatchers("/api/review/register/**").permitAll()
+//
+//                .antMatchers("/api/register/**").permitAll()
+//                .antMatchers("/api/register/save/**").authenticated()
+//                .antMatchers("/api/register/insert/**").authenticated()
+//                .antMatchers("/api/register/cancel/**").authenticated()
+//
+//                .antMatchers("/api/db/**").permitAll()
+//                .antMatchers("/api/db/save/**").authenticated()
+//                .antMatchers("/api/db/insert/**").authenticated()
+//                .antMatchers("/api/db/cancel/**").authenticated()
+//
+//                .antMatchers("/api/category/**").permitAll()
 
 //                .antMatchers("/api/chat/**").authenticated()
 
-                .anyRequest().authenticated();
+//                .anyRequest().authenticated();
+                .anyRequest().permitAll();
     }
 }
 
