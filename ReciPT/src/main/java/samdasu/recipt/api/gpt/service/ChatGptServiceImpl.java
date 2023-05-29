@@ -11,7 +11,6 @@ import samdasu.recipt.api.gpt.dto.chat.Request;
 import samdasu.recipt.api.gpt.dto.chat.Response;
 import samdasu.recipt.api.gpt.dto.chat.ResponseChoice;
 import samdasu.recipt.api.gpt.exception.ChatGptException;
-import samdasu.recipt.api.gpt.exception.MaxTokenException;
 import samdasu.recipt.api.gpt.property.ChatGptProperties;
 
 import java.util.List;
@@ -81,9 +80,6 @@ public class ChatGptServiceImpl implements ChatGptService {
 
     protected <T> T getResponse(HttpEntity<?> httpEntity, Class<T> responseType, String url) {
         log.info("request url: {}, httpEntity: {}", url, httpEntity);
-        if (httpEntity.getBody().toString().length() >= 4000) {
-            throw new MaxTokenException(" Over maximum context length!!");
-        }
         ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, responseType);
         if (responseEntity.getStatusCodeValue() != HttpStatus.OK.value()) {
             log.error("error response status: {}", responseEntity);
