@@ -2,7 +2,10 @@ package samdasu.recipt.api.gpt.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import samdasu.recipt.api.gpt.dto.Usage;
@@ -14,6 +17,9 @@ import samdasu.recipt.api.gpt.exception.ChatGptException;
 import samdasu.recipt.api.gpt.property.ChatGptProperties;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @Service
@@ -55,7 +61,6 @@ public class ChatGptServiceImpl implements ChatGptService {
                 log.info("Completion Tokens: {}", completionTokens);
                 log.info("Total Tokens: {}", totalTokens);
             }
-
             ResponseChoice responseChoice = multiChatResponse.getChoices().get(0);
             Message responseMessage = responseChoice.getMessage();
             conversation.add(responseMessage);
@@ -80,8 +85,12 @@ public class ChatGptServiceImpl implements ChatGptService {
 
     protected <T> T getResponse(HttpEntity<?> httpEntity, Class<T> responseType, String url) {
         log.info("request url: {}, httpEntity: {}", url, httpEntity);
+        if (httpEntity.getBody().toString().length() >= 4000) {
+            log.error("Error occurred during sendContent! Over maximum context length!!");
+            throw new ChatGptException("error response status :" + BAD_REQUEST);
+        }
         ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, responseType);
-        if (responseEntity.getStatusCodeValue() != HttpStatus.OK.value()) {
+        if (responseEntity.getStatusCodeValue() != OK.value()) {
             log.error("error response status: {}", responseEntity);
             throw new ChatGptException("error response status :" + responseEntity.getStatusCodeValue());
         } else {
@@ -89,5 +98,4 @@ public class ChatGptServiceImpl implements ChatGptService {
         }
         return responseEntity.getBody();
     }
-
 }
