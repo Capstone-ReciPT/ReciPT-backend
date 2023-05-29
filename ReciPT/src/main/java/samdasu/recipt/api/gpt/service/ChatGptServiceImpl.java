@@ -67,6 +67,42 @@ public class ChatGptServiceImpl implements ChatGptService {
     }
 
     @Override
+    public String getResponseV2(List<Message> conversation) {
+        Request multiChatRequest = new Request(
+                chatGptProperties.getModel(),
+                conversation,
+                chatGptProperties.getMaxTokens()+1000,
+                chatGptProperties.getTemperature()+0.10,
+                chatGptProperties.getTopP()+0.10
+        );
+        Response multiChatResponse = this.getResponse(
+                this.buildHttpEntity(multiChatRequest),
+                Response.class,
+                chatGptProperties.getUrl()
+        );
+        try {
+            Usage usage = multiChatResponse.getUsage();
+            if (usage != null) {
+                Integer promptTokens = usage.getPromptTokens();
+                Integer completionTokens = usage.getCompletionTokens();
+                Integer totalTokens = usage.getTotalTokens();
+
+                log.info("Prompt Tokens: {}", promptTokens);
+                log.info("Completion Tokens: {}", completionTokens);
+                log.info("Total Tokens: {}", totalTokens);
+            }
+
+            ResponseChoice responseChoice = multiChatResponse.getChoices().get(0);
+            Message responseMessage = responseChoice.getMessage();
+            conversation.add(responseMessage);
+            return responseMessage.getContent();
+        } catch (Exception e) {
+            log.error("parse chatgpt message error", e);
+            throw e;
+        }
+    }
+
+    @Override
     public Response sendRequest(Request multiChatRequest) {
         return this.getResponse(this.buildHttpEntity(multiChatRequest), Response.class, chatGptProperties.getUrl());
     }
