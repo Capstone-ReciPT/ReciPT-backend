@@ -27,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring()
-                    .antMatchers("/api/signup");
+                    .antMatchers("/api/signup")
+                    .antMatchers("/api/chat/**");
         };
     }
 
@@ -63,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/api/category/**").permitAll()
 
-                .antMatchers("/api/chat/**").authenticated()
+//                .antMatchers("/api/chat/**").authenticated()
 
                 .anyRequest().authenticated();
     }
