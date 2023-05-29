@@ -94,6 +94,34 @@ public class ChatGptApiController {
         }
     }
 
+    @PostMapping("/recommend")
+    public ResponseModel<String> sendChat(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
+        try {
+            if (StringUtils.isEmpty(content)) {
+                return ResponseModel.fail("Content is required.");
+            }
+            String requestId = UUID.randomUUID().toString();
+            log.info("requestId {}, ip {}, send content: {}", requestId, request.getRemoteHost(), content);
+
+            Message userMessage = new Message(ROLE_USER, content);
+
+            if (CollectionUtils.isEmpty(conversation)) {
+                Message systemMessage = new Message(ROLE_SYSTEM, RECOMMEND_SYSTEM_TASK_MESSAGE);
+                conversation.add(systemMessage);
+            }
+
+            conversation.add(userMessage);
+
+            String responseMessage = chatgptService.getResponseV2(conversation);
+            log.info("requestId {}, ip {}\n get a reply:\n {}", requestId, request.getRemoteHost(), responseMessage);
+
+            return ResponseModel.success(responseMessage);
+        } catch (Exception e) {
+            log.error("Error occurred during sendContent", e);
+            return ResponseModel.fail("Error occurred during the request.");
+        }
+    }
+
     @PostMapping("/refresh")
     public ResponseModel<String> refreshConversation() {
         clearConversation();
