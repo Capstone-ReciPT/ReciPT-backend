@@ -72,7 +72,7 @@ public class ChatGptServiceImpl implements ChatGptService {
         Request multiChatRequest = new Request(
                 chatGptProperties.getModel(),
                 conversation,
-                chatGptProperties.getMaxTokens()+1000,
+                chatGptProperties.getMaxTokens()+800,
                 chatGptProperties.getTemperature()+0.10,
                 chatGptProperties.getTopP()+0.10
         );
