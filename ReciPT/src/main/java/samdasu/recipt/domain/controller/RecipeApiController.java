@@ -32,7 +32,14 @@ public class RecipeApiController {
     private final ReviewService reviewService;
 
     @GetMapping("/{id}")
-    public Result1 eachRecipeInfo(@PathVariable("id") Long recipeId) {
+    public Result1 eachRecipeInfo(Authentication authentication, @PathVariable("id") Long recipeId) {
+        Boolean heartCheck = false;
+        if (authentication != null) {
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
+            //좋아요 상태 판별
+            heartCheck = heartService.checkRecipeHeart(principal.getUser().getUserId(), recipeId);
+        }
         //조회수 증가
         recipeService.IncreaseViewCount(recipeId);
 
@@ -46,7 +53,7 @@ public class RecipeApiController {
         List<RecipeResponseDto> reviews = findRecipe.getReview().stream()
                 .map(review -> recipeResponseDto)
                 .collect(Collectors.toList());
-        return new Result1(hearts.size(), reviews.size(), new RecipeResponseDto(findRecipe));
+        return new Result1(heartCheck, hearts.size(), reviews.size(), new RecipeResponseDto(findRecipe));
     }
 
     @GetMapping("/short")
@@ -100,6 +107,7 @@ public class RecipeApiController {
     @Data
     @AllArgsConstructor
     static class Result1<T> {
+        private Boolean heartCheck;
         private int heartCount;
         private int reviewCount;
         private T data;
