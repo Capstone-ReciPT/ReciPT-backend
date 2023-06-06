@@ -59,21 +59,23 @@ public class RecipeApiController {
     }
 
     @PostMapping("/insert/{id}")
-    public void insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
+    public Result3 insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         Recipe findRecipe = recipeService.findById(recipeId);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(principal.getUser().getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.insertRecipeHeart(recipeHeartDto);
         log.info("좋아요 추가 성공");
+        return new Result3(findRecipe.getHearts().size());
     }
 
     @PostMapping("/cancel/{id}")
-    public void deleteHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
+    public Result3 deleteHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         Recipe findRecipe = recipeService.findById(recipeId);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(principal.getUser().getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.deleteRecipeHeart(recipeHeartDto);
         log.info("좋아요 삭제 성공");
+        return new Result3(findRecipe.getHearts().size());
     }
 
     /**
@@ -108,5 +110,11 @@ public class RecipeApiController {
     static class Result2<T> {
         private int recipeCount;
         private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result3<T> {
+        private int heartCount;
     }
 }
