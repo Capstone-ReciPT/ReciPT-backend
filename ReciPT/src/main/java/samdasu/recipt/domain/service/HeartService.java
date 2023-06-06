@@ -54,6 +54,19 @@ public class HeartService {
         recipeRepository.subRecipeLikeCount(recipe);
     }
 
+    public Boolean checkRecipeHeart(Long userId, Long recipeId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Recipe Info"));
+
+        if (heartRepository.findByUserAndRecipe(user, recipe).isPresent()) {
+            return true; //좋아요 누른 상태
+        } else {
+            return false; //좋아요 누르지 않은 상태
+        }
+    }
+
     @Transactional
     public void insertRegisterRecipeHeart(RegisterHeartDto heartDto) {
         User user = findUserById(heartDto.getUserId());
@@ -79,6 +92,19 @@ public class HeartService {
 
         heartRepository.delete(heart);
         registerRecipeRepository.subRegisterRecipeLikeCount(registerRecipe);
+    }
+
+    public Boolean checkRegisterRecipeHeart(Long userId, Long recipeId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+        RegisterRecipe recipe = registerRecipeRepository.findById(recipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No RegisterRecipe Info"));
+
+        if (heartRepository.findByUserAndRegisterRecipe(user, recipe).isPresent()) {
+            return true; //좋아요 누른 상태
+        } else {
+            return false; //좋아요 누르지 않은 상태
+        }
     }
 
     @Transactional

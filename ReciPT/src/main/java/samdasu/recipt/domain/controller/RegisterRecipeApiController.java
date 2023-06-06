@@ -50,9 +50,16 @@ public class RegisterRecipeApiController {
 
         return new Result2(images.size(), new RegisterResponseDto(findRegister));
     }
-
+    
     @GetMapping("/{id}")
-    public Result1 eachRecipeInfo(@PathVariable("id") Long recipeId) {
+    public Result1 eachRecipeInfo(Authentication authentication, @PathVariable("id") Long recipeId) {
+        Boolean heartCheck = false;
+        if (authentication != null) {
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
+            //좋아요 상태 판별
+            heartCheck = heartService.checkRegisterRecipeHeart(principal.getUser().getUserId(), recipeId);
+        }
         //조회수 증가
         registerRecipeService.IncreaseViewCount(recipeId);
 
@@ -66,7 +73,7 @@ public class RegisterRecipeApiController {
         List<RegisterResponseDto> reviews = findRegisterRecipe.getReviews().stream()
                 .map(review -> registerResponseDto)
                 .collect(Collectors.toList());
-        return new Result1(hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe));
+        return new Result1(heartCheck, hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe));
     }
 
     @GetMapping("/short")
@@ -89,7 +96,7 @@ public class RegisterRecipeApiController {
 
     @PostMapping("/cancel/{id}")
     public Result3 deleteHeart(Authentication authentication,
-                            @PathVariable("id") Long recipeId) {
+                               @PathVariable("id") Long recipeId) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
         RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
@@ -118,6 +125,7 @@ public class RegisterRecipeApiController {
     @Data
     @AllArgsConstructor
     static class Result1<T> {
+        private Boolean heartCheck;
         private int heartCount;
         private int reviewCount;
         private T data;
