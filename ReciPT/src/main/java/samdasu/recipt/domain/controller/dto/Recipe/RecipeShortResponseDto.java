@@ -27,7 +27,7 @@ public class RecipeShortResponseDto {
         category = recipe.getCategory();
     }
 
-    public static RecipeShortResponseDto CreateRecipeShortResponseDto(Recipe recipe) {
+    public static RecipeShortResponseDto createRecipeShortResponseDto(Recipe recipe) {
         return new RecipeShortResponseDto(recipe);
     }
 }

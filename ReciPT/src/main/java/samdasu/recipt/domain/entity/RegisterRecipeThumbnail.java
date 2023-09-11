@@ -21,11 +21,11 @@ public class RegisterRecipeThumbnail extends BaseTimeEntity {
     private String type;
 
     @Lob
-    @Column(name = "profile", length = 1000)
+    @Column(name = "thumbnail", length = 1000)
     private byte[] thumbnailData;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "registerRecipe_id")
+    @JoinColumn(name = "register_id")
     private RegisterRecipe registerRecipe;
 
     //== 연관관계 편의 메서드 ==//

@@ -54,7 +54,7 @@ public class RegisterRecipe extends BaseTimeEntity {
     @OneToMany(mappedBy = "registerRecipe")
     private List<ImageFile> imageFiles = new ArrayList<>();
 
-    @OneToOne(mappedBy = "registerRecipe")
+    @OneToOne(mappedBy = "registerRecipe", fetch = LAZY)
     private RegisterRecipeThumbnail registerRecipeThumbnail;
 
     //== 연관관계 편의 메서드 ==//
