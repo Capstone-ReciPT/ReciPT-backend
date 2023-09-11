@@ -26,26 +26,6 @@ server:
       enabled: true
       force: true
 
-
-  #server:
-  #  address: localhost
-  #  port: 3307
-  #spring:
-  #  datasource:
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://localhost:3306/ReciPT?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
-  #    username: root
-  #    password: 1234
-  #
-  #  jpa:
-  #    database: mysql
-  #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-  #    generate-ddl: true
-  #    show-sql: true
-  #    hibernate:
-  #      ddl-auto: create
-  
-  
   data:
     web:
       pageable:
@@ -55,3 +35,11 @@ server:
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace      # 파라미터까지 볼 수 있음
+
+gpt:
+  api:
+    key: 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
+
+excel:
+  file:
+    path: /Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/dbRecipes.xlsx
