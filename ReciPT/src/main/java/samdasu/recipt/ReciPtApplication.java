@@ -6,8 +6,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import samdasu.recipt.api.db.InsertInitData;
-import samdasu.recipt.api.db.InsertRecipeService;
 
 @EnableScheduling
 @SpringBootApplication
@@ -20,7 +18,5 @@ public class ReciPtApplication {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(ReciPtApplication.class, args);
-        InsertRecipeService insertRecipeService = context.getBean(InsertRecipeService.class);
-        InsertInitData.insertInitData(context, insertRecipeService);
     }
 }

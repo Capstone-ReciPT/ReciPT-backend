@@ -44,7 +44,10 @@ gpt/logs/
 /src/main/generated
 
 ### Spy log ###
-spy.log
+*.log
 
 ### GPT API-KEY & Excel File Path ###
 application.properties
+
+## Excel ##
+*.xlsx

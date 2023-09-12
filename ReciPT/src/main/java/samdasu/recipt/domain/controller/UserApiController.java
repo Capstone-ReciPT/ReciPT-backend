@@ -53,7 +53,7 @@ public class UserApiController {
         Long joinUserId = userService.join(userSignUpDto, savedProfileId);
 
         User findUser = userService.findById(joinUserId);
-        log.info("findUser.getProfile().getFilename() = {}", findUser.getProfile().getFilename());
+//        log.info("findUser.getProfile().getFilename() = {}", findUser.getProfile().getFilename());
         log.info("findUser.getUsername = {}", findUser.getUsername());
 
         byte[] downloadImage = profileService.downloadImage(findUser.getProfile().getProfileId()); //프로필 사진
