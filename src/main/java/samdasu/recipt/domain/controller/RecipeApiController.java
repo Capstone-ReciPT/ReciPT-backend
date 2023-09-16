@@ -41,7 +41,7 @@ public class RecipeApiController {
             heartCheck = heartService.checkRecipeHeart(principal.getUser().getUserId(), recipeId);
         }
         //조회수 증가
-        recipeService.IncreaseViewCount(recipeId);
+        recipeService.increaseViewCount(recipeId);
 
         //db 레시피 조회
         Recipe findRecipe = recipeService.findById(recipeId);

@@ -61,7 +61,7 @@ public class RegisterRecipeApiController {
             heartCheck = heartService.checkRegisterRecipeHeart(principal.getUser().getUserId(), recipeId);
         }
         //조회수 증가
-        registerRecipeService.IncreaseViewCount(recipeId);
+        registerRecipeService.increaseViewCount(recipeId);
 
         //등록된 레시피 조회
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);

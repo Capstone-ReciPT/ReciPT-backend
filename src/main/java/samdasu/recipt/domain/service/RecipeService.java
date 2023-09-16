@@ -60,7 +60,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public void IncreaseViewCount(Long recipeId) {
+    public void increaseViewCount(Long recipeId) {
         Recipe recipe = findById(recipeId);
         recipeRepository.addRecipeViewCount(recipe);
     }
