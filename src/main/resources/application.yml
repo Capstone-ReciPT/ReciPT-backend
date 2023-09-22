@@ -49,7 +49,8 @@ excel:
   file:
     path: /Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/dbRecipes.xlsx
 
-
+image:
+  path: /Users/jaehyun/Documents/IdeaProjects/ReciPT/upload
 
 
 ---
@@ -106,3 +107,6 @@ gpt:
 excel:
   file:
     path: /Users/jaehyun/Documents/IdeaProjects/ReciPT/ReciPT-backend/dbRecipes.xlsx
+
+image:
+  path: /Users/jaehyun/Documents/IdeaProjects/ReciPT/upload
