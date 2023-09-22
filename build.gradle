@@ -40,6 +40,12 @@ dependencies {
     //  spring-validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    //actuator 추가
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //프로메테우스가 사용하는 포멧에 맞추어 메트릭 만들기
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     //    lombok Test 환경 scope 추가
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
@@ -50,6 +56,9 @@ dependencies {
     //    Spring Security 적용
     implementation "org.springframework.boot:spring-boot-starter-security"
     testImplementation 'org.springframework.security:spring-security-test'
+
+    //    Thumbnailator
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.1'
 
     // 엑셀파일 DB 삽입
     implementation 'org.apache.poi:poi:5.0.0'

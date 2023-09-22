@@ -39,7 +39,7 @@ logging.level:
 
 gpt:
   api:
-    key: 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
+    key: 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
 
 excel:
   file:
