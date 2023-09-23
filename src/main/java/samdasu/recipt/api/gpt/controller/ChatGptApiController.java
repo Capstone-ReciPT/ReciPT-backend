@@ -42,6 +42,7 @@ public class ChatGptApiController {
 
     private List<Message> conversation = new ArrayList<>();
 
+    // 냉장고 파먹기
     @PostMapping("/send")
     public ResponseModel<String> sendContent(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
         try {
@@ -66,6 +67,7 @@ public class ChatGptApiController {
                 String modifiedResponseMessage = firstConversation(userMessage, responseMessage);
                 return ResponseModel.success(modifiedResponseMessage);
             }
+
             return ResponseModel.success(responseMessage);
 
         } catch (Exception e) {
@@ -74,18 +76,17 @@ public class ChatGptApiController {
         }
     }
 
-    // 식재료로 처음 추천요리 응답 받을 때
     private static String firstConversation(Message userMessage, String responseMessage) throws JSONException {
         log.info("===========================================firstConversation===========================================");
         log.info("userMessage = {}", userMessage.getContent());
 
         String userInput = userMessage.getContent().strip();
-        System.out.println("SUB 전 str:" + userInput);
+        System.out.println("substring 전 userInput:" + userInput);
         if (userInput.length() >= 2 && userInput.charAt(0) == '"' && userInput.charAt(userInput.length() - 1) == '"') {
             // 문자열이 큰따옴표로 둘러싸여 있는 경우에만 제거
             userInput = userInput.substring(1, userInput.length() - 1);
         }
-        System.out.println("SUB 후 str:" + userInput);
+        System.out.println("substring 후 userInput:" + userInput);
         String[] userInputs = userInput.split(",");
         int totalLength = userInputs.length;
 
@@ -131,262 +132,7 @@ public class ChatGptApiController {
         return modifiedResponseMessage;
     }
 
-//    @PostMapping("/send")
-//    public ResponseModel<String> sendContent(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
-//        try {
-//            if (StringUtils.isEmpty(content)) {
-//                return ResponseModel.fail("Content is required.");
-//            }
-//            String requestId = UUID.randomUUID().toString();
-//            log.info("requestId {}, ip {}, send content: {}", requestId, request.getRemoteHost(), content);
-//
-//            Message userMessage = new Message(ROLE_USER, content);
-//
-//            if (CollectionUtils.isEmpty(conversation)) {
-//                Message systemMessage = new Message(ROLE_SYSTEM, JSON_SYSTEM_TASK_MESSAGE);
-//                conversation.add(systemMessage);
-//            }
-//
-//            conversation.add(userMessage);
-//            String responseMessage = chatgptService.getResponse(conversation);
-//            log.info("requestId {}, ip {}\n get a reply:\n {}", requestId, request.getRemoteHost(), responseMessage);
-//
-//            if (conversation.size() == 3) {
-//                System.out.println("============================================================");
-//                System.out.println("responseMessage = " + responseMessage);
-//                System.out.println("============================================================");
-//                // 포함되는 식재료만 따로 추출?
-//                System.out.println("!!userMessage = " + userMessage.getContent());
-//                String str = userMessage.getContent().strip();
-//                System.out.println("SUB 전 str:" + str);
-//                if (str.length() >= 2 && str.charAt(0) == '"' && str.charAt(str.length() - 1) == '"') {
-//                    // 문자열이 큰따옴표로 둘러싸여 있는 경우에만 제거
-//                    str = str.substring(1, str.length() - 1);
-//                }
-//                System.out.println("SUB 후 str:" + str);
-//                String[] split = str.split(",");
-//                int totalLength = split.length;
-//
-//                // JSON 파싱
-//                JSONObject json = new JSONObject(responseMessage);
-//                JSONArray responseArray = json.getJSONArray("response");
-//
-//                // 각 요소에 대한 필요한 식재료 수정
-//                for (int i = 0; i < responseArray.length(); i++) {
-//                    JSONObject foodObj = responseArray.getJSONObject(i);
-//                    String requiredIngredient = foodObj.getString("requiredIngredient");
-//                    // 필요한 식재료에서 재료명과 개수를 추출
-//                    String[] requiredIngredientsArray = requiredIngredient.split(", ");
-//                    StringBuilder modifiedIngredients = new StringBuilder();
-//                    int count = 0;
-//                    for (String ingredient : requiredIngredientsArray) {
-//                        System.out.println("str: " + str);
-//                        System.out.println("ingredient!!: " + ingredient);
-//                        String[] parts = ingredient.split(" ");
-//                        // parts.length == 2일 경우에는 식재료양도 명시, 1일 경우 식재료 명만.
-//                        String ingredientName = parts[0];
-//                        if (str.contains(ingredientName)) {
-//                            count++;
-//                            if (modifiedIngredients.length() > 0) {
-//                                modifiedIngredients.append(", ");
-//                            }
-//                            modifiedIngredients.append(ingredient);
-//                        }
-//                    }
-//                    double percent = (double) count / totalLength * 100;
-//
-//                    // 수정된 필요한 식재료로 다시 설정
-//                    foodObj.put("requiredIngredient", modifiedIngredients.toString());
-//                    foodObj.put("percent", String.format("%.1f%%", percent));
-//                }
-//
-//                // 수정된 JSON 문자열 출력
-//                String modifiedResponseMessage = json.toString(4); // 4는 들여쓰기 수
-//                System.out.println("Modified responseMessage = " + modifiedResponseMessage);
-//
-//                return ResponseModel.success(modifiedResponseMessage);
-//            }
-//            return ResponseModel.success(responseMessage);
-//
-//        } catch (Exception e) {
-//            log.error("Error occurred during sendContent", e);
-//            return ResponseModel.fail("Error occurred during the request.");
-//        }
-//    }
-
-    /**
-     * 유저가 입력한 식재료 포함 비율 반환
-     */
-//    @PostMapping("/send")
-//    public ResponseModel<String> sendContent(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
-//        try {
-//            if (StringUtils.isEmpty(content)) {
-//                return ResponseModel.fail("Content is required.");
-//            }
-//            String requestId = UUID.randomUUID().toString();
-//            log.info("requestId {}, ip {}, send content: {}", requestId, request.getRemoteHost(), content);
-//
-//            Message userMessage = new Message(ROLE_USER, content);
-//
-//            if (CollectionUtils.isEmpty(conversation)) {
-//                Message systemMessage = new Message(ROLE_SYSTEM, JSON_SYSTEM_TASK_MESSAGE);
-//                conversation.add(systemMessage);
-//            }
-//
-//            conversation.add(userMessage);
-//            String responseMessage = chatgptService.getResponse(conversation);
-//            log.info("requestId {}, ip {}\n get a reply:\n {}", requestId, request.getRemoteHost(), responseMessage);
-//
-//            if (conversation.size() == 3) {
-//                System.out.println("============================================================");
-//                System.out.println("responseMessage = " + responseMessage);
-//                System.out.println("============================================================");
-//                // 포함되는 식재료만 따로 추출?
-//                System.out.println("!!userMessage = " + userMessage.getContent());
-//                String str = userMessage.getContent().strip();
-//                System.out.println("SUB 전 str:" + str);
-//                if (str.length() >= 2 && str.charAt(0) == '"' && str.charAt(str.length() - 1) == '"') {
-//                    // 문자열이 큰따옴표로 둘러싸여 있는 경우에만 제거
-//                    str = str.substring(1, str.length() - 1);
-//                }
-//                System.out.println("SUB 후 str:" + str);
-//                String[] split = str.split(",");
-//                int totalLength = split.length;
-//
-//                // JSON 파싱
-//                JSONObject json = new JSONObject(responseMessage);
-//                JSONArray responseArray = json.getJSONArray("response");
-//
-//                // 각 요소에 대한 필요한 식재료 수정
-//                for (int i = 0; i < responseArray.length(); i++) {
-//                    JSONObject foodObj = responseArray.getJSONObject(i);
-//                    String requiredIngredient = foodObj.getString("requiredIngredient");
-//
-//                    // 필요한 식재료에서 재료명과 개수를 추출
-//                    String[] requiredIngredientsArray = requiredIngredient.split(", ");
-//                    StringBuilder modifiedIngredients = new StringBuilder();
-//                    int count = 0;
-//                    for (String ingredient : requiredIngredientsArray) {
-//                        System.out.println("str: " + str);
-//                        System.out.println("ingredient!!: " + ingredient);
-//                        String[] parts = ingredient.split(" ");
-//                        if (parts.length == 2) {
-//                            System.out.println("=====================1번의 경우======================");
-//                            String ingredientName = parts[0];
-//                            if (str.contains(ingredientName)) {
-//                                count++;
-//                            }
-//                        } else {
-//                            System.out.println("=====================2번의 경우======================");
-//                            String ingredientName = parts[0];
-//                            if (str.contains(ingredientName)) {
-//                                count++;
-//                            }
-//                        }
-//                    }
-//                    double percent = (double) count / totalLength * 100;
-//                    modifiedIngredients.append(String.format("%.1f%%", percent));
-//
-//                    // 수정된 필요한 식재료로 다시 설정
-//                    foodObj.put("requiredIngredient", modifiedIngredients.toString());
-//                }
-//
-//                // 수정된 JSON 문자열 출력
-//                String modifiedResponseMessage = json.toString(4); // 4는 들여쓰기 수
-//                System.out.println("Modified responseMessage = " + modifiedResponseMessage);
-//
-//                return ResponseModel.success(modifiedResponseMessage);
-//            }
-//            return ResponseModel.success(responseMessage);
-//
-//        } catch (Exception e) {
-//            log.error("Error occurred during sendContent", e);
-//            return ResponseModel.fail("Error occurred during the request.");
-//        }
-//    }
-
-
-    /**
-     * 유저가 입력한 식재료 포함해 반환
-     */
-//    @PostMapping("/send")
-//    public ResponseModel<String> sendContent(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
-//        try {
-//            if (StringUtils.isEmpty(content)) {
-//                return ResponseModel.fail("Content is required.");
-//            }
-//            String requestId = UUID.randomUUID().toString();
-//            log.info("requestId {}, ip {}, send content: {}", requestId, request.getRemoteHost(), content);
-//
-//            Message userMessage = new Message(ROLE_USER, content);
-//
-//            if (CollectionUtils.isEmpty(conversation)) {
-//                Message systemMessage = new Message(ROLE_SYSTEM, JSON_SYSTEM_TASK_MESSAGE);
-//                conversation.add(systemMessage);
-//            }
-//
-//            conversation.add(userMessage);
-//            String responseMessage = chatgptService.getResponse(conversation);
-//            log.info("requestId {}, ip {}\n get a reply:\n {}", requestId, request.getRemoteHost(), responseMessage);
-//
-//            if (conversation.size() == 3) {
-//                System.out.println("============================================================");
-//                System.out.println("responseMessage = " + responseMessage);
-//                System.out.println("============================================================");
-//                // 포함되는 식재료만 따로 추출?
-//                System.out.println("!!userMessage = " + userMessage.getContent());
-//                String str = userMessage.getContent().strip();
-//                System.out.println("SUB 전 str:" + str);
-//                if (str.length() >= 2 && str.charAt(0) == '"' && str.charAt(str.length() - 1) == '"') {
-//                    // 문자열이 큰따옴표로 둘러싸여 있는 경우에만 제거
-//                    str = str.substring(1, str.length() - 1);
-//                }
-//                System.out.println("SUB 후 str:" + str);
-//
-//                // JSON 파싱
-//                JSONObject json = new JSONObject(responseMessage);
-//                JSONArray responseArray = json.getJSONArray("response");
-//
-//                // 각 요소에 대한 필요한 식재료 수정
-//                for (int i = 0; i < responseArray.length(); i++) {
-//                    JSONObject foodObj = responseArray.getJSONObject(i);
-//                    String requiredIngredient = foodObj.getString("requiredIngredient");
-//
-//                    // 필요한 식재료에서 재료명과 개수를 추출
-//                    String[] requiredIngredientsArray = requiredIngredient.split(", ");
-//                    StringBuilder modifiedIngredients = new StringBuilder();
-//
-//                    for (String ingredient : requiredIngredientsArray) {
-//                        // 재료명과 개수를 분리
-//                        String[] parts = ingredient.split(" ");
-//                        if (parts.length == 2) {
-//                            String ingredientName = parts[0];
-//                            if (str.contains(ingredientName)) {
-//                                if (modifiedIngredients.length() > 0) {
-//                                    modifiedIngredients.append(", ");
-//                                }
-//                                modifiedIngredients.append(ingredient);
-//                            }
-//                        }
-//                    }
-//
-//                    // 수정된 필요한 식재료로 다시 설정
-//                    foodObj.put("requiredIngredient", modifiedIngredients.toString());
-//                }
-//
-//                // 수정된 JSON 문자열 출력
-//                String modifiedResponseMessage = json.toString(4); // 4는 들여쓰기 수
-//                System.out.println("Modified responseMessage = " + modifiedResponseMessage);
-//
-//                return ResponseModel.success(modifiedResponseMessage);
-//            }
-//            return ResponseModel.success(responseMessage);
-//
-//        } catch (Exception e) {
-//            log.error("Error occurred during sendContent", e);
-//            return ResponseModel.fail("Error occurred during the request.");
-//        }
-//    }
+    // DB에 없는 레시피
     @PostMapping("/search")
     public ResponseModel<String> searchFoodRecipe(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
         try {
@@ -414,6 +160,7 @@ public class ChatGptApiController {
         }
     }
 
+    // 오늘 뭐먹지
     @PostMapping("/recommend")
     public ResponseModel<String> sendChat(Authentication authentication, HttpServletRequest request, @RequestBody String content) {
         try {
@@ -483,39 +230,11 @@ public class ChatGptApiController {
 
                 String jsonResponse = responseMessage.substring(startIndex, endIndex + 1);
 
-//                Long gptRecipeId = saveGptResponse(jsonResponse, 2L);
                 Long gptRecipeId = saveGptResponse(jsonResponse, findUser.getUserId());
                 clearConversation();
                 log.info("Saved GptRecipe. foodName: {}", gptService.getGptRecipeByGptId(gptRecipeId).getFoodName());
             }
-//            Pattern pattern1 = Pattern.compile("\"\\{.*\\}\"");
-//            Pattern pattern2 = Pattern.compile("\\{.*\\}");
-//            Matcher matcher1 = pattern1.matcher(responseMessage);
-//            Matcher matcher2 = pattern2.matcher(responseMessage);
-//            if (matcher1.find()) {
-//                String jsonString = matcher1.group();
-//
-//                try {
-//                    Long gptRecipeId = saveGptPrompt(jsonString, userResponseDto.getUserId());
-//                    clearConversation();
-//                    log.info("Saved GptRecipe. foodName: {}", gptService.getGptRecipeByGptId(gptRecipeId).getFoodName());
-//                } catch (IOException e) {
-//                    log.error("Failed to extract values from JSON response", e);
-//                    return ResponseModel.fail("Failed to extract values from JSON response");
-//                }
-//            } else if (matcher2.find()) {
-//                String jsonString = matcher2.group();
-//
-//                try {
-//                    Long gptRecipeId = saveGptPrompt(jsonString, userResponseDto.getUserId());
-//                    clearConversation();
-//                    log.info("Saved GptRecipe. foodName: {}", gptService.getGptRecipeByGptId(gptRecipeId).getFoodName());
-//                } catch (IOException e) {
-//                    log.error("Failed to extract values from JSON response", e);
-//                    return ResponseModel.fail("Failed to extract values from JSON response");
-//                }
-//
-//            }
+
             return ResponseModel.success("successfully saved the recipe!");
         } catch (Exception e) {
             log.error("Error occurred during saveGptRecipe", e);
@@ -538,16 +257,6 @@ public class ChatGptApiController {
         Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, userId);
         return gptRecipeId;
     }
-
-//    private Long saveGptPrompt(String jsonString, Long userId) throws JsonProcessingException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode responseJson = objectMapper.readTree(jsonString);
-//        String foodName = responseJson.path("foodName").asText();
-//        String ingredient = responseJson.path("ingredient").asText();
-//        String context = responseJson.path("context").asText();
-//        Long gptRecipeId = gptService.createGptRecipe(foodName, ingredient, context, userId);
-//        return gptRecipeId;
-//    }
 
     private void clearConversation() {
         conversation.clear();
