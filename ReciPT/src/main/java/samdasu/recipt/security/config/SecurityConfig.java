@@ -27,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring()
-                    .antMatchers("/api/signup")
-                    .antMatchers("/api/chat/**");
+                    .antMatchers("/api/signup");
+//                    .antMatchers("/api/chat/**");
 //                    .antMatchers("/**");
         };
     }
