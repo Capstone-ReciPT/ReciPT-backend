@@ -72,9 +72,9 @@ public class ChatGptServiceImpl implements ChatGptService {
         Request multiChatRequest = new Request(
                 chatGptProperties.getModel(),
                 conversation,
-                chatGptProperties.getMaxTokens()+800,
-                chatGptProperties.getTemperature()+0.10,
-                chatGptProperties.getTopP()+0.10
+                chatGptProperties.getMaxTokens() + 2000,
+                chatGptProperties.getTemperature() + 0.10,
+                chatGptProperties.getTopP() + 0.10
         );
         Response multiChatResponse = this.getResponse(
                 this.buildHttpEntity(multiChatRequest),
@@ -117,7 +117,7 @@ public class ChatGptServiceImpl implements ChatGptService {
 
     protected <T> T getResponse(HttpEntity<?> httpEntity, Class<T> responseType, String url) {
         log.info("request url: {}, httpEntity: {}", url, httpEntity);
-        if (httpEntity.getBody().toString().length() >= 4000) {
+        if (httpEntity.getBody().toString().length() >= 16385) {
             throw new MaxTokenException("Over maximum context length!!");
         }
         ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, responseType);
