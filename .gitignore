@@ -39,4 +39,12 @@ out/
 ### application.properties ###
 application.properties
 
+### xlsx ###
+.xlsx/
+
+### spy.log ###
+.log/
+
+
+
 

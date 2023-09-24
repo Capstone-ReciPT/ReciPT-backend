@@ -30,12 +30,9 @@ class RegisterRecipeServiceTest {
     @Test
     public void 평점_갱신() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser10(profile);
+        User user = createUser10();
         Gpt gpt = createGpt(user);
-        RegisterRecipeThumbnail thumbnail = createThumbnail();
-        ImageFile imageFile = createImageFile();
-        RegisterRecipe recipe = createRecipe(user, gpt, thumbnail, imageFile);
+        RegisterRecipe recipe = createRecipe(user, gpt);
         ReviewRequestDto reviewRequestDto = ReviewRequestDto.createReviewRequestDto("만두 맛있다.", 4.0);
 
         //when
@@ -49,15 +46,12 @@ class RegisterRecipeServiceTest {
     @Test
     public void 레시피_저장() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser10(profile);
+        User user = createUser10();
         Gpt gpt = createGpt(user);
-        ImageFile imageFile = createImageFile();
 
         //when
-        RegisterRequestDto registerRequestDto = RegisterRequestDto.createRegisterRequestDto(null, "제목", "1줄평", "카테고리");
-        RegisterRecipeThumbnail thumbnail = createThumbnail();
-        Long saveRegisterRecipeId = registerRecipeService.registerRecipeSave(user.getUserId(), imageFile.getImageId(), gpt.getGptId(), thumbnail.getThumbnailId(), registerRequestDto);
+        RegisterRequestDto registerRequestDto = RegisterRequestDto.createRegisterRequestDto("제목", "1줄평", "카테고리", null, null);
+        Long saveRegisterRecipeId = registerRecipeService.registerRecipeSave(user.getUserId(), gpt.getGptId(),null,null,  registerRequestDto);
 
         RegisterRecipe findById = registerRecipeService.findById(saveRegisterRecipeId);
 
@@ -143,14 +137,11 @@ class RegisterRecipeServiceTest {
 //    @Rollback(value = false)
     public void 연령별_추천() throws Exception {
         //given
-        Profile profile = createProfile();
-        User userAge10 = createUser10(profile);
-        User userAge20 = createUser20(profile);
+        User userAge10 = createUser10();
+        User userAge20 = createUser20();
         Gpt gpt = createGpt(userAge10);
-        RegisterRecipeThumbnail thumbnail = createThumbnail();
-        ImageFile imageFile = createImageFile();
-        testRecommendByAge1(userAge10, gpt, thumbnail, imageFile);
-        testRecommendByAge2(userAge20, gpt, thumbnail, imageFile);
+        testRecommendByAge1(userAge10, gpt);
+        testRecommendByAge2(userAge20, gpt);
 
         List<String> recommendByAge = registerRecipeService.RecommendByAge(15);
         log.info("recommendByAge.size() = {}", recommendByAge.size());
@@ -162,14 +153,6 @@ class RegisterRecipeServiceTest {
         //then
     }
 
-
-    private ImageFile createImageFile() {
-        ImageFile imageFile = ImageFile.createImageFile("만두 사진1", "jpg", null);
-        em.persist(imageFile);
-
-        return imageFile;
-    }
-
     private Gpt createGpt(User user) {
         Gpt gpt = Gpt.createGpt("만두", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기", user);
         em.persist(gpt);
@@ -177,52 +160,40 @@ class RegisterRecipeServiceTest {
         return gpt;
     }
 
-    private User createUser10(Profile profile) {
-        User user = User.createUser("tester1", "testId", "test1234", 10, profile);
+    private User createUser10() {
+        User user = User.createUser("tester1", "testId", "test1234", 10, null);
         em.persist(user);
 
         return user;
     }
 
-    private User createUser20(Profile profile) {
-        User user = User.createUser("tester1", "testId", "test1234", 20, profile);
+    private User createUser20() {
+        User user = User.createUser("tester1", "testId", "test1234", 20, null);
         em.persist(user);
 
         return user;
     }
 
-    private Profile createProfile() {
-        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
-        em.persist(profile);
-        return profile;
-    }
-
-    private RegisterRecipeThumbnail createThumbnail() {
-        RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("썸네일 사진", "png", null);
-        em.persist(thumbnail);
-        return thumbnail;
-    }
-
-    private RegisterRecipe createRecipe(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
-                0L, 0, 5.0, 1, user, gpt, imageFile);
+    private RegisterRecipe createRecipe(User user, Gpt gpt) {
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+                0L, 0, 5.0, 1, null, null, user, gpt );
         em.persist(registerRecipe);
 
         return registerRecipe;
     }
 
-    private void testRecommendByAge1(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
+    private void testRecommendByAge1(User user, Gpt gpt) {
         for (int i = 0; i < 15; i++) {
-            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("10대가 좋아하는 음식" + i, thumbnail, "10대가 좋아하는 음식", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
-                    (long) 20 + i, 20 + i, 5.0, 1, user, gpt, imageFile);
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("10대가 좋아하는 음식" + i,  "10대가 좋아하는 음식", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+                    (long) 20 + i, 20 + i, 5.0, 1, null, null,user, gpt);
             em.persist(registerRecipe);
         }
     }
 
-    private void testRecommendByAge2(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
+    private void testRecommendByAge2(User user, Gpt gpt) {
         for (int i = 0; i < 15; i++) {
-            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("20대가 좋아하는 음식" + i, thumbnail, "20대가 좋아하는 음식", "우유랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
-                    (long) 50 + i, 50 + i, 4.0, 1, user, gpt, imageFile);
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("20대가 좋아하는 음식" + i, "20대가 좋아하는 음식", "우유랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+                    (long) 50 + i, 50 + i, 4.0, 1, null,null, user, gpt);
             em.persist(registerRecipe);
         }
     }

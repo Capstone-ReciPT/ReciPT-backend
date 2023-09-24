@@ -1,33 +1,42 @@
 package samdasu.recipt.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
-import samdasu.recipt.domain.entity.Profile;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
-import samdasu.recipt.domain.repository.ProfileRepository;
 import samdasu.recipt.domain.repository.UserRepository;
+import samdasu.recipt.utils.Image.AttachImage;
+import samdasu.recipt.utils.Image.UploadService;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
+    private final UploadService uploadService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @Value("${image.user.path}")
+    private String userProfile;
+
     @Transactional
-    public Long join(UserSignUpDto signUpDto, Long profileId) { //회원가입
+    public Long join(UserSignUpDto signUpDto, MultipartFile uploadFile) { //회원가입
         validateLogin(signUpDto);
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Profile Info"));
-        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge(), profile);
+
+        AttachImage upload = uploadService.uploadOne(userProfile, uploadFile, signUpDto.getUsername());
+        log.info("upload.getSavedName() = {}", upload.getSavedName());
+
+        User user = User.createUser(signUpDto.getUsername(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getAge(), upload.getSavedName());
 
         return userRepository.save(user).getUserId();
     }
