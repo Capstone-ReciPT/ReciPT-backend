@@ -5,28 +5,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class RegisterRequestDto {
-    private byte[] thumbnailImage;
     @NotBlank(message = "제목을 입력해주세요")
     private String title;
     @NotBlank(message = "1줄평 해주세요")
     private String comment;
     @NotBlank(message = "카테고리를 입력해주세요")
     private String category;
+    private String thumbnailImage;
+    private List<String> image;
 
-    public RegisterRequestDto(byte[] thumbnailImage, String title, String comment, String category) {
-        this.thumbnailImage = thumbnailImage;
+
+    public RegisterRequestDto(String title, String comment, String category, String thumbnailImage, List<String> image) {
         this.title = title;
         this.comment = comment;
         this.category = category;
+        this.thumbnailImage = thumbnailImage;
+        this.image = image;
     }
 
-    public static RegisterRequestDto createRegisterRequestDto(byte[] thumbnailImage, String title, String comment, String category) {
-        return new RegisterRequestDto(thumbnailImage, title, comment, category);
+    public static RegisterRequestDto createRegisterRequestDto(String title, String comment, String category, String thumbnailImage, List<String> image) {
+        return new RegisterRequestDto(title, comment, category, thumbnailImage, image);
     }
 
 

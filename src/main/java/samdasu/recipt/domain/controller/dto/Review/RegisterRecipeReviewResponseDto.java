@@ -20,7 +20,7 @@ public class RegisterRecipeReviewResponseDto {
 
     private Double ratingScore;
 
-    private byte[] registerThumbnailImage; //레시피 등록 - 썸네일 사진(마이페이지)
+    private String thumbnailImage;
 
     public RegisterRecipeReviewResponseDto(Review review) {
         reviewId = review.getReviewId();
@@ -28,7 +28,7 @@ public class RegisterRecipeReviewResponseDto {
         comment = review.getComment();
         likeCount = review.getLikeCount();
         ratingScore = review.getRatingScore();
-        registerThumbnailImage = review.getRegisterRecipe().getRegisterRecipeThumbnail().getThumbnailData();
+        thumbnailImage = review.getRegisterRecipe().getThumbnailImage();
     }
 
     public static RegisterRecipeReviewResponseDto createRegisterRecipeReviewResponseDto(Review review) {

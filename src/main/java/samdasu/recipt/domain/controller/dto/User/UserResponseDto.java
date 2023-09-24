@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 public class UserResponseDto implements UserDetails {
     private Long userId;
     private String username;
-    private byte[] profileData;
     private String loginId;
     private String password;
     private Integer age; //연령별: 레시피 탭에서 필요
+    private String profile;
     private List<RecipeHeartDto> recipeHeartDtos;
     private List<RegisterHeartDto> registerHeartDtos;
     private List<RecipeReviewResponseDto> recipeReviewResponseDtos;
@@ -40,10 +40,10 @@ public class UserResponseDto implements UserDetails {
     public UserResponseDto(User user) {
         userId = user.getUserId();
         username = user.getUsername();
-        profileData = user.getProfile().getProfileData();
         loginId = user.getLoginId();
         password = user.getPassword();
         age = user.getAge();
+        profile = user.getProfile();
         recipeHeartDtos = user.getHearts().stream()
                 .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
                 .map(heart -> new RecipeHeartDto(heart))

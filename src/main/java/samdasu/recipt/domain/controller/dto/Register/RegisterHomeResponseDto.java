@@ -13,22 +13,22 @@ public class RegisterHomeResponseDto {
 
     private String foodName;
 
-    private byte[] thumbnailImage;
-
     private Integer likeCount;
 
     private Long viewCount;
 
     private Double ratingScore;
 
+    private String thumbnailImage;
+
 
     public RegisterHomeResponseDto(RegisterRecipe recipe) {
         recipeId = recipe.getRegisterId();
         foodName = recipe.getFoodName();
-        thumbnailImage = recipe.getRegisterRecipeThumbnail().getThumbnailData();
         likeCount = recipe.getLikeCount();
         viewCount = recipe.getViewCount();
         ratingScore = recipe.getRatingScore();
+        thumbnailImage = recipe.getThumbnailImage();
     }
 
     public static RegisterHomeResponseDto CreateRecipeHomeResponseDto(RegisterRecipe recipe) {

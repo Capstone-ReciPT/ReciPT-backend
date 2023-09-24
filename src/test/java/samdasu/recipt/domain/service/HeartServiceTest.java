@@ -31,8 +31,7 @@ public class HeartServiceTest {
 //    @Rollback(value = false)
     public void Recipe_레시피_좋아요() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
 //         Review.createRecipeReview("새우두부계란찜 후기", 0, 3.0, user, recipe);
         RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(user.getUserId(), recipe.getRecipeId(), recipe.getFoodName(), recipe.getCategory(), recipe.getIngredient());
@@ -50,8 +49,7 @@ public class HeartServiceTest {
 //    @Rollback(value = false)
     public void Recipe_레시피_좋아요_취소() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
 
         createHeart(user, recipe); //Heart 저장
@@ -67,12 +65,9 @@ public class HeartServiceTest {
     @Test
     public void RegisterRecipe_레시피_좋아요() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
-        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        User user = createUser();
         Gpt gpt = createGpt(user);
-        ImageFile imageFile = createImageFiles();
-        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
+        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt);
 
         RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(user.getUserId(), registerRecipe.getRegisterId(), registerRecipe.getFoodName(), registerRecipe.getCategory(), registerRecipe.getIngredient());
         ;
@@ -87,12 +82,9 @@ public class HeartServiceTest {
     @Test
     public void RegisterRecipe_레시피_좋아요_취소() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
-        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        User user = createUser();
         Gpt gpt = createGpt(user);
-        ImageFile imageFile = createImageFiles();
-        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
+        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt);
 
         createHeart(user, registerRecipe); //Heart 저장
 
@@ -108,8 +100,7 @@ public class HeartServiceTest {
 //    @Rollback(value = false)
     public void Review_레시피_좋아요() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
 
         Review recipeReview = createRecipeReview(user, recipe);
@@ -126,12 +117,9 @@ public class HeartServiceTest {
     @Test
     public void Review_레시피_좋아요_취소() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
-        RegisterRecipeThumbnail thumbnail = createThumbnail();
+        User user = createUser();
         Gpt gpt = createGpt(user);
-        ImageFile imageFile = createImageFiles();
-        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt, thumbnail, imageFile);
+        RegisterRecipe registerRecipe = createRegisterRecipe(user, gpt);
 
         createHeart(user, registerRecipe); //Heart 저장
 
@@ -154,9 +142,9 @@ public class HeartServiceTest {
         return recipe;
     }
 
-    private RegisterRecipe createRegisterRecipe(User user, Gpt gpt, RegisterRecipeThumbnail thumbnail, ImageFile imageFile) {
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("만두", thumbnail, "만두 먹기!", "만두는 진리", "기타", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기",
-                0L, 0, 0.0, 0, user, gpt, imageFile);
+    private RegisterRecipe createRegisterRecipe(User user, Gpt gpt) {
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("만두",  "만두 먹기!", "만두는 진리", "기타", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기",
+                0L, 0, 0.0, 0, null, null, user, gpt);
 
         em.persist(registerRecipe);
 
@@ -166,24 +154,13 @@ public class HeartServiceTest {
         return registerRecipe;
     }
 
-    private User createUser(Profile profile) {
-        User user = User.createUser("tester1", "testId", "test1234", 10, profile);
+    private User createUser() {
+        User user = User.createUser("tester1", "testId", "test1234", 10, null);
         em.persist(user);
 
         return user;
     }
 
-    private Profile createProfile() {
-        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
-        em.persist(profile);
-        return profile;
-    }
-
-    private RegisterRecipeThumbnail createThumbnail() {
-        RegisterRecipeThumbnail thumbnail = RegisterRecipeThumbnail.createThumbnail("썸네일 사진", "png", null);
-        em.persist(thumbnail);
-        return thumbnail;
-    }
 
     private Gpt createGpt(User user) {
         Gpt gpt = Gpt.createGpt("음식 이름", "식재료", "내용", user);
@@ -197,13 +174,6 @@ public class HeartServiceTest {
         em.persist(review);
 
         return review;
-    }
-
-    private ImageFile createImageFiles() {
-        ImageFile imageFile = ImageFile.createImageFile("음식 만드는 과정 사진", "png", null);
-        em.persist(imageFile);
-
-        return imageFile;
     }
 
     private Heart createHeart(User user, Recipe recipe) {

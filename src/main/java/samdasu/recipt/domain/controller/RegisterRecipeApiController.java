@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
@@ -17,6 +19,7 @@ import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.ReviewService;
 import samdasu.recipt.security.config.auth.PrincipalDetails;
+import samdasu.recipt.utils.Image.UploadService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -29,30 +32,32 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/register")
 public class RegisterRecipeApiController {
     private final RegisterRecipeService registerRecipeService;
+    private final UploadService uploadService;
     private final HeartService heartService;
     private final ReviewService reviewService;
 
     @PostMapping("/save")
     public Result2 saveRecipe(Authentication authentication
-            , @RequestParam(value = "imageId") Long imageId
             , @RequestParam(value = "gptId") Long gptId
-            , @RequestParam(value = "thumbnailId") Long thumbnailId
-            , @Valid @RequestBody RegisterRequestDto requestDto) {
+            , @RequestParam(value = "thumbnail") MultipartFile file
+            , @RequestParam(value = "images") MultipartFile[] files
+            , @Valid RegisterRequestDto requestDto) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        Long registerRecipeSave = registerRecipeService.registerRecipeSave(principal.getUser().getUserId(), imageId, gptId, thumbnailId, requestDto);
+        Long registerRecipeSave = registerRecipeService.registerRecipeSave(principal.getUser().getUserId(), gptId, file, files, requestDto);
 
         RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
         RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);
 
-        List<RegisterResponseDto> images = findRegister.getImageFiles().stream()
-                .map(imageFile -> registerResponseDto)
-                .collect(Collectors.toList());
+        log.info("registerResponseDto.getTitle() = {}", registerResponseDto.getTitle());
+        log.info("registerResponseDto.getThumbnailImage() = {}", registerResponseDto.getThumbnailImage());
 
-        return new Result2(images.size(), new RegisterResponseDto(findRegister));
+        ResponseEntity<byte[]> result = uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage());
+
+        return new Result2(new RegisterResponseDto(findRegister), result);
     }
-    
+
     @GetMapping("/{id}")
-    public Result1 eachRecipeInfo(Authentication authentication, @PathVariable("id") Long recipeId) {
+    public Result3 eachRecipeInfo(Authentication authentication, @PathVariable("id") Long recipeId) {
         Boolean heartCheck = false;
         if (authentication != null) {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
@@ -73,7 +78,7 @@ public class RegisterRecipeApiController {
         List<RegisterResponseDto> reviews = findRegisterRecipe.getReviews().stream()
                 .map(review -> registerResponseDto)
                 .collect(Collectors.toList());
-        return new Result1(heartCheck, hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe));
+        return new Result3(heartCheck, hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe));
     }
 
     @GetMapping("/short")
@@ -86,22 +91,22 @@ public class RegisterRecipeApiController {
     }
 
     @PostMapping("/insert/{id}")
-    public Result3 insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
+    public Result1 insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
         RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
         heartService.insertRegisterRecipeHeart(registerHeartDto);
-        return new Result3(findRegisterRecipe.getHearts().size());
+        return new Result1(findRegisterRecipe.getHearts().size());
     }
 
     @PostMapping("/cancel/{id}")
-    public Result3 deleteHeart(Authentication authentication,
+    public Result1 deleteHeart(Authentication authentication,
                                @PathVariable("id") Long recipeId) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
         RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
         heartService.deleteRegisterRecipeHeart(registerHeartDto);
-        return new Result3(findRegisterRecipe.getHearts().size());
+        return new Result1(findRegisterRecipe.getHearts().size());
     }
 
     /**
@@ -125,22 +130,21 @@ public class RegisterRecipeApiController {
     @Data
     @AllArgsConstructor
     static class Result1<T> {
+        private int heartCount;
+    }
+    @Data
+    @AllArgsConstructor
+    static class Result2<T> {
+        private T data1;
+        private T data2;
+    }
+    @Data
+    @AllArgsConstructor
+    static class Result3<T> {
         private Boolean heartCheck;
         private int heartCount;
         private int reviewCount;
         private T data;
-    }
 
-    @Data
-    @AllArgsConstructor
-    static class Result2<T> {
-        private int recipeCount;
-        private T data;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class Result3<T> {
-        private int heartCount;
     }
 }

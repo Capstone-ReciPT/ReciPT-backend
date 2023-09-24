@@ -2,8 +2,10 @@ package samdasu.recipt.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
@@ -11,12 +13,13 @@ import samdasu.recipt.domain.entity.*;
 import samdasu.recipt.domain.exception.DuplicateContextException;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
 import samdasu.recipt.domain.repository.GptRepository;
-import samdasu.recipt.domain.repository.ImageFileRepository;
 import samdasu.recipt.domain.repository.Register.RegisterRecipeRepository;
-import samdasu.recipt.domain.repository.RegisterRecipeThumbnailRepository;
 import samdasu.recipt.domain.repository.UserRepository;
+import samdasu.recipt.utils.Image.AttachImage;
+import samdasu.recipt.utils.Image.UploadService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,10 +29,11 @@ import java.util.List;
 public class RegisterRecipeService {
     private final RegisterRecipeRepository registerRecipeRepository;
     private final UserRepository userRepository;
-    private final ImageFileRepository imageFileRepository;
-    private final RegisterRecipeThumbnailRepository thumbnailRepository;
+    private final UploadService uploadService;
     private final GptRepository gptRepository;
 
+    @Value("${image.register.path}")
+    private String registerImage;
     /**
      * 평점 평균 계산
      */
@@ -45,25 +49,30 @@ public class RegisterRecipeService {
         return registerResponseDto;
     }
 
-    /**
+    /**$
      * 레시피 등록
      */
     @Transactional
-    public Long registerRecipeSave(Long userId, Long imageId, Long gptId, Long thumbnailId, RegisterRequestDto requestDto) {
+    public Long registerRecipeSave(Long userId,  Long gptId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, RegisterRequestDto requestDto) {
         //엔티티 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
-        ImageFile imageFile = imageFileRepository.findById(imageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No ImageFile Info"));
         Gpt gpt = gptRepository.findById(gptId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Gpt Info"));
-        RegisterRecipeThumbnail thumbnail = thumbnailRepository.findById(thumbnailId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Thumbnail Info"));
+
+        AttachImage thumbnail = uploadService.uploadOne(registerImage, uploadFile, user.getUsername());
+        List<AttachImage> registerImages = uploadService.uploadGtOne(registerImage, uploadFiles, user.getUsername());
+
+        List<String> registerImagesPath = new ArrayList<>();
+        for (AttachImage image : registerImages) {
+            String filename = image.getSavedName();
+            registerImagesPath.add(filename);
+        }
 
         List<RegisterRecipe> registerRecipes = registerRecipeRepository.findAll();
 
-        RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), thumbnail, requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
-                gpt.getIngredient(), gpt.getContext(), 0L, 0, 0.0, 0, user, gpt, imageFile);
+        RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(),  requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
+                gpt.getIngredient(), gpt.getContext(), 0L, 0, 0.0, 0,thumbnail.getSavedName(), registerImagesPath, user, gpt);
 
         for (RegisterRecipe recipe : registerRecipes) {
             if (recipe.getFoodName().equals(gpt.getFoodName()) && recipe.getTitle().equals(requestDto.getTitle())) {

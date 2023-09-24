@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
-import samdasu.recipt.domain.entity.Profile;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
 import samdasu.recipt.domain.repository.UserRepository;
@@ -36,10 +36,9 @@ public class UserServiceTest {
     @Test
     public void 유저_회원가입() {
         //given
-        Profile profile = createProfile();
-        UserSignUpDto signUpDto = createUserSignUpDto("tester", profile, 10, "test1234");
+        UserSignUpDto signUpDto = createUserSignUpDto("tester",  10, "test1234");
         //when
-        Long savedId = userService.join(signUpDto, profile.getProfileId());
+        Long savedId = userService.join(signUpDto, null);
 
         //then
         User user = userRepository.findById(savedId)
@@ -54,16 +53,15 @@ public class UserServiceTest {
     @Test
     public void 유저_회원가입_중복회원() {
         // given
-        Profile profile = createProfile();
-        UserSignUpDto tester1 = createUserSignUpDto("tester", profile, 10, "test1234");
-        userService.join(tester1, profile.getProfileId());
+        UserSignUpDto tester1 = createUserSignUpDto("tester",  10, "test1234");
+        userService.join(tester1, null);
 
         // when
         // same loginId
-        UserSignUpDto tester2 = createUserSignUpDto("tester2", profile, 20, "test5678");
+        UserSignUpDto tester2 = createUserSignUpDto("tester2",  20, "test5678");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.join(tester2, profile.getProfileId());
+            userService.join(tester2, null);
         });
 
         // then
@@ -74,8 +72,7 @@ public class UserServiceTest {
     @Test
     public void 유저_회원정보_조회() {
         //given
-        Profile profile = createProfile();
-        User testA = createUser(profile);
+        User testA = createUser();
 
         //when
         UserResponseDto findUser = findUserResponseDtoById(testA.getUserId());
@@ -89,8 +86,7 @@ public class UserServiceTest {
     @Test
     public void 유저_업데이트() {
         //given
-        Profile profile = createProfile();
-        User testA = createUser(profile);
+        User testA = createUser();
 
         //when
         //change password
@@ -109,19 +105,13 @@ public class UserServiceTest {
         return new UserResponseDto(user);
     }
 
-    private User createUser(Profile profile) {
-        User user = User.createUser("testerA", "testA", "A1234", 30, profile);
+    private User createUser() {
+        User user = User.createUser("testerA", "testA", "A1234", 30, null);
         em.persist(user);
         return user;
     }
 
-    private Profile createProfile() {
-        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
-        em.persist(profile);
-        return profile;
-    }
-
-    private static UserSignUpDto createUserSignUpDto(String tester, Profile profile, int age, String password) {
-        return new UserSignUpDto(tester, profile, age, "testId", password, password);
+    private static UserSignUpDto createUserSignUpDto(String tester, int age, String password) {
+        return new UserSignUpDto(tester, age, "testId", password, password);
     }
 }

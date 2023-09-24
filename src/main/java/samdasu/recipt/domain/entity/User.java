@@ -30,6 +30,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer age;
 
+    private String profile;
     @OneToMany(mappedBy = "user")
     private List<Heart> hearts = new ArrayList<>();
 
@@ -39,32 +40,22 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<RegisterRecipe> registerRecipes = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", fetch = LAZY)
-    private Profile profile;
 
     @OneToMany(mappedBy = "user")
     private List<Gpt> gpt = new ArrayList<>();
 
-    //== 연관관계 편의 메서드 ==//
-    public void addProfile(Profile profile) {
-        this.profile = profile;
-        profile.setUser(this);
-    }
-
 
     //==생성 메서드==// 앞으로 생성하는 지점 변경 시에는 여기만 수정하면 됨!
-
-
-    public User(String username, String loginId, String password, Integer age) {
+    public User(String username, String loginId, String password, Integer age, String profile) {
         this.username = username;
         this.loginId = loginId;
         this.password = password;
         this.age = age;
+        this.profile = profile;
     }
 
-    public static User createUser(String username, String loginId, String password, Integer age, Profile profile) {
-        User user = new User(username, loginId, password, age);
-        user.addProfile(profile);
+    public static User createUser(String username, String loginId, String password, Integer age, String profile) {
+        User user = new User(username, loginId, password, age, profile);
         return user;
     }
 

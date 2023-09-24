@@ -3,7 +3,9 @@ package samdasu.recipt.domain.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.beanutils.converters.StringConverter;
 import samdasu.recipt.domain.common.BaseTimeEntity;
+import samdasu.recipt.domain.entity.converter.StringListConverter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,7 +38,10 @@ public class RegisterRecipe extends BaseTimeEntity {
     private Integer likeCount;
     private Double ratingScore;
     private Integer ratingPeople;
-
+    private String thumbnailImage;
+    @Convert(converter = StringListConverter.class)
+    @Column(length = 1000)
+    private List<String> image = new ArrayList<>();
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -51,12 +56,6 @@ public class RegisterRecipe extends BaseTimeEntity {
     @OneToMany(mappedBy = "registerRecipe")
     private List<Heart> hearts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "registerRecipe")
-    private List<ImageFile> imageFiles = new ArrayList<>();
-
-    @OneToOne(mappedBy = "registerRecipe", fetch = LAZY)
-    private RegisterRecipeThumbnail registerRecipeThumbnail;
-
     //== 연관관계 편의 메서드 ==//
     public void addUser(User user) {
         this.user = user;
@@ -68,18 +67,9 @@ public class RegisterRecipe extends BaseTimeEntity {
         gpt.getRegisterRecipes().add(this);
     }
 
-    public void addImageFile(ImageFile image) {
-        imageFiles.add(image);
-        image.setRegisterRecipe(this);
-    }
-
-    public void addThumbnail(RegisterRecipeThumbnail thumbnail) {
-        this.registerRecipeThumbnail = thumbnail;
-        thumbnail.setRegisterRecipe(this);
-    }
 
     //==생성 메서드==//
-    public RegisterRecipe(String foodName, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople) {
+    public RegisterRecipe(String foodName, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image) {
         this.foodName = foodName;
         this.title = title;
         this.comment = comment;
@@ -90,16 +80,14 @@ public class RegisterRecipe extends BaseTimeEntity {
         this.likeCount = likeCount;
         this.ratingScore = ratingScore;
         this.ratingPeople = ratingPeople;
+        this.thumbnailImage = thumbnailImage;
+        this.image = image;
     }
 
-    public static RegisterRecipe createRegisterRecipe(String foodName, RegisterRecipeThumbnail thumbnail, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, User user, Gpt gpt, ImageFile... imageFiles) {
-        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, title, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople);
+    public static RegisterRecipe createRegisterRecipe(String foodName, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image, User user, Gpt gpt) {
+        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, title, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople, thumbnailImage, image);
         registerRecipe.addUser(user);
         registerRecipe.addGpt(gpt);
-        registerRecipe.addThumbnail(thumbnail);
-        for (ImageFile imageFile : imageFiles) {
-            registerRecipe.addImageFile(imageFile);
-        }
         return registerRecipe;
     }
 

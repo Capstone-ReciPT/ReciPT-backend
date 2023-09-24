@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewUpdateRequestDto;
-import samdasu.recipt.domain.entity.Profile;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.entity.User;
@@ -36,8 +35,7 @@ class ReviewServiceTest {
 //    @Rollback(value = false)
     public void 리뷰_좋아요_증가() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
@@ -51,8 +49,7 @@ class ReviewServiceTest {
 //    @Rollback(value = false)
     public void 리뷰_좋아요_감소() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
@@ -69,8 +66,7 @@ class ReviewServiceTest {
 //    @Rollback(value = false)
     public void 리뷰_저장() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
         ReviewRequestDto reviewRequestDto = ReviewRequestDto.createReviewRequestDto("계란찜은 밥이랑 먹어요", 4.0);
 
@@ -84,8 +80,7 @@ class ReviewServiceTest {
     @Test
     public void 리뷰_업데이트() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
@@ -102,8 +97,7 @@ class ReviewServiceTest {
     @Test
     public void 리뷰_삭제() throws Exception {
         //given
-        Profile profile = createProfile();
-        User user = createUser(profile);
+        User user = createUser();
         Recipe recipe = createRecipe();
         Review review = createRecipeReview(user, recipe);
 
@@ -137,17 +131,11 @@ class ReviewServiceTest {
         assertThat(reviews.size()).isEqualTo(7);
     }
 
-    private User createUser(Profile profile) {
-        User user = User.createUser("tester1", "testId", "test1234", 10, profile);
+    private User createUser() {
+        User user = User.createUser("tester1", "testId", "test1234", 10, null);
         em.persist(user);
 
         return user;
-    }
-
-    private Profile createProfile() {
-        Profile profile = Profile.createProfile("프로필 사진", "jpg", null);
-        em.persist(profile);
-        return profile;
     }
 
     private Recipe createRecipe() {

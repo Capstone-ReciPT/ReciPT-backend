@@ -1,20 +1,19 @@
 package samdasu.recipt.domain.controller.dto.Register;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
-import samdasu.recipt.domain.controller.dto.ImageFile.ImageFileDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class RegisterResponseDto {
     private Long registerId;
-    private byte[] thumbnailImage;
     private String foodName;
     private String title;
     private String comment;
@@ -24,15 +23,13 @@ public class RegisterResponseDto {
     private Integer likeCount;
     private Double ratingResult;
     private Integer ratingPeople;
-    private List<ImageFileDto> imageFiles;
-
+    private String thumbnailImage;
+    private List<String> image;
     private List<RegisterRecipeReviewResponseDto> reviewResponseDtos;
-
     private List<RegisterHeartDto> heartDtos;
 
     public RegisterResponseDto(RegisterRecipe registerRecipe) {
         registerId = registerRecipe.getRegisterId();
-        thumbnailImage = registerRecipe.getRegisterRecipeThumbnail().getThumbnailData();
         foodName = registerRecipe.getFoodName();
         title = registerRecipe.getTitle();
         comment = registerRecipe.getComment();
@@ -42,9 +39,8 @@ public class RegisterResponseDto {
         likeCount = registerRecipe.getLikeCount();
         ratingResult = registerRecipe.getRatingScore();
         ratingPeople = registerRecipe.getRatingPeople();
-        imageFiles = registerRecipe.getImageFiles().stream()
-                .map(imageFile -> new ImageFileDto(imageFile))
-                .collect(Collectors.toList());
+        thumbnailImage = registerRecipe.getThumbnailImage();
+        image = registerRecipe.getImage();
     }
 
     public static RegisterResponseDto createRegisterResponseDto(RegisterRecipe registerRecipe) {
