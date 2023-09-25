@@ -1,6 +1,5 @@
 package samdasu.recipt.utils.Image;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
-import samdasu.recipt.domain.entity.RegisterRecipe;
-import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.exception.ProfileNotFoundException;
 
 import javax.imageio.ImageIO;
@@ -21,9 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
