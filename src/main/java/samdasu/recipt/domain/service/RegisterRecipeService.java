@@ -12,7 +12,7 @@ import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.*;
 import samdasu.recipt.domain.exception.DuplicateContextException;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
-import samdasu.recipt.domain.repository.GptRepository;
+import samdasu.recipt.domain.repository.Gpt.GptRepository;
 import samdasu.recipt.domain.repository.Register.RegisterRecipeRepository;
 import samdasu.recipt.domain.repository.UserRepository;
 import samdasu.recipt.utils.Image.AttachImage;
@@ -53,12 +53,10 @@ public class RegisterRecipeService {
      * 레시피 등록
      */
     @Transactional
-    public Long registerRecipeSave(Long userId,  Long gptId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, RegisterRequestDto requestDto) {
+    public Long registerRecipeSave(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String foodName, RegisterRequestDto requestDto) {
         //엔티티 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
-        Gpt gpt = gptRepository.findById(gptId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Gpt Info"));
 
         AttachImage thumbnail = uploadService.uploadOne(registerImage, uploadFile, user.getUsername());
         List<AttachImage> registerImages = uploadService.uploadGtOne(registerImage, uploadFiles, user.getUsername());
@@ -68,6 +66,19 @@ public class RegisterRecipeService {
             String filename = image.getSavedName();
             registerImagesPath.add(filename);
         }
+
+        List<Gpt> gptList = user.getGpt();
+        Long gptId = null;
+
+        for (Gpt gpt : gptList) {
+            if (gpt.getFoodName().equals(foodName)) {
+                gptId = gpt.getGptId();
+                break;
+            }
+        }
+
+        Gpt gpt = gptRepository.findById(gptId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Gpt Info"));
 
         List<RegisterRecipe> registerRecipes = registerRecipeRepository.findAll();
 
