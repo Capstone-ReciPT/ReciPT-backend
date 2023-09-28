@@ -17,11 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * 폴더 생성 부분: 유저마다 폴더 1개씩 만들게끔 수정하기
  * 반복되는 코드 리팩토링 필요
  */
 @Service
@@ -186,15 +186,15 @@ public class UploadService {
         return false;
     }
 
-    public ResponseEntity<byte[]> getUserProfile(String folderName,String fileName) {
+    public byte[] getUserProfile(String folderName,String fileName) {
         File file = new File(userImage + "/" + folderName + "/" + fileName);
 
-        ResponseEntity<byte[]> result = null;
+        byte[] result = null;
         try {
             HttpHeaders header = new HttpHeaders();
 
             header.add("Content-type", Files.probeContentType(file.toPath()));
-            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+            result = FileCopyUtils.copyToByteArray(file);
 
         }catch (IOException e) {
             throw new ProfileNotFoundException("Fail: Profile Not Found!", e);
@@ -202,15 +202,15 @@ public class UploadService {
         return result;
     }
 
-    public ResponseEntity<byte[]> getRegisterProfile(String folderName, String fileName) {
+    public byte[] getRegisterProfile(String folderName, String fileName) {
         File file = new File(registerImage + "/" + folderName + "/" + fileName);
 
-        ResponseEntity<byte[]> result = null;
+        byte[] result = null;
         try {
             HttpHeaders header = new HttpHeaders();
 
             header.add("Content-type", Files.probeContentType(file.toPath()));
-            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+            result = FileCopyUtils.copyToByteArray(file);
 
         }catch (IOException e) {
             throw new ProfileNotFoundException("Fail: Profile Not Found!", e);
