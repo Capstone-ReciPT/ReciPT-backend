@@ -1,6 +1,5 @@
 package samdasu.recipt.utils.Image;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
-import samdasu.recipt.domain.entity.RegisterRecipe;
-import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.exception.ProfileNotFoundException;
 
 import javax.imageio.ImageIO;
@@ -21,14 +16,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * 폴더 생성 부분: 유저마다 폴더 1개씩 만들게끔 수정하기
  * 반복되는 코드 리팩토링 필요
  */
 @Service
@@ -193,15 +186,15 @@ public class UploadService {
         return false;
     }
 
-    public ResponseEntity<byte[]> getUserProfile(String folderName,String fileName) {
+    public byte[] getUserProfile(String folderName,String fileName) {
         File file = new File(userImage + "/" + folderName + "/" + fileName);
 
-        ResponseEntity<byte[]> result = null;
+        byte[] result = null;
         try {
             HttpHeaders header = new HttpHeaders();
 
             header.add("Content-type", Files.probeContentType(file.toPath()));
-            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+            result = FileCopyUtils.copyToByteArray(file);
 
         }catch (IOException e) {
             throw new ProfileNotFoundException("Fail: Profile Not Found!", e);
@@ -209,15 +202,15 @@ public class UploadService {
         return result;
     }
 
-    public ResponseEntity<byte[]> getRegisterProfile(String folderName, String fileName) {
+    public byte[] getRegisterProfile(String folderName, String fileName) {
         File file = new File(registerImage + "/" + folderName + "/" + fileName);
 
-        ResponseEntity<byte[]> result = null;
+        byte[] result = null;
         try {
             HttpHeaders header = new HttpHeaders();
 
             header.add("Content-type", Files.probeContentType(file.toPath()));
-            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+            result = FileCopyUtils.copyToByteArray(file);
 
         }catch (IOException e) {
             throw new ProfileNotFoundException("Fail: Profile Not Found!", e);

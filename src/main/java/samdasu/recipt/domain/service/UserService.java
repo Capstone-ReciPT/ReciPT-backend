@@ -53,7 +53,7 @@ public class UserService {
 
     @Transactional
     public Long update(Long userId, UserUpdateRequestDto updateRequestDto) {
-        User user = findById(userId);
+        User user = findUserById(userId);
         String newPassword = passwordEncoder.encode(updateRequestDto.getPassword());
 
         user.updateUserInfo(newPassword);
@@ -64,7 +64,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(Long userId) {
+    public User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
     }

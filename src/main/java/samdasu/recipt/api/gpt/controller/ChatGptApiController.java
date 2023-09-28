@@ -88,7 +88,8 @@ public class ChatGptApiController {
     //    @PostMapping("/save-gpt-recipe")
     public ResponseModel<ChatGptRecipeSaveResponseDto> saveGptRecipe(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+
+        User findUser = userService.findUserById(principal.getUser().getUserId());
 
         try {
             Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);

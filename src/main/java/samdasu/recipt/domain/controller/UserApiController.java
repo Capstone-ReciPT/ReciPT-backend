@@ -59,12 +59,12 @@ public class UserApiController {
     public Result1 saveUser(@Valid UserSignUpDto userSignUpDto, @RequestParam(value = "profile") MultipartFile file) throws IOException {
         Long joinUserId = userService.join(userSignUpDto, file);
 
-        User findUser = userService.findById(joinUserId);
+        User findUser = userService.findUserById(joinUserId);
 
         log.info("findUser.getUsername = {}", findUser.getUsername());
         log.info("findUser.getProfile() ={}", findUser.getProfile());
 
-        ResponseEntity<byte[]> result = uploadService.getUserProfile(findUser.getUsername(),findUser.getProfile());
+        byte[] result = uploadService.getUserProfile(findUser.getUsername(),findUser.getProfile());
 
         return new Result1(1, new UserResponseDto(findUser), status(OK)
                 .contentType(MediaType.valueOf("image/png"))
@@ -77,7 +77,7 @@ public class UserApiController {
     @GetMapping("/user")
     public Result1 userInfo(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+        User findUser = userService.findUserById(principal.getUser().getUserId());
 
         log.info("user.getUsername() = {}", findUser.getUsername());
         log.info("user.getLoginId() = {}", findUser.getLoginId());
@@ -85,7 +85,7 @@ public class UserApiController {
         log.info("user.getAge() = {}", findUser.getAge());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
-        ResponseEntity<byte[]> result = uploadService.getUserProfile(responseDto.getUsername(), responseDto.getProfile());
+        byte[] result = uploadService.getUserProfile(responseDto.getUsername(), responseDto.getProfile());
 
         return new Result1(1, responseDto, result);
     }
@@ -99,12 +99,12 @@ public class UserApiController {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         Long updateUserId = userService.update(principal.getUser().getUserId(), request);
 
-        User findUser = userService.findById(updateUserId);
+        User findUser = userService.findUserById(updateUserId);
 
         log.info("user.getPassword() = {}", findUser.getPassword());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
-        ResponseEntity<byte[]> result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
+        byte[] result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
 
         return new Result1(1, responseDto, result);
     }
@@ -116,7 +116,7 @@ public class UserApiController {
     @GetMapping("/user/like")
     public Result2 searchLikeInfo(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+        User findUser = userService.findUserById(principal.getUser().getUserId());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
 
@@ -138,10 +138,10 @@ public class UserApiController {
     @GetMapping("/user/register")
     public Result1 searchRegisterInfo(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+        User findUser = userService.findUserById(principal.getUser().getUserId());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
-        ResponseEntity<byte[]> result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
+        byte[] result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
 
         log.info("user.getUsername() = {}", findUser.getUsername());
         log.info("user.getRegisterRecipes.getFoodName() = {}", findUser.getRegisterRecipes().stream()
@@ -162,7 +162,7 @@ public class UserApiController {
             , @RequestParam(value = "registerRecipeId") Long registerRecipeId) {
         boolean isDelete = false;
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+        User findUser = userService.findUserById(principal.getUser().getUserId());
         List<RegisterRecipe> registerRecipes = findUser.getRegisterRecipes();
 
         for (RegisterRecipe registerRecipe : registerRecipes) {
@@ -186,10 +186,10 @@ public class UserApiController {
     @GetMapping("/user/review")
     public Result1 searchReviewInfo(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+        User findUser = userService.findUserById(principal.getUser().getUserId());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
-        ResponseEntity<byte[]> result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
+        byte[] result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
 
         List<Review> reviews = reviewService.findReviewByWriter(findUser.getUsername());
 
@@ -214,6 +214,5 @@ public class UserApiController {
         private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
         private T data;
     }
-
 }
 
