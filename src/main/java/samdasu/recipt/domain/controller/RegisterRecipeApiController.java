@@ -15,6 +15,7 @@ import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
+import samdasu.recipt.domain.service.GptService;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.ReviewService;
@@ -22,6 +23,7 @@ import samdasu.recipt.security.config.auth.PrincipalDetails;
 import samdasu.recipt.utils.Image.UploadService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,14 +38,27 @@ public class RegisterRecipeApiController {
     private final HeartService heartService;
     private final ReviewService reviewService;
 
-    @PostMapping("/save")
-    public Result2 saveRecipe(Authentication authentication
-            , @RequestParam(value = "gptId") Long gptId
-            , @RequestParam(value = "thumbnail") MultipartFile file
-            , @RequestParam(value = "images") MultipartFile[] files
-            , @Valid RegisterRequestDto requestDto) {
+    private final GptService gptService;
+
+    @GetMapping("/find") //req로 foodname주면 response로 user가 gpt 테이블에 저장한 레시피의 foodName 줌
+    public Result2 findGptRecipes(Authentication authentication
+                                  , @RequestParam(value = "foodName") String foodName) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        Long registerRecipeSave = registerRecipeService.registerRecipeSave(principal.getUser().getUserId(), gptId, file, files, requestDto);
+
+        List<String> findGptRecipes = gptService.getGptRecipesByUserId(foodName, principal.getUser().getUserId());
+
+        return new Result2(findGptRecipes.size(), findGptRecipes);
+    }
+
+    @PostMapping("/save") //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
+    public Result4 saveRecipe(Authentication authentication
+            , @RequestParam(value = "foodName") String foodName,
+                              @RequestParam(value = "thumbnail") MultipartFile file,
+                              @RequestParam(value = "images") MultipartFile[] files,
+                              @Valid RegisterRequestDto requestDto) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
+        Long registerRecipeSave = registerRecipeService.registerRecipeSave(principal.getUser().getUserId(), file, files, foodName, requestDto);
 
         RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
         RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);
@@ -51,9 +66,15 @@ public class RegisterRecipeApiController {
         log.info("registerResponseDto.getTitle() = {}", registerResponseDto.getTitle());
         log.info("registerResponseDto.getThumbnailImage() = {}", registerResponseDto.getThumbnailImage());
 
-        ResponseEntity<byte[]> result = uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage());
+        List<byte[]> thumbnail = new ArrayList<>();
+        thumbnail.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage()));
 
-        return new Result2(new RegisterResponseDto(findRegister), result);
+        List<byte[]> imageFiles = new ArrayList<>();
+        int filesCnt = registerResponseDto.getImages().size();
+        for (int i = 0; i < filesCnt; i++) {
+            imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImages().get(i)));
+        }
+        return new Result4(new RegisterResponseDto(findRegister), thumbnail, imageFiles);
     }
 
     @GetMapping("/{id}")
@@ -145,6 +166,13 @@ public class RegisterRecipeApiController {
         private int heartCount;
         private int reviewCount;
         private T data;
+    }
 
+    @Data
+    @AllArgsConstructor
+    static class Result4<T> {
+        private T registerRecipe;
+        private T thumbnail;
+        private T images;
     }
 }

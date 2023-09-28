@@ -13,34 +13,28 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RegisterResponseDto {
-    private Long registerId;
-    private String foodName;
     private String title;
     private String comment;
     private String category;
     private String ingredient;
     private String context;
-    private Integer likeCount;
-    private Double ratingResult;
-    private Integer ratingPeople;
+    //    private Integer likeCount;
+//    private Double ratingResult;
+//    private Integer ratingPeople;
     private String thumbnailImage;
-    private List<String> image;
-    private List<RegisterRecipeReviewResponseDto> reviewResponseDtos;
-    private List<RegisterHeartDto> heartDtos;
+    private List<String> images;
 
     public RegisterResponseDto(RegisterRecipe registerRecipe) {
-        registerId = registerRecipe.getRegisterId();
-        foodName = registerRecipe.getFoodName();
         title = registerRecipe.getTitle();
         comment = registerRecipe.getComment();
         category = registerRecipe.getCategory();
         ingredient = registerRecipe.getIngredient();
         context = registerRecipe.getContext();
-        likeCount = registerRecipe.getLikeCount();
-        ratingResult = registerRecipe.getRatingScore();
-        ratingPeople = registerRecipe.getRatingPeople();
+//        likeCount = registerRecipe.getLikeCount();
+//        ratingResult = registerRecipe.getRatingScore();
+//        ratingPeople = registerRecipe.getRatingPeople();
         thumbnailImage = registerRecipe.getThumbnailImage();
-        image = registerRecipe.getImage();
+        images = registerRecipe.getImage();
     }
 
     public static RegisterResponseDto createRegisterResponseDto(RegisterRecipe registerRecipe) {
