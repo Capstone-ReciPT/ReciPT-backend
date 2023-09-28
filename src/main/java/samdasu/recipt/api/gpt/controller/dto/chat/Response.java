@@ -1,9 +1,9 @@
-package samdasu.recipt.api.gpt.dto.chat;
+package samdasu.recipt.api.gpt.controller.dto.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import samdasu.recipt.api.gpt.dto.Usage;
+import samdasu.recipt.api.gpt.controller.dto.Usage;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -18,7 +18,7 @@ public class ChatGptProperties {
 
     private String model = "gpt-3.5-turbo-16k";
 
-    private Integer maxTokens = 1800;
+    private Integer maxTokens = 2500;
 
     private Double temperature = 0.6;
 
