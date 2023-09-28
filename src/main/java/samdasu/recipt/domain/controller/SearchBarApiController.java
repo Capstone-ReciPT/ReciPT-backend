@@ -43,7 +43,7 @@ public class SearchBarApiController {
 
         if (authentication != null && authentication.isAuthenticated()) { //로그인 한 경우
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            User findUser = userService.findById(principal.getUser().getUserId());
+            User findUser = userService.findUserById(principal.getUser().getUserId());
             if (registerRecipes.size() < STANDARD) {
                 recommend = randomRecommend();
             } else {

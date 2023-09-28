@@ -48,7 +48,7 @@ public class ReviewApiController {
             , @RequestParam(value = "reviewId") Long reviewId) {
         boolean isDelete = false;
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findById(principal.getUser().getUserId());
+        User findUser = userService.findUserById(principal.getUser().getUserId());
         List<Review> reviews = findUser.getReviews();
 
         for (Review review : reviews) {
