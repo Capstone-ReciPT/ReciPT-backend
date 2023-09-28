@@ -1,8 +1,8 @@
 package samdasu.recipt.api.gpt.service;
 
-import samdasu.recipt.api.gpt.dto.chat.Message;
-import samdasu.recipt.api.gpt.dto.chat.Request;
-import samdasu.recipt.api.gpt.dto.chat.Response;
+import samdasu.recipt.api.gpt.controller.dto.chat.Message;
+import samdasu.recipt.api.gpt.controller.dto.chat.Request;
+import samdasu.recipt.api.gpt.controller.dto.chat.Response;
 
 import java.util.List;
 

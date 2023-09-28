@@ -1,4 +1,4 @@
-package samdasu.recipt.api.gpt.dto;
+package samdasu.recipt.api.gpt.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
