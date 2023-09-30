@@ -1,9 +1,6 @@
 package samdasu.recipt.domain.controller.dto.User;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
@@ -21,7 +18,7 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @NoArgsConstructor
-public class UserResponseDto implements UserDetails {
+public class UserResponseDto {
     private Long userId;
     private String username;
     private String loginId;
@@ -61,35 +58,19 @@ public class UserResponseDto implements UserDetails {
         registerResponseDtos = user.getRegisterRecipes().stream()
                 .map(registerRecipe -> new RegisterResponseDto(registerRecipe))
                 .collect(Collectors.toList());
-        
     }
 
     public static UserResponseDto createUserResponseDto(User user) {
         return new UserResponseDto(user);
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class TokenInfo {
+        private String grantType;
+        private String accessToken;
+        private String refreshToken;
+        private Long refreshTokenExpirationTime;
     }
 }

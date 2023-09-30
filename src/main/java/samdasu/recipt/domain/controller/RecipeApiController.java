@@ -12,10 +12,11 @@ import samdasu.recipt.domain.controller.dto.Recipe.RecipeResponseDto;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.Recipe;
+import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RecipeService;
 import samdasu.recipt.domain.service.ReviewService;
-import samdasu.recipt.security.config.auth.PrincipalDetails;
+import samdasu.recipt.domain.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api/db")
 public class RecipeApiController {
+    private final UserService userService;
     private final RecipeService recipeService;
     private final HeartService heartService;
     private final ReviewService reviewService;
@@ -35,10 +37,9 @@ public class RecipeApiController {
     public Result1 eachRecipeInfo(Authentication authentication, @PathVariable("id") Long recipeId) {
         Boolean heartCheck = false;
         if (authentication != null) {
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
+            User findUser = userService.findUserByUsername(authentication.getName());
             //좋아요 상태 판별
-            heartCheck = heartService.checkRecipeHeart(principal.getUser().getUserId(), recipeId);
+            heartCheck = heartService.checkRecipeHeart(findUser.getUserId(), recipeId);
         }
         //조회수 증가
         recipeService.increaseViewCount(recipeId);
@@ -67,9 +68,9 @@ public class RecipeApiController {
 
     @PostMapping("/insert/{id}")
     public Result3 insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findUserByUsername(authentication.getName());
         Recipe findRecipe = recipeService.findById(recipeId);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(principal.getUser().getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.insertRecipeHeart(recipeHeartDto);
         log.info("좋아요 추가 성공");
         return new Result3(findRecipe.getHearts().size());
@@ -77,9 +78,9 @@ public class RecipeApiController {
 
     @PostMapping("/cancel/{id}")
     public Result3 deleteHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findUserByUsername(authentication.getName());
         Recipe findRecipe = recipeService.findById(recipeId);
-        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(principal.getUser().getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
+        RecipeHeartDto recipeHeartDto = RecipeHeartDto.createRecipeHeartDto(findUser.getUserId(), findRecipe.getRecipeId(), findRecipe.getFoodName(), findRecipe.getCategory(), findRecipe.getIngredient());
         heartService.deleteRecipeHeart(recipeHeartDto);
         log.info("좋아요 삭제 성공");
         return new Result3(findRecipe.getHearts().size());
@@ -91,8 +92,8 @@ public class RecipeApiController {
     @PostMapping("/save/review/{id}")
     public void saveReview(Authentication authentication,
                            @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        reviewService.saveRecipeReview(principal.getUser().getUserId(), recipeId, requestDto);
+        User findUser = userService.findUserByUsername(authentication.getName());
+        reviewService.saveRecipeReview(findUser.getUserId(), recipeId, requestDto);
         recipeService.updateRatingScore(recipeId, requestDto);
     }
 

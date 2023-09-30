@@ -9,10 +9,13 @@ import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.ReviewHeartDto;
 import samdasu.recipt.domain.entity.*;
+import samdasu.recipt.domain.entity.enums.Authority;
 import samdasu.recipt.domain.repository.HeartRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -143,7 +146,7 @@ public class HeartServiceTest {
     }
 
     private RegisterRecipe createRegisterRecipe(User user, Gpt gpt) {
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("만두",  "만두 먹기!", "만두는 진리", "기타", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기",
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("만두",  "만두는 진리", "기타", "고기피, 만두피", "1.만두 빚기 2.굽기 3.먹기",
                 0L, 0, 0.0, 0, null, null, user, gpt);
 
         em.persist(registerRecipe);
@@ -155,7 +158,7 @@ public class HeartServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", 10, null);
+        User user = User.createUser("tester1", "testId", "test1234", 10, null, Collections.singletonList(Authority.ROLE_USER.name()));
         em.persist(user);
 
         return user;

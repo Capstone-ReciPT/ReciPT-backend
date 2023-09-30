@@ -5,7 +5,7 @@ import org.aspectj.lang.annotation.Pointcut;
 public class Pointcuts {
 
     //UserService
-    @Pointcut("execution(public Long samdasu.recipt.domain.service.UserService.join(*, *))")
+    @Pointcut("execution(public Long samdasu.recipt.domain.service.UserService.login(*, *))")
     public void login() {
     }
 

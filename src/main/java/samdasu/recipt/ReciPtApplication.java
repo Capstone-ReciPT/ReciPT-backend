@@ -14,11 +14,6 @@ import samdasu.recipt.domain.aop.*;
 @Import({UserAspect.class, ReviewAspect.class, RegisterRecipeAspect.class, RecipeAspect.class, HeartAspect.class, GptAspect.class})
 public class ReciPtApplication {
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(ReciPtApplication.class, args);
     }

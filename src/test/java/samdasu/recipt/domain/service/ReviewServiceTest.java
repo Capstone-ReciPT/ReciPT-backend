@@ -10,10 +10,12 @@ import samdasu.recipt.domain.controller.dto.Review.ReviewUpdateRequestDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.entity.enums.Authority;
 import samdasu.recipt.domain.repository.Review.ReviewRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,7 +134,7 @@ class ReviewServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("tester1", "testId", "test1234", 10, null);
+        User user = User.createUser("tester1", "testId", "test1234", 10, null, Collections.singletonList(Authority.ROLE_USER.name()));
         em.persist(user);
 
         return user;
