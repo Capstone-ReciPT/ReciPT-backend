@@ -1,47 +1,47 @@
 package samdasu.recipt.security.config;
 
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import samdasu.recipt.domain.repository.UserRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import samdasu.recipt.security.config.jwt.JwtAuthenticationFilter;
-import samdasu.recipt.security.config.jwt.JwtAuthorizationFilter;
+import samdasu.recipt.security.config.jwt.JwtTokenProvider;
 
 @Configuration
-@EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
+@EnableWebSecurity // Spring Security 설정 클래스
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate redisTemplate;
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.ignoring()
-                    .antMatchers("/api/signup");
-//                    .antMatchers("/api/chat/**");
-//                    .antMatchers("/**");
-        };
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        // ACL(Access Control List, 접근 제어 목록)의 예외 URL 설정
+//        return web ->
+//                web.ignoring()
+//                        .antMatchers("/api/signup")
+//                        .antMatchers("/api/login");
+////        .antMatchers("/**");
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // 인터셉터로 요청을 안전하게 보호하는 방법 설정
         http
+                // jwt 토큰 사용을 위한 설정
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
-                .authorizeRequests()
+                // 예외 처리
+                .and()
+                .authorizeRequests() // '인증' 필요
                 .antMatchers("/api/home").permitAll()
 
                 .antMatchers("/api/search").permitAll()
@@ -62,14 +62,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/category/**").permitAll()
 
 //                .antMatchers("/api/chat/**").authenticated()
+                .antMatchers("/api/signup", "/api/login", "/api/authority", "/api/reissue", "/api/logout").permitAll()
+                .antMatchers("/api/userTest").hasRole("USER")
+                .antMatchers("/api/adminTest").hasRole("ADMIN")
 
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
 //                .anyRequest().permitAll();
+
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class);
+        // JwtAuthenticationFilter를 UsernamePasswordAuthentictaionFilter 전에 적용시킨다.
     }
 }
-
-
-
-
-
-
