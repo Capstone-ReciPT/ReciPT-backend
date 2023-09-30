@@ -23,8 +23,6 @@ public class RegisterRecipe extends BaseTimeEntity {
     private Long registerId;
     @Column(nullable = false)
     private String foodName;
-    @Column(nullable = false, length = 100)
-    private String title;
     @Column(nullable = false)
     private String comment;
     @Column(nullable = false)
@@ -69,9 +67,8 @@ public class RegisterRecipe extends BaseTimeEntity {
 
 
     //==생성 메서드==//
-    public RegisterRecipe(String foodName, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image) {
+    public RegisterRecipe(String foodName, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image) {
         this.foodName = foodName;
-        this.title = title;
         this.comment = comment;
         this.category = category;
         this.ingredient = ingredient;
@@ -84,8 +81,8 @@ public class RegisterRecipe extends BaseTimeEntity {
         this.image = image;
     }
 
-    public static RegisterRecipe createRegisterRecipe(String foodName, String title, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image, User user, Gpt gpt) {
-        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, title, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople, thumbnailImage, image);
+    public static RegisterRecipe createRegisterRecipe(String foodName, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image, User user, Gpt gpt) {
+        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople, thumbnailImage, image);
         registerRecipe.addUser(user);
         registerRecipe.addGpt(gpt);
         return registerRecipe;
