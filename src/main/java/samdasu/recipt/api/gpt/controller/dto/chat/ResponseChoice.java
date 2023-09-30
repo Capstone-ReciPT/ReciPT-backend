@@ -1,4 +1,4 @@
-package samdasu.recipt.api.gpt.dto.chat;
+package samdasu.recipt.api.gpt.controller.dto.chat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

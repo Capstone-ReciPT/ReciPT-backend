@@ -67,6 +67,8 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.0.0'
     implementation 'com.opencsv:opencsv:5.5.2'
 
+    // 객체 변환 및 직렬화
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
 
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation 'com.auth0:java-jwt:4.3.0'
