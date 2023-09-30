@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +14,8 @@ import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
-import samdasu.recipt.domain.service.GptService;
-import samdasu.recipt.domain.service.HeartService;
-import samdasu.recipt.domain.service.RegisterRecipeService;
-import samdasu.recipt.domain.service.ReviewService;
-import samdasu.recipt.security.config.auth.PrincipalDetails;
+import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.service.*;
 import samdasu.recipt.utils.Image.UploadService;
 
 import javax.validation.Valid;
@@ -33,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api/register")
 public class RegisterRecipeApiController {
+    private final UserService userService;
     private final RegisterRecipeService registerRecipeService;
     private final UploadService uploadService;
     private final HeartService heartService;
@@ -43,9 +40,8 @@ public class RegisterRecipeApiController {
     @GetMapping("/find") //req로 foodname주면 response로 user가 gpt 테이블에 저장한 레시피의 foodName 줌
     public Result2 findGptRecipes(Authentication authentication
                                   , @RequestParam(value = "foodName") String foodName) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
-        List<String> findGptRecipes = gptService.getGptRecipesByUserId(foodName, principal.getUser().getUserId());
+        User findUser = userService.findUserByUsername(authentication.getName());
+        List<String> findGptRecipes = gptService.getGptRecipesByUserId(foodName, findUser.getUserId());
 
         return new Result2(findGptRecipes.size(), findGptRecipes);
     }
@@ -56,16 +52,15 @@ public class RegisterRecipeApiController {
                               @RequestParam(value = "thumbnail") MultipartFile file,
                               @RequestParam(value = "images") MultipartFile[] files,
                               @Valid RegisterRequestDto requestDto) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
-        Long registerRecipeSave = registerRecipeService.registerRecipeSave(principal.getUser().getUserId(), file, files, foodName, requestDto);
+        User findUser = userService.findUserByUsername(authentication.getName());
+        Long registerRecipeSave = registerRecipeService.registerRecipeSave(findUser.getUserId(), file, files, foodName, requestDto);
 
         RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
         RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);
 
-        log.info("registerResponseDto.getTitle() = {}", registerResponseDto.getTitle());
         log.info("registerResponseDto.getThumbnailImage() = {}", registerResponseDto.getThumbnailImage());
 
+        log.info("registerResponseDto.getLastModifiedDate() = {}", registerResponseDto.getLastModifiedDate());
         List<byte[]> thumbnail = new ArrayList<>();
         thumbnail.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage()));
 
@@ -80,12 +75,10 @@ public class RegisterRecipeApiController {
     @GetMapping("/{id}")
     public Result3 eachRecipeInfo(Authentication authentication, @PathVariable("id") Long recipeId) {
         Boolean heartCheck = false;
-        if (authentication != null) {
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findUserByUsername(authentication.getName());
+        //좋아요 상태 판별
+        heartCheck = heartService.checkRegisterRecipeHeart(findUser.getUserId(), recipeId);
 
-            //좋아요 상태 판별
-            heartCheck = heartService.checkRegisterRecipeHeart(principal.getUser().getUserId(), recipeId);
-        }
         //조회수 증가
         registerRecipeService.increaseViewCount(recipeId);
 
@@ -113,9 +106,9 @@ public class RegisterRecipeApiController {
 
     @PostMapping("/insert/{id}")
     public Result1 insertHeart(Authentication authentication, @PathVariable("id") Long recipeId) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findUserByUsername(authentication.getName());
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
-        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(findUser.getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
         heartService.insertRegisterRecipeHeart(registerHeartDto);
         return new Result1(findRegisterRecipe.getHearts().size());
     }
@@ -123,9 +116,9 @@ public class RegisterRecipeApiController {
     @PostMapping("/cancel/{id}")
     public Result1 deleteHeart(Authentication authentication,
                                @PathVariable("id") Long recipeId) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User findUser = userService.findUserByUsername(authentication.getName());
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
-        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(principal.getUser().getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
+        RegisterHeartDto registerHeartDto = RegisterHeartDto.createRegisterHeartDto(findUser.getUserId(), findRegisterRecipe.getRegisterId(), findRegisterRecipe.getFoodName(), findRegisterRecipe.getCategory(), findRegisterRecipe.getIngredient());
         heartService.deleteRegisterRecipeHeart(registerHeartDto);
         return new Result1(findRegisterRecipe.getHearts().size());
     }
@@ -136,8 +129,8 @@ public class RegisterRecipeApiController {
     @PostMapping("/save/review/{id}")
     public void saveReview(Authentication authentication,
                            @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        reviewService.saveRegisterRecipeReview(principal.getUser().getUserId(), recipeId, requestDto);
+        User findUser = userService.findUserByUsername(authentication.getName());
+        reviewService.saveRegisterRecipeReview(findUser.getUserId(), recipeId, requestDto);
         registerRecipeService.updateRatingScore(recipeId, requestDto);
     }
 

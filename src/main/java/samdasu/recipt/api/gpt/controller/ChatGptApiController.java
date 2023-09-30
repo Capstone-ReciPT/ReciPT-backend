@@ -19,7 +19,6 @@ import samdasu.recipt.api.gpt.service.ChatGptService;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.GptService;
 import samdasu.recipt.domain.service.UserService;
-import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -213,8 +212,7 @@ public class ChatGptApiController {
 
     @PostMapping("/save")
     public ResponseModel<String> saveGptRecipe(Authentication authentication) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findUserById(principal.getUser().getUserId());
+        User findUser = userService.findUserByUsername(authentication.getName());
         try {
             Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);
             conversation.add(userMessage);

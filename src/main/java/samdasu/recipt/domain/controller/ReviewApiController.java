@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Heart.ReviewHeartDto;
 import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
+import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Heart;
 import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.ReviewService;
 import samdasu.recipt.domain.service.UserService;
-import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,8 +47,7 @@ public class ReviewApiController {
     public ResponseEntity<String> deleteReview(Authentication authentication
             , @RequestParam(value = "reviewId") Long reviewId) {
         boolean isDelete = false;
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User findUser = userService.findUserById(principal.getUser().getUserId());
+        User findUser = userService.findUserByUsername(authentication.getName());
         List<Review> reviews = findUser.getReviews();
 
         for (Review review : reviews) {

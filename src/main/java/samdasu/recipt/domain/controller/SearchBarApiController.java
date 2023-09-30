@@ -9,13 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
+import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.RecipeService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.UserService;
-import samdasu.recipt.security.config.auth.PrincipalDetails;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -41,18 +41,13 @@ public class SearchBarApiController {
         List<RegisterRecipe> registerRecipes = registerRecipeService.findRegisterRecipes();
         List<String> recommend;
 
-        if (authentication != null && authentication.isAuthenticated()) { //로그인 한 경우
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            User findUser = userService.findUserById(principal.getUser().getUserId());
-            if (registerRecipes.size() < STANDARD) {
-                recommend = randomRecommend();
-            } else {
-                recommend = registerRecipeService.RecommendByAge(findUser.getAge());
-            }
-        } else { //로그인 하지 않은 경우
-            recommend = randomRecommend();
-        }
+        User findUser = userService.findUserByUsername(authentication.getName());
 
+        if (registerRecipes.size() < STANDARD) {
+            recommend = randomRecommend();
+        } else {
+            recommend = registerRecipeService.RecommendByAge(findUser.getAge());
+        }
         return new Result(recommend.size(), recommend);
     }
 
