@@ -107,7 +107,7 @@ public class ChatGptApiController {
                 log.info("Saved GptRecipe. foodName: {}", chatGptRecipeSaveResponseDto.getFoodName());
                 clearConversation();
 
-                return ResponseModel.success(chatGptRecipeSaveResponseDto);
+                return ResponseModel.success("successfully saved the recipe!");
             } else {
                 throw new IOException("Error occurred caused Incorrect JSON format");
             }
@@ -119,7 +119,7 @@ public class ChatGptApiController {
   
   
     //    @PostMapping("/save-gpt-recipe")
-    public ResponseModel<ChatGptRecipeSaveResponseDto> saveGptRecipe(Authentication authentication) {
+/*    public ResponseModel<ChatGptRecipeSaveResponseDto> saveGptRecipe(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
         User findUser = userService.findUserById(principal.getUser().getUserId());
@@ -152,7 +152,7 @@ public class ChatGptApiController {
             log.error("Error occurred during saveGptRecipe", e);
             return ResponseModel.fail(null);
         }
-    }
+    }*/
 
     private ResponseModel<String> processMessage(Authentication authentication, HttpServletRequest request, String userContent, String messageType, boolean isDiggingOut) {
         try {
