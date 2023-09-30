@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.*;
+import samdasu.recipt.domain.entity.enums.Authority;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +58,7 @@ class RegisterRecipeServiceTest {
         RegisterRecipe findById = registerRecipeService.findById(saveRegisterRecipeId);
 
         //then
-        assertThat(findById.getTitle()).isEqualTo("제목");
+        assertThat(findById.getComment()).isEqualTo("1줄평");
     }
 
     @Test
@@ -161,21 +163,21 @@ class RegisterRecipeServiceTest {
     }
 
     private User createUser10() {
-        User user = User.createUser("tester1", "testId", "test1234", 10, null);
+        User user = User.createUser("tester1", "testId", "test1234", 10, null, Collections.singletonList(Authority.ROLE_USER.name()));
         em.persist(user);
 
         return user;
     }
 
     private User createUser20() {
-        User user = User.createUser("tester1", "testId", "test1234", 20, null);
+        User user = User.createUser("tester1", "testId", "test1234", 20, null, Collections.singletonList(Authority.ROLE_USER.name()));
         em.persist(user);
 
         return user;
     }
 
     private RegisterRecipe createRecipe(User user, Gpt gpt) {
-        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), "만두 먹기", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+        RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(), "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
                 0L, 0, 5.0, 1, null, null, user, gpt );
         em.persist(registerRecipe);
 
@@ -184,7 +186,7 @@ class RegisterRecipeServiceTest {
 
     private void testRecommendByAge1(User user, Gpt gpt) {
         for (int i = 0; i < 15; i++) {
-            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("10대가 좋아하는 음식" + i,  "10대가 좋아하는 음식", "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("10대가 좋아하는 음식" + i,   "음료수랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
                     (long) 20 + i, 20 + i, 5.0, 1, null, null,user, gpt);
             em.persist(registerRecipe);
         }
@@ -192,7 +194,7 @@ class RegisterRecipeServiceTest {
 
     private void testRecommendByAge2(User user, Gpt gpt) {
         for (int i = 0; i < 15; i++) {
-            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("20대가 좋아하는 음식" + i, "20대가 좋아하는 음식", "우유랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
+            RegisterRecipe registerRecipe = RegisterRecipe.createRegisterRecipe("20대가 좋아하는 음식" + i, "우유랑 먹으면 맛있어요.", "기타", gpt.getIngredient(), gpt.getContext(),
                     (long) 50 + i, 50 + i, 4.0, 1, null,null, user, gpt);
             em.persist(registerRecipe);
         }

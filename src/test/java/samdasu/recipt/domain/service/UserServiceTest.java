@@ -11,11 +11,14 @@ import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserSignUpDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.entity.enums.Authority;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
 import samdasu.recipt.domain.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,7 +41,7 @@ public class UserServiceTest {
         //given
         UserSignUpDto signUpDto = createUserSignUpDto("tester",  10, "test1234");
         //when
-        Long savedId = userService.join(signUpDto, null);
+        Long savedId = userService.signUp(signUpDto, null);
 
         //then
         User user = userRepository.findById(savedId)
@@ -54,14 +57,14 @@ public class UserServiceTest {
     public void 유저_회원가입_중복회원() {
         // given
         UserSignUpDto tester1 = createUserSignUpDto("tester",  10, "test1234");
-        userService.join(tester1, null);
+        userService.signUp(tester1, null);
 
         // when
         // same loginId
         UserSignUpDto tester2 = createUserSignUpDto("tester2",  20, "test5678");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.join(tester2, null);
+            userService.signUp(tester2, null);
         });
 
         // then
@@ -106,7 +109,7 @@ public class UserServiceTest {
     }
 
     private User createUser() {
-        User user = User.createUser("testerA", "testA", "A1234", 30, null);
+        User user = User.createUser("testerA", "testA", "A1234", 30, null, Collections.singletonList(Authority.ROLE_USER.name()));
         em.persist(user);
         return user;
     }

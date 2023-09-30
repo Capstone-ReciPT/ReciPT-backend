@@ -82,11 +82,11 @@ public class RegisterRecipeService {
 
         List<RegisterRecipe> registerRecipes = registerRecipeRepository.findAll();
 
-        RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(),  requestDto.getTitle(), requestDto.getComment(), requestDto.getCategory(),
+        RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipe(gpt.getFoodName(),  requestDto.getComment(), requestDto.getCategory(),
                 gpt.getIngredient(), gpt.getContext(), 0L, 0, 0.0, 0,thumbnail.getSavedName(), registerImagesPath, user, gpt);
 
         for (RegisterRecipe recipe : registerRecipes) {
-            if (recipe.getFoodName().equals(gpt.getFoodName()) && recipe.getTitle().equals(requestDto.getTitle())) {
+            if (recipe.getFoodName().equals(gpt.getFoodName()) && recipe.getComment().equals(requestDto.getComment())) {
                 throw new DuplicateContextException("이미 저장된 레시피가 있습니다!");
             }
         }
