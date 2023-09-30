@@ -57,6 +57,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     testImplementation 'org.springframework.security:spring-security-test'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     //    Thumbnailator
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.1'
 
@@ -68,6 +70,11 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation 'com.auth0:java-jwt:4.3.0'
+
+    //HS512 알고리즘을 사용을 위해 secret key는 64B(512bit) 이상을 사용
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 
     // queryDSL 설정
     implementation "com.querydsl:querydsl-jpa"
