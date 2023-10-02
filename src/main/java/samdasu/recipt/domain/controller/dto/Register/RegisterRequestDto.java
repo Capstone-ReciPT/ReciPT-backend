@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RegisterRequestDto {
-    @NotBlank(message = "제목을 입력해주세요")
-    private String title;
+    @NotBlank(message = "음식 이름을 입력해주세요")
+    private String foodName;
     @NotBlank(message = "1줄평 해주세요")
     private String comment;
     @NotBlank(message = "카테고리를 입력해주세요")
@@ -21,16 +21,16 @@ public class RegisterRequestDto {
     private List<String> image;
 
 
-    public RegisterRequestDto(String title, String comment, String category, String thumbnailImage, List<String> image) {
-        this.title = title;
+    public RegisterRequestDto(String foodName, String comment, String category, String thumbnailImage, List<String> image) {
+        this.foodName = foodName;
         this.comment = comment;
         this.category = category;
         this.thumbnailImage = thumbnailImage;
         this.image = image;
     }
 
-    public static RegisterRequestDto createRegisterRequestDto(String title, String comment, String category, String thumbnailImage, List<String> image) {
-        return new RegisterRequestDto(title, comment, category, thumbnailImage, image);
+    public static RegisterRequestDto createRegisterRequestDto(String foodName, String comment, String category, String thumbnailImage, List<String> image) {
+        return new RegisterRequestDto(foodName, comment, category, thumbnailImage, image);
     }
 
 
