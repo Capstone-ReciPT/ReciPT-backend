@@ -49,11 +49,11 @@ public class RegisterRecipeService {
         return registerResponseDto;
     }
 
-    /**$
+    /**
      * 레시피 등록
      */
     @Transactional
-    public Long registerRecipeSave(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String foodName, RegisterRequestDto requestDto) {
+    public Long registerRecipeSaveByGpt(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String foodName, RegisterRequestDto requestDto) {
         //엔티티 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
@@ -87,6 +87,54 @@ public class RegisterRecipeService {
 
         for (RegisterRecipe recipe : registerRecipes) {
             if (recipe.getFoodName().equals(gpt.getFoodName()) && recipe.getComment().equals(requestDto.getComment())) {
+                throw new DuplicateContextException("이미 저장된 레시피가 있습니다!");
+            }
+        }
+        return registerRecipeRepository.save(createRecipe).getRegisterId();
+    }
+
+    @Transactional
+    public Long registerRecipeSaveByTyping(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String[] ingredients, String[] contexts, RegisterRequestDto requestDto) {
+        //엔티티 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
+
+        AttachImage thumbnail = uploadService.uploadOne(registerImage, uploadFile, user.getUsername());
+        List<AttachImage> registerImages = uploadService.uploadGtOne(registerImage, uploadFiles, user.getUsername());
+
+        List<String> registerImagesPath = new ArrayList<>();
+        for (AttachImage image : registerImages) {
+            String filename = image.getSavedName();
+            registerImagesPath.add(filename);
+        }
+
+        String ingredient = null;
+        int length = ingredients.length;
+        for (String s : ingredients) {
+            ingredient += s;
+            length--;
+            if (length > 1) {
+                ingredient += ", ";
+            }
+        }
+
+        String context = null;
+        length = contexts.length;
+        for (String s : contexts) {
+            context += s;
+            length--;
+            if (length > 1) {
+                context += ", ";
+            }
+        }
+
+        List<RegisterRecipe> registerRecipes = registerRecipeRepository.findAll();
+
+        RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipeByTying(requestDto.getFoodName(), requestDto.getComment(), requestDto.getCategory(),
+                ingredient, context, 0L, 0, 0.0, 0,thumbnail.getSavedName(), registerImagesPath, user);
+
+        for (RegisterRecipe recipe : registerRecipes) {
+            if (recipe.getFoodName().equals(requestDto.getFoodName()) && recipe.getComment().equals(requestDto.getComment())) {
                 throw new DuplicateContextException("이미 저장된 레시피가 있습니다!");
             }
         }

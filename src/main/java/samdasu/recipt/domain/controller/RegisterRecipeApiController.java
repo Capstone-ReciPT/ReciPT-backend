@@ -45,14 +45,40 @@ public class RegisterRecipeApiController {
         return new Result2(findGptRecipes.size(), findGptRecipes);
     }
 
-    @PostMapping("/save") //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
-    public Result4 saveRecipe(Authentication authentication
-            , @RequestParam(value = "foodName") String foodName,
+    @PostMapping("/save/gpt") //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
+    public Result4 saveRecipeByGpt(Authentication authentication,
                               @RequestParam(value = "thumbnail") MultipartFile file,
                               @RequestParam(value = "images") MultipartFile[] files,
                               @Valid RegisterRequestDto requestDto) {
         User findUser = userService.findUserByUsername(authentication.getName());
-        Long registerRecipeSave = registerRecipeService.registerRecipeSave(findUser.getUserId(), file, files, foodName, requestDto);
+        Long registerRecipeSave = registerRecipeService.registerRecipeSaveByGpt(findUser.getUserId(), file, files, requestDto.getFoodName(), requestDto);
+
+        RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
+        RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);
+
+        log.info("registerResponseDto.getThumbnailImage() = {}", registerResponseDto.getThumbnailImage());
+
+        log.info("registerResponseDto.getLastModifiedDate() = {}", registerResponseDto.getLastModifiedDate());
+        List<byte[]> thumbnail = new ArrayList<>();
+        thumbnail.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage()));
+
+        List<byte[]> imageFiles = new ArrayList<>();
+        int filesCnt = registerResponseDto.getImages().size();
+        for (int i = 0; i < filesCnt; i++) {
+            imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImages().get(i)));
+        }
+        return new Result4(new RegisterResponseDto(findRegister), thumbnail, imageFiles);
+    }
+
+    @PostMapping("/save/typing")
+    public Result4 saveRecipeByTyping(Authentication authentication,
+                              @RequestParam(value = "ingredients") String[] ingredients,
+                              @RequestParam(value = "contexts") String[] contexts,
+                              @RequestParam(value = "thumbnail") MultipartFile file,
+                              @RequestParam(value = "images") MultipartFile[] files,
+                              @Valid RegisterRequestDto requestDto) {
+        User findUser = userService.findUserByUsername(authentication.getName());
+        Long registerRecipeSave = registerRecipeService.registerRecipeSaveByTyping(findUser.getUserId(), file, files, ingredients, contexts, requestDto);
 
         RegisterRecipe findRegister = registerRecipeService.findById(registerRecipeSave);
         RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegister);

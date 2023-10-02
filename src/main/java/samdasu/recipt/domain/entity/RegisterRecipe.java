@@ -88,6 +88,12 @@ public class RegisterRecipe extends BaseTimeEntity {
         return registerRecipe;
     }
 
+    public static RegisterRecipe createRegisterRecipeByTying(String foodName, String comment, String category, String ingredient, String context, Long viewCount, Integer likeCount, Double ratingScore, Integer ratingPeople, String thumbnailImage, List<String> image, User user) {
+        RegisterRecipe registerRecipe = new RegisterRecipe(foodName, comment, category, ingredient, context, viewCount, likeCount, ratingScore, ratingPeople, thumbnailImage, image);
+        registerRecipe.addUser(user);
+        return registerRecipe;
+    }
+
     //==비지니스 로직==//
     public void updateRating(Double inputRatingScore) {
         ratingScore += inputRatingScore;

@@ -33,7 +33,7 @@ public class Pointcuts {
     @Pointcut("execution(* samdasu.recipt.domain.service.RegisterRecipeService.updateRatingScore(*, *))")
     public void RegisterRecipeUpdateRatingScore() {
     }
-    @Pointcut("execution(public Long samdasu.recipt.domain.service.RegisterRecipeService.registerRecipeSave(*, *, *, *, *))")
+    @Pointcut("execution(public Long samdasu.recipt.domain.service.RegisterRecipeService.registerRecipeSaveByGpt(*, *, *, *, *))")
     public void registerRecipeSave() {
     }
 

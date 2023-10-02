@@ -53,7 +53,7 @@ class RegisterRecipeServiceTest {
 
         //when
         RegisterRequestDto registerRequestDto = RegisterRequestDto.createRegisterRequestDto("제목", "1줄평", "카테고리", null, null);
-        Long saveRegisterRecipeId = registerRecipeService.registerRecipeSave(user.getUserId(), null,null,  gpt.getFoodName(), registerRequestDto);
+        Long saveRegisterRecipeId = registerRecipeService.registerRecipeSaveByGpt(user.getUserId(), null,null,  gpt.getFoodName(), registerRequestDto);
 
         RegisterRecipe findById = registerRecipeService.findById(saveRegisterRecipeId);
 
