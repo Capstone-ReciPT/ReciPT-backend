@@ -34,7 +34,6 @@ public class RegisterRecipeApiController {
     private final UploadService uploadService;
     private final HeartService heartService;
     private final ReviewService reviewService;
-
     private final GptService gptService;
 
     @GetMapping("/find") //req로 foodname주면 response로 user가 gpt 테이블에 저장한 레시피의 foodName 줌
