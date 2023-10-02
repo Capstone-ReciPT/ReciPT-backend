@@ -60,11 +60,9 @@ spring:
     activate:
       on-profile: prod
 
-
-server:
-  address: localhost
-  port: 3307
-
+  redis:
+    host: localhost
+    port: 6379
 
   jpa:
     database: mysql
@@ -73,15 +71,7 @@ server:
     show-sql: true
     hibernate:
       ddl-auto: create
-
-  server:
-    port: 8080
-    servlet:
-      context-path: /
-      encoding:
-        charset: UTF-8
-        enabled: true
-        force: true
+      use-new-id-generator-mappings: false
 
 data:
   web:
@@ -92,3 +82,8 @@ data:
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace      # 파라미터까지 볼 수 있음
+
+jwt:
+  secret: "VGhpcyBwcm9qZWN0IGlzIGNhcHN0b25lIG9mIHNhbW15dW5nIHVuaXZlcnNpdHkuIGFuZCBvdXIgdGVhbSBuYW1lIGlzIHNhbWRhc3UuIA==" # {임의의 문자열을 Base64로 인코딩한 값}
+  refresh-token-validity-in-seconds: 1209600 # 14일
+  access-token-validity-in-seconds: 43200 # 12시간
