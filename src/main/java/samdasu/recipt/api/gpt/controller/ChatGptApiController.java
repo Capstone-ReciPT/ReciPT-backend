@@ -83,46 +83,11 @@ public class ChatGptApiController {
             return ResponseModel.fail("Error occurred during the request.");
         }
     }
+
     @PostMapping("/save")
-    public ResponseModel<String> saveGptRecipe(Authentication authentication) {
+    public ResponseModel<ChatGptRecipeSaveResponseDto> saveGptRecipe(Authentication authentication) {
+
         User findUser = userService.findUserByUsername(authentication.getName());
-      
-       try {
-            Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);
-            conversation.add(userMessage);
-            String responseMessage = chatgptService.getResponse(conversation);
-
-            int startIndex = responseMessage.indexOf("{");
-            int endIndex = responseMessage.lastIndexOf("}");
-
-            if (startIndex >= 0) {
-                if (endIndex == -1 || endIndex < startIndex) {
-                    endIndex = responseMessage.length();
-                }
-
-                String jsonResponse = responseMessage.substring(startIndex, endIndex + 1);
-
-                // JSON 파싱 및 필드 유효성 검사
-                ChatGptRecipeSaveResponseDto chatGptRecipeSaveResponseDto = parseAndValidateGptResponse(jsonResponse, findUser.getUserId());
-                log.info("Saved GptRecipe. foodName: {}", chatGptRecipeSaveResponseDto.getFoodName());
-                clearConversation();
-
-                return ResponseModel.success("successfully saved the recipe!");
-            } else {
-                throw new IOException("Error occurred caused Incorrect JSON format");
-            }
-        } catch (Exception e) {
-            log.error("Error occurred during saveGptRecipe", e);
-            return ResponseModel.fail(null);
-        }
-    }
-  
-  
-    //    @PostMapping("/save-gpt-recipe")
-/*    public ResponseModel<ChatGptRecipeSaveResponseDto> saveGptRecipe(Authentication authentication) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
-        User findUser = userService.findUserById(principal.getUser().getUserId());
 
         try {
             Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);
@@ -152,7 +117,7 @@ public class ChatGptApiController {
             log.error("Error occurred during saveGptRecipe", e);
             return ResponseModel.fail(null);
         }
-    }*/
+    }
 
     private ResponseModel<String> processMessage(Authentication authentication, HttpServletRequest request, String userContent, String messageType, boolean isDiggingOut) {
         try {
