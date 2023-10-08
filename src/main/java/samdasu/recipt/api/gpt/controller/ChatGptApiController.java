@@ -1,6 +1,5 @@
 package samdasu.recipt.api.gpt.controller;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static samdasu.recipt.api.gpt.constant.ChatConstants.*;
 
@@ -39,7 +39,8 @@ public class ChatGptApiController {
     private final GptService gptService;
     private final UserService userService;
 
-    private List<Message> conversation = new ArrayList<>();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ConcurrentHashMap<String, List<Message>> conversation = new ConcurrentHashMap<>();
 
     @PostMapping("/send")
 //    @PostMapping("/fridge-recipes")
@@ -62,8 +63,8 @@ public class ChatGptApiController {
 
     @PostMapping("/refresh")
 //    @PostMapping("/refresh-conversation")
-    public ResponseModel<String> refreshConversation() {
-        clearConversation();
+    public ResponseModel<String> refreshConversation(Authentication authentication) {
+        clearUserConversation(authentication.getName());
         return ResponseModel.success("Conversation refreshed successfully.");
     }
 
@@ -75,8 +76,15 @@ public class ChatGptApiController {
                 return ResponseModel.fail("Content is required.");
             }
             Message userMessage = new Message(ROLE_USER, EDIT_COMMAND_MESSAGE + userContent);
-            conversation.add(userMessage);
-            String responseMessage = chatgptService.getResponse(conversation);
+
+            List<Message> userConversation = getOrCreateConversation(authentication.getName());
+            userConversation.add(userMessage);
+
+            String responseMessage = chatgptService.getResponse(userConversation);
+//            String responseMessage = String.valueOf(chatgptService.getResponseAsync(userConversation)); // API 응답준비 전에 toString호출됨("java.util.concurrent.CompletableFuture@37544275[Not completed]")
+//            CompletableFuture<String> responseFuture = chatgptService.getResponseAsync(userConversation);
+//            String responseMessage = responseFuture.get(); // 비동기 작업 완료까지 대기하고 결과 얻기
+
             return ResponseModel.success(responseMessage);
         } catch (Exception e) {
             log.error("Error occurred during editGptRecipe", e);
@@ -85,14 +93,20 @@ public class ChatGptApiController {
     }
 
     @PostMapping("/save")
+    //    @PostMapping("/save-gpt-recipe")
     public ResponseModel<ChatGptRecipeSaveResponseDto> saveGptRecipe(Authentication authentication) {
-
         User findUser = userService.findUserByUsername(authentication.getName());
 
         try {
             Message userMessage = new Message(ROLE_USER, SAVE_COMMAND_MESSAGE);
-            conversation.add(userMessage);
-            String responseMessage = chatgptService.getResponse(conversation);
+
+            List<Message> userConversation = getOrCreateConversation(authentication.getName());
+            userConversation.add(userMessage);
+
+            String responseMessage = chatgptService.getResponse(userConversation);
+//            String responseMessage = String.valueOf(chatgptService.getResponseAsync(userConversation));
+//            CompletableFuture<String> responseFuture = chatgptService.getResponseAsync(userConversation);
+//            String responseMessage = responseFuture.get(); // 비동기 작업 완료까지 대기하고 결과 얻기
 
             int startIndex = responseMessage.indexOf("{");
             int endIndex = responseMessage.lastIndexOf("}");
@@ -107,7 +121,7 @@ public class ChatGptApiController {
                 // JSON 파싱 및 필드 유효성 검사
                 ChatGptRecipeSaveResponseDto chatGptRecipeSaveResponseDto = parseAndValidateGptResponse(jsonResponse, findUser.getUserId());
                 log.info("Saved GptRecipe. foodName: {}", chatGptRecipeSaveResponseDto.getFoodName());
-                clearConversation();
+                clearUserConversation(authentication.getName());
 
                 return ResponseModel.success(chatGptRecipeSaveResponseDto);
             } else {
@@ -129,13 +143,19 @@ public class ChatGptApiController {
 
             Message userMessage = new Message(ROLE_USER, userContent);
 
-            addSystemMessage(messageType);
+            addSystemMessage(authentication.getName(), messageType);
 
-            conversation.add(userMessage);
-            String responseMessage = chatgptService.getResponse(conversation);
+            List<Message> userConversation = getOrCreateConversation(authentication.getName());
+            userConversation.add(userMessage);
+
+            String responseMessage = chatgptService.getResponse(userConversation);
+//            String responseMessage = String.valueOf(chatgptService.getResponseAsync(userConversation));
+//            CompletableFuture<String> responseFuture = chatgptService.getResponseAsync(userConversation);
+//            String responseMessage = responseFuture.get(); // 비동기 작업 완료까지 대기하고 결과 얻기
+
             log.info("requestId {}, ip {}\n get a reply:\n {}", requestId, request.getRemoteHost(), responseMessage);
 
-            if (isDiggingOut && conversation.size() == 3) {
+            if (isDiggingOut && userConversation.size() == 3) {
                 try {
                     String modifiedResponseMessage = firstConversation(userMessage, responseMessage);
                     return ResponseModel.success(modifiedResponseMessage);
@@ -157,7 +177,6 @@ public class ChatGptApiController {
         log.info("userMessage = {}", userMessage.getContent());
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseMessage);
 
             String userInput = userMessage.getContent().strip();
@@ -211,15 +230,7 @@ public class ChatGptApiController {
         }
     }
 
-    private void addSystemMessage(String messageType) {
-        if (CollectionUtils.isEmpty(conversation)) {
-            Message systemMessage = new Message(ROLE_SYSTEM, messageType);
-            conversation.add(systemMessage);
-        }
-    }
-
     private ChatGptRecipeSaveResponseDto parseAndValidateGptResponse(String jsonResponse, Long userId) {
-        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             JsonNode responseJson = objectMapper.readTree(jsonResponse);
@@ -242,7 +253,30 @@ public class ChatGptApiController {
         }
     }
 
-    private void clearConversation() {
-        conversation.clear();
+    private List<Message> getOrCreateConversation(String username) {
+        return conversation.computeIfAbsent(username, k -> new ArrayList<>());
+    }
+
+    private void addSystemMessage(String username, String messageType) {
+        List<Message> userConversation = getOrCreateConversation(username);
+        if (CollectionUtils.isEmpty(userConversation)) {
+            Message systemMessage = new Message(ROLE_SYSTEM, messageType);
+            userConversation.add(systemMessage);
+        } else {
+            // 이미 존재하는 대화가 있는데 새로운 메시지 타입으로 시스템 메시지가 추가되려 하는 경우
+            // 기존 대화 리스트를 지우고 새로운 시스템 메시지 추가
+            if (!(userConversation.get(0).getContent().charAt(1) == messageType.charAt(1))) {
+                clearUserConversation(username);
+                Message systemMessage = new Message(ROLE_SYSTEM, messageType);
+                userConversation.add(systemMessage);
+            }
+        }
+    }
+
+    private void clearUserConversation(String username) {
+        List<Message> userConversation = conversation.get(username);
+        if (userConversation != null) {
+            userConversation.clear();
+        }
     }
 }
