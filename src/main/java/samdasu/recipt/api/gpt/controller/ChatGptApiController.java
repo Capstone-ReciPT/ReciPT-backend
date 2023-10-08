@@ -81,6 +81,9 @@ public class ChatGptApiController {
             userConversation.add(userMessage);
 
             String responseMessage = chatgptService.getResponse(userConversation);
+//            String responseMessage = String.valueOf(chatgptService.getResponseAsync(userConversation)); // API 응답준비 전에 toString호출됨("java.util.concurrent.CompletableFuture@37544275[Not completed]")
+//            CompletableFuture<String> responseFuture = chatgptService.getResponseAsync(userConversation);
+//            String responseMessage = responseFuture.get(); // 비동기 작업 완료까지 대기하고 결과 얻기
 
             return ResponseModel.success(responseMessage);
         } catch (Exception e) {
@@ -101,6 +104,9 @@ public class ChatGptApiController {
             userConversation.add(userMessage);
 
             String responseMessage = chatgptService.getResponse(userConversation);
+//            String responseMessage = String.valueOf(chatgptService.getResponseAsync(userConversation));
+//            CompletableFuture<String> responseFuture = chatgptService.getResponseAsync(userConversation);
+//            String responseMessage = responseFuture.get(); // 비동기 작업 완료까지 대기하고 결과 얻기
 
             int startIndex = responseMessage.indexOf("{");
             int endIndex = responseMessage.lastIndexOf("}");
@@ -143,6 +149,9 @@ public class ChatGptApiController {
             userConversation.add(userMessage);
 
             String responseMessage = chatgptService.getResponse(userConversation);
+//            String responseMessage = String.valueOf(chatgptService.getResponseAsync(userConversation));
+//            CompletableFuture<String> responseFuture = chatgptService.getResponseAsync(userConversation);
+//            String responseMessage = responseFuture.get(); // 비동기 작업 완료까지 대기하고 결과 얻기
 
             log.info("requestId {}, ip {}\n get a reply:\n {}", requestId, request.getRemoteHost(), responseMessage);
 
