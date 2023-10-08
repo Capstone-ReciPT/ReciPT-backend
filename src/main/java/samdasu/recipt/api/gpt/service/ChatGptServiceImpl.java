@@ -15,6 +15,7 @@ import samdasu.recipt.api.gpt.exception.MaxTokenException;
 import samdasu.recipt.api.gpt.property.ChatGptProperties;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -42,43 +43,6 @@ public class ChatGptServiceImpl implements ChatGptService {
         );
         Response multiChatResponse = this.getResponse(
                 this.buildHttpEntity(multiChatRequest),
-                Response.class,
-                chatGptProperties.getUrl()
-        );
-        try {
-            Usage usage = multiChatResponse.getUsage();
-            if (usage != null) {
-                Integer promptTokens = usage.getPromptTokens();
-                Integer completionTokens = usage.getCompletionTokens();
-                Integer totalTokens = usage.getTotalTokens();
-
-                log.info("Prompt Tokens: {}", promptTokens);
-                log.info("Completion Tokens: {}", completionTokens);
-                log.info("Total Tokens: {}", totalTokens);
-            }
-
-            ResponseChoice responseChoice = multiChatResponse.getChoices().get(0);
-            Message responseMessage = responseChoice.getMessage();
-            conversation.add(responseMessage);
-            return responseMessage.getContent();
-        } catch (Exception e) {
-            log.error("parse chatgpt message error", e);
-            throw e;
-        }
-    }
-
-    @Override
-    public String getResponseV2(List<Message> conversation) {
-        Request multiChatRequest = new Request(
-                chatGptProperties.getModel(),
-                conversation,
-                chatGptProperties.getMaxTokens() + 2000,
-                chatGptProperties.getTemperature() + 0.10,
-                chatGptProperties.getTopP() + 0.10
-        );
-        Response multiChatResponse = this.getResponse(
-                this.buildHttpEntity(multiChatRequest),
-                Response.class,
                 chatGptProperties.getUrl()
         );
         try {
@@ -105,7 +69,7 @@ public class ChatGptServiceImpl implements ChatGptService {
 
     @Override
     public Response sendRequest(Request multiChatRequest) {
-        return this.getResponse(this.buildHttpEntity(multiChatRequest), Response.class, chatGptProperties.getUrl());
+        return this.getResponse(this.buildHttpEntity(multiChatRequest), chatGptProperties.getUrl());
     }
 
     protected <T> HttpEntity<?> buildHttpEntity(T request) {
@@ -115,12 +79,12 @@ public class ChatGptServiceImpl implements ChatGptService {
         return new HttpEntity<>(request, headers);
     }
 
-    protected <T> T getResponse(HttpEntity<?> httpEntity, Class<T> responseType, String url) {
+    protected <T> T getResponse(HttpEntity<?> httpEntity, String url) {
         log.info("request url: {}, httpEntity: {}", url, httpEntity);
-        if (httpEntity.getBody().toString().length() >= 16385) {
+        if (Objects.requireNonNull(httpEntity.getBody()).toString().length() >= 16385) {
             throw new MaxTokenException("Over maximum context length!!");
         }
-        ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, responseType);
+        ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, (Class<T>) Response.class);
         if (responseEntity.getStatusCodeValue() != HttpStatus.OK.value()) {
             log.error("error response status: {}", responseEntity);
             throw new ChatGptException("error response status :" + responseEntity.getStatusCodeValue());
@@ -129,5 +93,4 @@ public class ChatGptServiceImpl implements ChatGptService {
         }
         return responseEntity.getBody();
     }
-
 }
