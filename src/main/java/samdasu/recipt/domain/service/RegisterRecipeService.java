@@ -1,5 +1,6 @@
 package samdasu.recipt.domain.service;
 
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,7 @@ public class RegisterRecipeService {
     /**
      * 레시피 등록
      */
+    @Counted("register.recipe")
     @Transactional
     public Long registerRecipeSaveByGpt(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String foodName, RegisterRequestDto requestDto) {
         //엔티티 조회
@@ -93,6 +95,7 @@ public class RegisterRecipeService {
         return registerRecipeRepository.save(createRecipe).getRegisterId();
     }
 
+    @Counted("register.recipe")
     @Transactional
     public Long registerRecipeSaveByTyping(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String[] ingredients, String[] contexts, RegisterRequestDto requestDto) {
         //엔티티 조회

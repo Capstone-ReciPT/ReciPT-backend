@@ -87,3 +87,25 @@ jwt:
   secret: "VGhpcyBwcm9qZWN0IGlzIGNhcHN0b25lIG9mIHNhbW15dW5nIHVuaXZlcnNpdHkuIGFuZCBvdXIgdGVhbSBuYW1lIGlzIHNhbWRhc3UuIA==" # {임의의 문자열을 Base64로 인코딩한 값}
   refresh-token-validity-in-seconds: 1209600 # 14일
   access-token-validity-in-seconds: 43200 # 12시간
+
+
+management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+  server:
+    port: 9191
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
