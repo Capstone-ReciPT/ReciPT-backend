@@ -1,5 +1,6 @@
 package samdasu.recipt.domain.service;
 
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,7 @@ public class UserService {
     private String userProfile;
 
 
+    @Counted("signUp")
     @Transactional
     public Long signUp(UserSignUpDto signUpDto, MultipartFile uploadFile) { //회원가입
         validateLogin(signUpDto);
