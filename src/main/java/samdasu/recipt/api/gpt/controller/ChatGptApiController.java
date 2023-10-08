@@ -39,6 +39,7 @@ public class ChatGptApiController {
     private final GptService gptService;
     private final UserService userService;
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final ConcurrentHashMap<String, List<Message>> conversation = new ConcurrentHashMap<>();
 
     @PostMapping("/send")
@@ -167,7 +168,6 @@ public class ChatGptApiController {
         log.info("userMessage = {}", userMessage.getContent());
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseMessage);
 
             String userInput = userMessage.getContent().strip();
@@ -222,7 +222,6 @@ public class ChatGptApiController {
     }
 
     private ChatGptRecipeSaveResponseDto parseAndValidateGptResponse(String jsonResponse, Long userId) {
-        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             JsonNode responseJson = objectMapper.readTree(jsonResponse);
