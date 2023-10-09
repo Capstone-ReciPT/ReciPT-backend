@@ -94,6 +94,7 @@ public class RegisterRecipeApiController {
         for (int i = 0; i < filesCnt; i++) {
             imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImages().get(i)));
         }
+
         return new Result4(new RegisterResponseDto(findRegister), thumbnail, imageFiles);
     }
 

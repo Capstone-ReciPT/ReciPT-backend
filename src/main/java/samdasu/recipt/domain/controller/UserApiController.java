@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
+import samdasu.recipt.domain.controller.dto.Register.UserRegisterDto;
+import samdasu.recipt.domain.controller.dto.User.UserReissueDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
 import samdasu.recipt.domain.entity.Heart;
@@ -24,6 +27,7 @@ import samdasu.recipt.domain.service.UserService;
 import samdasu.recipt.utils.Image.UploadService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +45,9 @@ public class UserApiController {
     private final RegisterRecipeService registerRecipeService;
     private final ReviewService reviewService;
     private final HeartService heartService;
+
+    @Value("${image.register.path}")
+    private String registerImage;
 
     /**
      * 프로필 보기
@@ -104,21 +111,27 @@ public class UserApiController {
      * 유저가 등록한 레시피 보기
      */
     @GetMapping("/user/register")
-    public Result1 searchRegisterInfo(Authentication authentication) {
+    public Result3 searchRegisterInfo(Authentication authentication) {
         User findUser = userService.findUserByUsername(authentication.getName());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
-        byte[] result = uploadService.getUserProfile(findUser.getUsername(), responseDto.getProfile());
+        byte[] profile = uploadService.getUserProfile(findUser.getUsername(), responseDto.getProfile());
 
         log.info("user.getUsername() = {}", findUser.getUsername());
         log.info("user.getRegisterRecipes.getFoodName() = {}", findUser.getRegisterRecipes().stream()
                 .map(RegisterRecipe::getFoodName).collect(Collectors.toList()));
 
-        List<RegisterResponseDto> collect = findUser.getRegisterRecipes().stream()
-                .map(RegisterResponseDto::new)
+        List<UserRegisterDto> collect = findUser.getRegisterRecipes().stream()
+                .map(registerRecipe -> new UserRegisterDto(registerRecipe))
                 .collect(Collectors.toList());
 
-        return new Result1(collect.size(), responseDto, result);
+
+        List<byte[]> registerFoodProfileList = new ArrayList<>();
+        for (UserRegisterDto userRegisterDto : collect) {
+            registerFoodProfileList.add(uploadService.getRegisterProfile(findUser.getUsername(), userRegisterDto.getThumbnailImage()));
+        }
+
+        return new Result3(collect.size(), responseDto, profile, registerFoodProfileList);
     }
 
     /**
@@ -177,6 +190,15 @@ public class UserApiController {
     static class Result2<T> {
         private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
         private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result3<T> {
+        private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
+        private T data;
+        private T profile;
+        private T registerProfile;
     }
 }
 

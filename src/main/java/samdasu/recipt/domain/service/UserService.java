@@ -102,7 +102,7 @@ public class UserService {
     public ResponseEntity<?> reissue(UserReissueDto reissue) {
         // 1. Refresh Token 검증
         if (!jwtTokenProvider.validateToken(reissue.getRefreshToken())) {
-            return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
+            return response.fail("fail","Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 2. Access Token 에서 User loginId 을 가져옵니다.
@@ -112,10 +112,10 @@ public class UserService {
         String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
         // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
         if(ObjectUtils.isEmpty(refreshToken)) {
-            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+            return response.fail("fail", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
         if(!refreshToken.equals(reissue.getRefreshToken())) {
-            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+            return response.fail("fail","Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 4. 새로운 토큰 생성
