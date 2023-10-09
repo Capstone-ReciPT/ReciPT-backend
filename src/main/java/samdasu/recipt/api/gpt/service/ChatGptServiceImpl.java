@@ -1,6 +1,8 @@
 package samdasu.recipt.api.gpt.service;
 
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+@Timed("chatGpt.service")
 @Slf4j
 @Service
 public class ChatGptServiceImpl implements ChatGptService {
@@ -34,6 +37,7 @@ public class ChatGptServiceImpl implements ChatGptService {
         AUTHORIZATION = "Bearer " + chatGptProperties.getApiKey();
     }
 
+    @Counted("chatGpt.response")
     @Override
     public String getResponse(List<Message> conversation) {
         Request multiChatRequest = new Request(
