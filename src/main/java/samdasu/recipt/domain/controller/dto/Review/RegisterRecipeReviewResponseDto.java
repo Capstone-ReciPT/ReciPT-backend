@@ -10,20 +10,19 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class RegisterRecipeReviewResponseDto {
-    @NotEmpty
-    private Long reviewId;
     @NotNull
-    private String username; //전체 리뷰에서는 필요, 마이 페이지에서는 필요 X
+    private String foodName;
+    @NotNull
+    private String username;
     @NotNull
     private String comment;
     private Integer likeCount;
-
     private Double ratingScore;
-
     private String thumbnailImage;
+    private byte[] registerRecipeThumbnailImageByte;
 
     public RegisterRecipeReviewResponseDto(Review review) {
-        reviewId = review.getReviewId();
+        foodName = review.getRegisterRecipe().getFoodName();
         username = review.getUser().getUsername();
         comment = review.getComment();
         likeCount = review.getLikeCount();

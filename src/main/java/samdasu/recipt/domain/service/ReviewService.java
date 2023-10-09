@@ -40,7 +40,7 @@ public class ReviewService {
         Review createreview = Review.createRecipeReview(reviewRequestDto.getComment(), 0, reviewRequestDto.getInputRatingScore(), user, recipe);
 
         for (Review review : reviews) {
-            if (review.getComment().equals(reviewRequestDto.getComment())) {
+            if (review.getUser().getUserId().equals(userId) && review.getReviewId().equals(recipeId) && review.getComment().equals(reviewRequestDto.getComment())) {
                 throw new DuplicateContextException("중복된 리뷰입니다!");
             }
         }

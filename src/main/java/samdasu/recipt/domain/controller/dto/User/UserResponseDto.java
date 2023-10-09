@@ -11,6 +11,7 @@ import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.domain.entity.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,9 +33,6 @@ public class UserResponseDto {
     private List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos;
     private List<UserRegisterDto> userRegisterDtos;
 
-    /**
-     * 프로필 세팅 탭
-     */
     public UserResponseDto(User user) {
         userId = user.getUserId();
         username = user.getUsername();
@@ -50,15 +48,15 @@ public class UserResponseDto {
                 .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
                 .map(heart -> new RegisterHeartDto(heart))
                 .collect(Collectors.toList());
-        recipeReviewResponseDtos = user.getReviews().stream()
-                .map(review -> new RecipeReviewResponseDto(review))
-                .collect(Collectors.toList());
-        registerRecipeReviewResponseDtos = user.getReviews().stream()
-                .map(review -> new RegisterRecipeReviewResponseDto(review))
-                .collect(Collectors.toList());
-        userRegisterDtos = user.getRegisterRecipes().stream()
-                .map(registerRecipe -> new UserRegisterDto(registerRecipe))
-                .collect(Collectors.toList());
+        recipeReviewResponseDtos = new ArrayList<>();
+        registerRecipeReviewResponseDtos = new ArrayList<>();
+//        recipeReviewResponseDtos = user.getReviews().stream()
+//                .map(review -> new RecipeReviewResponseDto(review))
+//                .collect(Collectors.toList());
+//        registerRecipeReviewResponseDtos = user.getReviews().stream()
+//                .map(review -> new RegisterRecipeReviewResponseDto(review))
+//                .collect(Collectors.toList());
+        userRegisterDtos = new ArrayList<>();
     }
 
     public static UserResponseDto createUserResponseDto(User user) {
