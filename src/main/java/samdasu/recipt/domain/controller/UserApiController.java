@@ -63,36 +63,53 @@ public class UserApiController {
         byte[] profile = uploadService.getUserProfile(responseDto.getUsername(), responseDto.getProfile());
 
         // 좋아요 정보
-        List<RecipeHeartDto> recipeHeart = findUser.getHearts().stream()
-                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
-                .map(RecipeHeartDto::new)
-                .collect(Collectors.toList());
-        List<RegisterHeartDto> registerHeart = findUser.getHearts().stream()
-                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
-                .map(RegisterHeartDto::new)
-                .collect(Collectors.toList());
+        List<RecipeHeartDto> recipeHeart = new ArrayList<>();
+        List<RegisterHeartDto> registerHeart = new ArrayList<>();
+        if (!findUser.getHearts().stream().collect(Collectors.toList()).isEmpty()){
+           recipeHeart = findUser.getHearts().stream()
+                    .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
+                    .map(RecipeHeartDto::new)
+                    .collect(Collectors.toList());
+
+           responseDto.setRecipeHeartDtos(recipeHeart);
+
+            registerHeart = findUser.getHearts().stream()
+                    .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
+                    .map(RegisterHeartDto::new)
+                    .collect(Collectors.toList());
+
+            for (RegisterHeartDto registerHeartDto : registerHeart) {
+                byte[] registerThumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerHeartDto.getThumbnailImage());
+                registerHeartDto.setThumbnailImageByte(registerThumbnail);
+                responseDto.getRegisterHeartDtos().add(registerHeartDto);
+            }
+        }
 
         //리뷰 정보
-//        List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos = new ArrayList<>();
-//        List<RecipeReviewResponseDto> recipeReviewResponseDtos  = new ArrayList<>();
-//
-//        if (!findUser.getReviews().stream().collect(Collectors.toList()).isEmpty()){
-//            recipeReviewResponseDtos = findUser.getReviews().stream()
-//                    .map(review -> new RecipeReviewResponseDto(review))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        if (!findUser.getRegisterRecipes().stream().collect(Collectors.toList()).isEmpty()){
-//            registerRecipeReviewResponseDtos = findUser.getReviews().stream()
-//                    .map(review -> new RegisterRecipeReviewResponseDto(review))
-//                    .collect(Collectors.toList());
-//
-//            for (RegisterRecipeReviewResponseDto registerRecipeReviewResponseDto : registerRecipeReviewResponseDtos) {
-//                byte[] recipeThumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerRecipeReviewResponseDto.getThumbnailImage());
-//                registerRecipeReviewResponseDto.setRegisterRecipeThumbnailImageByte(recipeThumbnail);
-//                responseDto.getRegisterRecipeReviewResponseDtos().add(registerRecipeReviewResponseDto);
-//            }
-//        }
+        List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos = new ArrayList<>();
+        List<RecipeReviewResponseDto> recipeReviewResponseDtos  = new ArrayList<>();
+
+        if (!findUser.getReviews().stream().collect(Collectors.toList()).isEmpty()){
+            recipeReviewResponseDtos = findUser.getReviews().stream()
+                    .filter(review -> review != null && review.getRecipe() != null && review.getRecipe().getRecipeId() != null)
+                    .map(review -> new RecipeReviewResponseDto(review))
+                    .collect(Collectors.toList());
+
+            responseDto.setRecipeReviewResponseDtos(recipeReviewResponseDtos);
+        }
+
+        if (!findUser.getRegisterRecipes().stream().collect(Collectors.toList()).isEmpty()){
+            registerRecipeReviewResponseDtos = findUser.getReviews().stream()
+                    .filter(review -> review != null && review.getRegisterRecipe() != null && review.getRegisterRecipe().getRegisterId() != null)
+                    .map(review -> new RegisterRecipeReviewResponseDto(review))
+                    .collect(Collectors.toList());
+
+            for (RegisterRecipeReviewResponseDto registerRecipeReviewResponseDto : registerRecipeReviewResponseDtos) {
+                byte[] recipeThumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerRecipeReviewResponseDto.getThumbnailImage());
+                registerRecipeReviewResponseDto.setRegisterRecipeThumbnailImageByte(recipeThumbnail);
+                responseDto.getRegisterRecipeReviewResponseDtos().add(registerRecipeReviewResponseDto);
+            }
+        }
 
         //레시피 등록 정보
         List<UserRegisterDto> userRegisterDtos = findUser.getRegisterRecipes().stream()
@@ -105,8 +122,8 @@ public class UserApiController {
             responseDto.getUserRegisterDtos().add(userRegisterDto);
         }
 
-        return new Result1(recipeHeart.size() + registerHeart.size(), 0, userRegisterDtos.size(), responseDto, profile);
-//        return new Result1(recipeHeart.size() + registerHeart.size(), recipeReviewResponseDtos.size() + registerRecipeReviewResponseDtos.size(), userRegisterDtos.size(), responseDto, profile);
+        return new Result1(recipeHeart.size() + registerHeart.size(), responseDto.getRecipeReviewResponseDtos().size() + responseDto.getRegisterRecipeReviewResponseDtos().size(),
+                userRegisterDtos.size(), responseDto, profile);
     }
 
     /**

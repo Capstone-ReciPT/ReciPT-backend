@@ -53,7 +53,7 @@ public class Review extends BaseEntity {
 
     public void addRecipe(Recipe recipe) {
         this.recipe = recipe;
-        recipe.getReview().add(this);
+        recipe.getReviews().add(this);
     }
     //==생성 메서드==//
 
