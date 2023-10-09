@@ -1,6 +1,7 @@
 package samdasu.recipt.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
@@ -15,6 +16,7 @@ import samdasu.recipt.domain.repository.Register.RegisterRecipeRepository;
 import samdasu.recipt.domain.repository.Review.ReviewRepository;
 import samdasu.recipt.domain.repository.UserRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HeartService {

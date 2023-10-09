@@ -13,13 +13,12 @@ import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.UserRegisterDto;
+import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
+import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserReissueDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
-import samdasu.recipt.domain.entity.Heart;
-import samdasu.recipt.domain.entity.RegisterRecipe;
-import samdasu.recipt.domain.entity.Review;
-import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.entity.*;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.ReviewService;
@@ -55,23 +54,66 @@ public class UserApiController {
     @GetMapping("/user")
     public Result1 userInfo(Authentication authentication) {
         User findUser = userService.findUserByUsername(authentication.getName());
-
         log.info("user.getUsername() = {}", findUser.getUsername());
         log.info("user.getLoginId() = {}", findUser.getLoginId());
-        log.info("user.getPassword() = {}", findUser.getPassword());
-        log.info("user.getAge() = {}", findUser.getAge());
 
         UserResponseDto responseDto = new UserResponseDto(findUser);
-        byte[] result = uploadService.getUserProfile(responseDto.getUsername(), responseDto.getProfile());
 
-        return new Result1(1, responseDto, result);
+        // 프로필 사진
+        byte[] profile = uploadService.getUserProfile(responseDto.getUsername(), responseDto.getProfile());
+
+        // 좋아요 정보
+        List<RecipeHeartDto> recipeHeart = findUser.getHearts().stream()
+                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
+                .map(RecipeHeartDto::new)
+                .collect(Collectors.toList());
+        List<RegisterHeartDto> registerHeart = findUser.getHearts().stream()
+                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
+                .map(RegisterHeartDto::new)
+                .collect(Collectors.toList());
+
+        //리뷰 정보
+//        List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos = new ArrayList<>();
+//        List<RecipeReviewResponseDto> recipeReviewResponseDtos  = new ArrayList<>();
+//
+//        if (!findUser.getReviews().stream().collect(Collectors.toList()).isEmpty()){
+//            recipeReviewResponseDtos = findUser.getReviews().stream()
+//                    .map(review -> new RecipeReviewResponseDto(review))
+//                    .collect(Collectors.toList());
+//        }
+//
+//        if (!findUser.getRegisterRecipes().stream().collect(Collectors.toList()).isEmpty()){
+//            registerRecipeReviewResponseDtos = findUser.getReviews().stream()
+//                    .map(review -> new RegisterRecipeReviewResponseDto(review))
+//                    .collect(Collectors.toList());
+//
+//            for (RegisterRecipeReviewResponseDto registerRecipeReviewResponseDto : registerRecipeReviewResponseDtos) {
+//                byte[] recipeThumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerRecipeReviewResponseDto.getThumbnailImage());
+//                registerRecipeReviewResponseDto.setRegisterRecipeThumbnailImageByte(recipeThumbnail);
+//                responseDto.getRegisterRecipeReviewResponseDtos().add(registerRecipeReviewResponseDto);
+//            }
+//        }
+
+        //레시피 등록 정보
+        List<UserRegisterDto> userRegisterDtos = findUser.getRegisterRecipes().stream()
+                .map(registerRecipe -> new UserRegisterDto(registerRecipe))
+                .collect(Collectors.toList());
+
+        for (UserRegisterDto userRegisterDto : userRegisterDtos) {
+            byte[] registerThumbnail = uploadService.getRegisterProfile(findUser.getUsername(), userRegisterDto.getThumbnailImage());
+            userRegisterDto.setThumbnailImageByte(registerThumbnail);
+            responseDto.getUserRegisterDtos().add(userRegisterDto);
+        }
+
+        return new Result1(recipeHeart.size() + registerHeart.size(), 0, userRegisterDtos.size(), responseDto, profile);
+//        return new Result1(recipeHeart.size() + registerHeart.size(), recipeReviewResponseDtos.size() + registerRecipeReviewResponseDtos.size(), userRegisterDtos.size(), responseDto, profile);
     }
 
     /**
      * 프로필 수정
      */
     @PostMapping("/user/edit")
-    public Result1 updateUser(Authentication authentication,
+    public Result2 updateUser(Authentication authentication,
                               @Valid UserUpdateRequestDto request) throws JsonProcessingException {
         User authenticationUser = userService.findUserByUsername(authentication.getName());
         Long updateUserId = userService.update(authenticationUser.getUserId(), request);
@@ -83,55 +125,7 @@ public class UserApiController {
         UserResponseDto responseDto = new UserResponseDto(findUser);
         byte[] result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
 
-        return new Result1(1, responseDto, result);
-    }
-
-    /**
-     * 유저가 누른 좋아요 보기
-     */
-
-    @GetMapping("/user/like")
-    public Result2 searchLikeInfo(Authentication authentication) {
-        User findUser = userService.findUserByUsername(authentication.getName());
-        UserResponseDto responseDto = new UserResponseDto(findUser);
-
-        List<RecipeHeartDto> recipeHeart = findUser.getHearts().stream()
-                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
-                .map(RecipeHeartDto::new)
-                .collect(Collectors.toList());
-        List<RegisterHeartDto> registerHeart = findUser.getHearts().stream()
-                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
-                .map(RegisterHeartDto::new)
-                .collect(Collectors.toList());
-
-        return new Result2(recipeHeart.size() + registerHeart.size(), responseDto);
-    }
-
-    /**
-     * 유저가 등록한 레시피 보기
-     */
-    @GetMapping("/user/register")
-    public Result3 searchRegisterInfo(Authentication authentication) {
-        User findUser = userService.findUserByUsername(authentication.getName());
-
-        UserResponseDto responseDto = new UserResponseDto(findUser);
-        byte[] profile = uploadService.getUserProfile(findUser.getUsername(), responseDto.getProfile());
-
-        log.info("user.getUsername() = {}", findUser.getUsername());
-        log.info("user.getRegisterRecipes.getFoodName() = {}", findUser.getRegisterRecipes().stream()
-                .map(RegisterRecipe::getFoodName).collect(Collectors.toList()));
-
-        List<UserRegisterDto> collect = findUser.getRegisterRecipes().stream()
-                .map(registerRecipe -> new UserRegisterDto(registerRecipe))
-                .collect(Collectors.toList());
-
-
-        List<byte[]> registerFoodProfileList = new ArrayList<>();
-        for (UserRegisterDto userRegisterDto : collect) {
-            registerFoodProfileList.add(uploadService.getRegisterProfile(findUser.getUsername(), userRegisterDto.getThumbnailImage()));
-        }
-
-        return new Result3(collect.size(), responseDto, profile, registerFoodProfileList);
+        return new Result2(1, responseDto, result);
     }
 
     /**
@@ -158,29 +152,13 @@ public class UserApiController {
         return status(FORBIDDEN).body("삭제 권한이 없습니다!");
     }
 
-    /**
-     * 유저가 작성한 리뷰 보기
-     */
-    @GetMapping("/user/review")
-    public Result1 searchReviewInfo(Authentication authentication) {
-        User findUser = userService.findUserByUsername(authentication.getName());
-
-        UserResponseDto responseDto = new UserResponseDto(findUser);
-        byte[] result = uploadService.getUserProfile(findUser.getUsername(),responseDto.getProfile());
-
-        List<Review> reviews = reviewService.findReviewByWriter(findUser.getUsername());
-
-        log.info("user.getUsername() = {}", findUser.getUsername());
-        log.info("user.getReviews.getComment() = {}", findUser.getReviews().stream()
-                .map(Review::getComment).collect(Collectors.toList()));
-
-        return new Result1(reviews.size(), responseDto, result);
-    }
 
     @Data
     @AllArgsConstructor
     static class Result1<T> {
-        private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
+        private int heartCount;
+        private int reviewCount;
+        private int registerRecipeSize;
         private T data;
         private T profile;
     }
@@ -190,15 +168,7 @@ public class UserApiController {
     static class Result2<T> {
         private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
         private T data;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class Result3<T> {
-        private int count; //특정 List의 개수 (ex. 사용자가 쓴 리뷰 개수)
-        private T data;
         private T profile;
-        private T registerProfile;
     }
 }
 

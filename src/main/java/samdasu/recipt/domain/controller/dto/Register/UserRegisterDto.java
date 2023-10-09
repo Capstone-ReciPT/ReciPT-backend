@@ -6,7 +6,6 @@ import lombok.Setter;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ public class UserRegisterDto {
     private Double ratingResult;
     private Integer ratingPeople;
     private String thumbnailImage;
-    private List<String> images;
+    private byte[] thumbnailImageByte;
     private LocalDateTime lastModifiedDate;
     public UserRegisterDto(RegisterRecipe registerRecipe) {
         foodName = registerRecipe.getFoodName();
@@ -33,7 +32,6 @@ public class UserRegisterDto {
         ratingResult = registerRecipe.getRatingScore();
         ratingPeople = registerRecipe.getRatingPeople();
         thumbnailImage = registerRecipe.getThumbnailImage();
-        images = registerRecipe.getImage();
         lastModifiedDate = registerRecipe.getLastModifiedDate();
     }
 
