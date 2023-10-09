@@ -12,15 +12,12 @@ public class RecipeHeartDto {
 
     @NotBlank
     private Long userId;
-
     @NotBlank
     private Long recipeId;
-
     private String foodName;
-
     private String category;
-
     private String ingredient;
+    private String thumbnailImage;
 
     public RecipeHeartDto(Long userId, Long recipeId, String foodName, String category, String ingredient) {
         this.userId = userId;
@@ -40,6 +37,7 @@ public class RecipeHeartDto {
         foodName = heart.getRecipe().getFoodName();
         category = heart.getRecipe().getCategory();
         ingredient = heart.getRecipe().getIngredient();
+        thumbnailImage = heart.getRecipe().getThumbnailImage();
     }
 }
 

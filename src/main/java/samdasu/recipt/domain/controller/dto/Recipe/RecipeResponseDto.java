@@ -48,7 +48,7 @@ public class RecipeResponseDto {
         viewCount = recipe.getViewCount();
         ratingScore = recipe.getRatingScore();
         ratingPeople = recipe.getRatingPeople();
-        reviewResponseDtos = recipe.getReview().stream()
+        reviewResponseDtos = recipe.getReviews().stream()
                 .map(RecipeReviewResponseDto::new)
                 .collect(Collectors.toList());
         heartDtos = recipe.getHearts().stream()

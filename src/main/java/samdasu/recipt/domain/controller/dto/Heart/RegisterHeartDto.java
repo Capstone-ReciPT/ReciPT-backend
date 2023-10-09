@@ -12,15 +12,13 @@ public class RegisterHeartDto {
 
     @NotBlank
     private Long userId;
-
     @NotBlank
     private Long registerId;
-
     private String foodName;
-
     private String category;
-
     private String ingredient;
+    private String thumbnailImage;
+    private byte[] thumbnailImageByte;
 
     public RegisterHeartDto(Long userId, Long registerId, String foodName, String category, String ingredient) {
         this.userId = userId;
@@ -40,6 +38,7 @@ public class RegisterHeartDto {
         foodName = heart.getRegisterRecipe().getFoodName();
         category = heart.getRegisterRecipe().getCategory();
         ingredient = heart.getRegisterRecipe().getIngredient();
+        thumbnailImage = heart.getRegisterRecipe().getThumbnailImage();
     }
 
     public static RegisterHeartDto createRegisterHeartDto(Heart heart) {

@@ -40,22 +40,18 @@ public class UserResponseDto {
         password = user.getPassword();
         age = user.getAge();
         profile = user.getProfile();
-        recipeHeartDtos = user.getHearts().stream()
-                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
-                .map(heart -> new RecipeHeartDto(heart))
-                .collect(Collectors.toList());
-        registerHeartDtos = user.getHearts().stream()
-                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
-                .map(heart -> new RegisterHeartDto(heart))
-                .collect(Collectors.toList());
+        recipeHeartDtos = new ArrayList<>();
+        registerHeartDtos = new ArrayList<>();
+//        recipeHeartDtos = user.getHearts().stream()
+//                .filter(heart -> heart != null && heart.getRecipe() != null && heart.getRecipe().getRecipeId() != null) // null 값 필터링
+//                .map(heart -> new RecipeHeartDto(heart))
+//                .collect(Collectors.toList());
+//        registerHeartDtos = user.getHearts().stream()
+//                .filter(heart -> heart != null && heart.getRegisterRecipe() != null && heart.getRegisterRecipe().getRegisterId() != null) // null 값 필터링
+//                .map(heart -> new RegisterHeartDto(heart))
+//                .collect(Collectors.toList());
         recipeReviewResponseDtos = new ArrayList<>();
         registerRecipeReviewResponseDtos = new ArrayList<>();
-//        recipeReviewResponseDtos = user.getReviews().stream()
-//                .map(review -> new RecipeReviewResponseDto(review))
-//                .collect(Collectors.toList());
-//        registerRecipeReviewResponseDtos = user.getReviews().stream()
-//                .map(review -> new RegisterRecipeReviewResponseDto(review))
-//                .collect(Collectors.toList());
         userRegisterDtos = new ArrayList<>();
     }
 

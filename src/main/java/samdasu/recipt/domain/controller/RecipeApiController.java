@@ -51,7 +51,7 @@ public class RecipeApiController {
         List<RecipeResponseDto> hearts = findRecipe.getHearts().stream()
                 .map(heart -> recipeResponseDto)
                 .collect(Collectors.toList());
-        List<RecipeResponseDto> reviews = findRecipe.getReview().stream()
+        List<RecipeResponseDto> reviews = findRecipe.getReviews().stream()
                 .map(review -> recipeResponseDto)
                 .collect(Collectors.toList());
         return new Result1(heartCheck, hearts.size(), reviews.size(), new RecipeResponseDto(findRecipe));
