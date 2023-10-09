@@ -111,7 +111,7 @@ public class RegisterRecipeService {
             registerImagesPath.add(filename);
         }
 
-        String ingredient = null;
+        String ingredient = new String();
         int length = ingredients.length;
         for (String s : ingredients) {
             ingredient += s;
@@ -121,7 +121,7 @@ public class RegisterRecipeService {
             }
         }
 
-        String context = null;
+        String context = new String();
         length = contexts.length;
         for (String s : contexts) {
             context += s;

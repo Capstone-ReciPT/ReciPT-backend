@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
+import samdasu.recipt.domain.controller.dto.Register.UserRegisterDto;
 import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
 import samdasu.recipt.domain.entity.User;
@@ -29,7 +30,7 @@ public class UserResponseDto {
     private List<RegisterHeartDto> registerHeartDtos;
     private List<RecipeReviewResponseDto> recipeReviewResponseDtos;
     private List<RegisterRecipeReviewResponseDto> registerRecipeReviewResponseDtos;
-    private List<RegisterResponseDto> registerResponseDtos;
+    private List<UserRegisterDto> userRegisterDtos;
 
     /**
      * 프로필 세팅 탭
@@ -55,8 +56,8 @@ public class UserResponseDto {
         registerRecipeReviewResponseDtos = user.getReviews().stream()
                 .map(review -> new RegisterRecipeReviewResponseDto(review))
                 .collect(Collectors.toList());
-        registerResponseDtos = user.getRegisterRecipes().stream()
-                .map(registerRecipe -> new RegisterResponseDto(registerRecipe))
+        userRegisterDtos = user.getRegisterRecipes().stream()
+                .map(registerRecipe -> new UserRegisterDto(registerRecipe))
                 .collect(Collectors.toList());
     }
 
