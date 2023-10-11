@@ -15,20 +15,22 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RegisterResponseDto {
+    private String foodName;
     private String comment;
     private String category;
     private String ingredient;
     private String context;
     private String thumbnailImage;
-    private List<String> images;
+    private List<String> image;
     private LocalDateTime lastModifiedDate;
     public RegisterResponseDto(RegisterRecipe registerRecipe) {
+        foodName = registerRecipe.getFoodName();
         comment = registerRecipe.getComment();
         category = registerRecipe.getCategory();
         ingredient = registerRecipe.getIngredient();
         context = registerRecipe.getContext();
         thumbnailImage = registerRecipe.getThumbnailImage();
-        images = registerRecipe.getImage();
+        image = registerRecipe.getImage();
         lastModifiedDate = registerRecipe.getLastModifiedDate();
     }
 

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
@@ -16,9 +17,12 @@ import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.RecipeService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
 import samdasu.recipt.domain.service.UserService;
+import samdasu.recipt.utils.Image.UploadService;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +36,8 @@ public class SearchBarApiController {
     private final UserService userService;
     private final RecipeService recipeService;
     private final RegisterRecipeService registerRecipeService;
+
+    private final UploadService uploadService;
 
     @Autowired
     private DataSource dataSource;
@@ -63,18 +69,24 @@ public class SearchBarApiController {
         return recommend;
     }
 
+
     @PostMapping("/recipes")
     public Result2 searchingRecipes(
             @RequestParam(value = "foodName", required = false) String foodName,
             @RequestParam(value = "like", required = false) Integer like,
             @RequestParam(value = "view", required = false) Long view) {
         List<Recipe> recipes = recipeService.searchDynamicSearching(foodName, like, view);
-        List<RecipeShortResponseDto> collect1 = getRecipesByCategory(recipes);
+        List<RecipeShortResponseDto> recipe = getRecipesByCategory(recipes);
 
         List<RegisterRecipe> registerRecipes = registerRecipeService.searchDynamicSearching(foodName, like, view);
-        List<RegisterRecipeShortResponseDto> collect2 = getRegisterRecipesByCategory(registerRecipes);
+        List<RegisterRecipeShortResponseDto> registerShortResponseDtos = getRegisterRecipesByCategory(registerRecipes);
 
-        return new Result2(collect1.size(), collect2.size(), collect1, collect2);
+        for (int i = 0; i < registerShortResponseDtos.size(); i++) {
+            byte[] registerThumbnail = uploadService.getRegisterProfile(registerShortResponseDtos.get(i).getUsername(), registerShortResponseDtos.get(i).getThumbnailImage());
+            registerShortResponseDtos.get(i).setThumbnailImageByte(registerThumbnail);
+        }
+
+        return new Result2(recipe.size(), registerShortResponseDtos.size(), recipe, registerShortResponseDtos);
     }
 
     private List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
@@ -84,11 +96,11 @@ public class SearchBarApiController {
         return collect1;
     }
 
-    private List<RegisterRecipeShortResponseDto> getRegisterRecipesByCategory(List<RegisterRecipe> registerRecipeCategory) {
-        List<RegisterRecipeShortResponseDto> collect2 = registerRecipeCategory.stream()
+    private List<RegisterRecipeShortResponseDto> getRegisterRecipesByCategory(List<RegisterRecipe> registerRecipes) {
+        List<RegisterRecipeShortResponseDto> registerRecipeShortResponseDtos = registerRecipes.stream()
                 .map(RegisterRecipeShortResponseDto::new)
                 .collect(Collectors.toList());
-        return collect2;
+        return registerRecipeShortResponseDtos;
     }
 
     @Data

@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .authorizeRequests() // '인증' 필요
                 .antMatchers("/api/home").permitAll()
 
-                .antMatchers("/api/search").permitAll()
+                .antMatchers("/api/search/**").permitAll()
 
                 .antMatchers("/api/review/recipe/**").permitAll()
                 .antMatchers("/api/review/register/**").permitAll()
