@@ -63,17 +63,17 @@ public class RegisterRecipeApiController {
         thumbnail.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage()));
 
         List<byte[]> imageFiles = new ArrayList<>();
-        int filesCnt = registerResponseDto.getImages().size();
+        int filesCnt = registerResponseDto.getImage().size();
         for (int i = 0; i < filesCnt; i++) {
-            imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImages().get(i)));
+            imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImage().get(i)));
         }
         return new Result4(new RegisterResponseDto(findRegister), thumbnail, imageFiles);
     }
 
     @PostMapping("/save/typing")
     public Result4 saveRecipeByTyping(Authentication authentication,
-                              @RequestParam(value = "ingredients") String[] ingredients,
-                              @RequestParam(value = "contexts") String[] contexts,
+                              @RequestParam(value = "ingredients") String ingredients,
+                              @RequestParam(value = "contexts") String contexts,
                               @RequestParam(value = "thumbnail") MultipartFile file,
                               @RequestParam(value = "images") MultipartFile[] files,
                               @Valid RegisterRequestDto requestDto) {
@@ -90,9 +90,9 @@ public class RegisterRecipeApiController {
         thumbnail.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getThumbnailImage()));
 
         List<byte[]> imageFiles = new ArrayList<>();
-        int filesCnt = registerResponseDto.getImages().size();
+        int filesCnt = registerResponseDto.getImage().size();
         for (int i = 0; i < filesCnt; i++) {
-            imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImages().get(i)));
+            imageFiles.add(uploadService.getRegisterProfile(findRegister.getUser().getUsername(), registerResponseDto.getImage().get(i)));
         }
 
         return new Result4(new RegisterResponseDto(findRegister), thumbnail, imageFiles);
@@ -118,7 +118,10 @@ public class RegisterRecipeApiController {
         List<RegisterResponseDto> reviews = findRegisterRecipe.getReviews().stream()
                 .map(review -> registerResponseDto)
                 .collect(Collectors.toList());
-        return new Result3(heartCheck, hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe));
+
+        byte[] thumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerResponseDto.getThumbnailImage());
+
+        return new Result3(heartCheck, hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe), thumbnail);
     }
 
     @GetMapping("/short")
@@ -185,6 +188,7 @@ public class RegisterRecipeApiController {
         private int heartCount;
         private int reviewCount;
         private T data;
+        private T thumbnail;
     }
 
     @Data

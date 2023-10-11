@@ -97,7 +97,7 @@ public class RegisterRecipeService {
 
     @Counted("register.recipe")
     @Transactional
-    public Long registerRecipeSaveByTyping(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String[] ingredients, String[] contexts, RegisterRequestDto requestDto) {
+    public Long registerRecipeSaveByTyping(Long userId, MultipartFile uploadFile,  MultipartFile[] uploadFiles, String ingredients, String contexts, RegisterRequestDto requestDto) {
         //엔티티 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No User Info"));
@@ -111,30 +111,10 @@ public class RegisterRecipeService {
             registerImagesPath.add(filename);
         }
 
-        String ingredient = new String();
-        int length = ingredients.length;
-        for (String s : ingredients) {
-            ingredient += s;
-            length--;
-            if (length > 1) {
-                ingredient += ", ";
-            }
-        }
-
-        String context = new String();
-        length = contexts.length;
-        for (String s : contexts) {
-            context += s;
-            length--;
-            if (length > 1) {
-                context += ", ";
-            }
-        }
-
         List<RegisterRecipe> registerRecipes = registerRecipeRepository.findAll();
 
         RegisterRecipe createRecipe = RegisterRecipe.createRegisterRecipeByTying(requestDto.getFoodName(), requestDto.getComment(), requestDto.getCategory(),
-                ingredient, context, 0L, 0, 0.0, 0,thumbnail.getSavedName(), registerImagesPath, user);
+                ingredients, contexts, 0L, 0, 0.0, 0,thumbnail.getSavedName(), registerImagesPath, user);
 
         for (RegisterRecipe recipe : registerRecipes) {
             if (recipe.getFoodName().equals(requestDto.getFoodName()) && recipe.getComment().equals(requestDto.getComment())) {

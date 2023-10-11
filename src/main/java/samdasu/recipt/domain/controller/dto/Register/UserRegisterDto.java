@@ -22,6 +22,7 @@ public class UserRegisterDto {
     private String thumbnailImage;
     private byte[] thumbnailImageByte;
     private LocalDateTime lastModifiedDate;
+
     public UserRegisterDto(RegisterRecipe registerRecipe) {
         foodName = registerRecipe.getFoodName();
         comment = registerRecipe.getComment();

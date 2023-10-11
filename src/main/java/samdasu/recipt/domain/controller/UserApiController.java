@@ -11,17 +11,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Heart.RecipeHeartDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
-import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.UserRegisterDto;
 import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserReissueDto;
 import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.controller.dto.User.UserUpdateRequestDto;
-import samdasu.recipt.domain.entity.*;
+import samdasu.recipt.domain.entity.Heart;
+import samdasu.recipt.domain.entity.RegisterRecipe;
+import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
-import samdasu.recipt.domain.service.ReviewService;
 import samdasu.recipt.domain.service.UserService;
 import samdasu.recipt.utils.Image.UploadService;
 
@@ -42,7 +41,6 @@ public class UserApiController {
     private final UserService userService;
     private final UploadService uploadService;
     private final RegisterRecipeService registerRecipeService;
-    private final ReviewService reviewService;
     private final HeartService heartService;
 
     @Value("${image.register.path}")

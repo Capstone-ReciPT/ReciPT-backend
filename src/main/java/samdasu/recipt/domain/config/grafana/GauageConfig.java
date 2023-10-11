@@ -1,11 +1,10 @@
-package samdasu.recipt.domain.config.grapana;
+package samdasu.recipt.domain.config.grafana;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import samdasu.recipt.api.gpt.controller.dto.chat.Message;
 import samdasu.recipt.api.gpt.service.ChatGptService;
 
 @Slf4j
