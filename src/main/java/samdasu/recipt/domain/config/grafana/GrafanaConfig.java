@@ -1,4 +1,4 @@
-package samdasu.recipt.domain.config.grapana;
+package samdasu.recipt.domain.config.grafana;
 
 import io.micrometer.core.aop.CountedAspect;
 import io.micrometer.core.aop.TimedAspect;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class GrapanaConfig {
+public class GrafanaConfig {
     @Bean
     public CountedAspect countedAspect(MeterRegistry registry) {
         return new CountedAspect(registry);
