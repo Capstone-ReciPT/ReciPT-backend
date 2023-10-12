@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RegisterRecipeShortResponseDto {
+    private Long registerId;
     private String username;
     private String foodName;
     private Integer likeCount;
@@ -20,6 +21,7 @@ public class RegisterRecipeShortResponseDto {
     private byte[] thumbnailImageByte;
 
     public RegisterRecipeShortResponseDto(RegisterRecipe registerRecipe) {
+        registerId = registerRecipe.getRegisterId();
         username = registerRecipe.getUser().getUsername();
         foodName = registerRecipe.getFoodName();
         likeCount = registerRecipe.getLikeCount();
