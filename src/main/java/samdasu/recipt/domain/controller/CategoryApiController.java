@@ -53,11 +53,12 @@ public class CategoryApiController {
     @GetMapping("/recipes")
     public Result2 searchRecipesByCategory(@RequestParam(value = "category") String category) {
         List<Recipe> recipeCategory = recipeService.findByCategory(category);
-        List<RecipeShortResponseDto> collect1 = getRecipesByCategory(recipeCategory);
+        List<RecipeShortResponseDto> recipeShortResponseDtos = getRecipesByCategory(recipeCategory);
 
         List<RegisterRecipe> registerRecipeCategory = registerRecipeService.findByCategory(category);
-        List<RegisterRecipeShortResponseDto> collect2 = getRegisterRecipesByCategory(registerRecipeCategory);
-        return new Result2(category, collect1.size(), collect2.size(), collect1, collect2);
+        List<RegisterRecipeShortResponseDto> registerShortResponseDtos = getRegisterRecipesByCategory(registerRecipeCategory);
+
+        return new Result2(category, recipeShortResponseDtos.size(), registerShortResponseDtos.size(), recipeShortResponseDtos, registerShortResponseDtos);
     }
 
     private List<RecipeShortResponseDto> getRecipesByCategory(List<Recipe> recipeCategory) {
