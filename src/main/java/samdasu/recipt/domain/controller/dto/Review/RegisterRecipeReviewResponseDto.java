@@ -19,7 +19,7 @@ public class RegisterRecipeReviewResponseDto {
     private Integer likeCount;
     private Double ratingScore;
     private String thumbnailImage;
-    private byte[] registerRecipeThumbnailImageByte;
+    private byte[] thumbnailImageByte;
 
     public RegisterRecipeReviewResponseDto(Review review) {
         foodName = review.getRegisterRecipe().getFoodName();

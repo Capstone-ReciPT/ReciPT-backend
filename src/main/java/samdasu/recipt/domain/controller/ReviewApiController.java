@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import samdasu.recipt.domain.controller.dto.Heart.ReviewHeartDto;
 import samdasu.recipt.domain.controller.dto.Review.RecipeReviewResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.RegisterRecipeReviewResponseDto;
-import samdasu.recipt.domain.controller.dto.User.UserResponseDto;
 import samdasu.recipt.domain.entity.Heart;
 import samdasu.recipt.domain.entity.Review;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.HeartService;
 import samdasu.recipt.domain.service.ReviewService;
 import samdasu.recipt.domain.service.UserService;
+import samdasu.recipt.utils.Image.UploadService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,18 +69,18 @@ public class ReviewApiController {
     public Result recipeReviewInfo(@PathVariable("id") Long recipeId) {
         List<Review> recipeReviews = reviewService.findRecipeReviews(recipeId);
 
-        List<RecipeReviewResponseDto> collect = getRecipeReviewResponseDtos(recipeReviews);
+        List<RecipeReviewResponseDto> recipeReviewResponseDto = getRecipeReviewResponseDtos(recipeReviews);
 
-        return new Result(collect.size(), collect);
+        return new Result(recipeReviewResponseDto.size(), recipeReviewResponseDto);
     }
 
     @GetMapping("/register/{id}")
     public Result registerRecipeReviewInfo(@PathVariable("id") Long recipeId) {
         List<Review> registerRecipeReviews = reviewService.findRegisterRecipeReviews(recipeId);
 
-        List<RegisterRecipeReviewResponseDto> collect = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
+        List<RegisterRecipeReviewResponseDto> registerReviewResponseDto = getRegisterRecipeReviewResponseDtos(registerRecipeReviews);
 
-        return new Result(collect.size(), collect);
+        return new Result(registerReviewResponseDto.size(), registerReviewResponseDto);
     }
 
     @GetMapping("/recipe/sort/like/{id}")
