@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
+import samdasu.recipt.domain.controller.dto.Register.RegisterDetailInfoDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
@@ -110,18 +111,24 @@ public class RegisterRecipeApiController {
 
         //등록된 레시피 조회
         RegisterRecipe findRegisterRecipe = registerRecipeService.findById(recipeId);
-        RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(findRegisterRecipe);
+        RegisterDetailInfoDto registerDetailInfoDto = RegisterDetailInfoDto.createRegisterDetailInfoDto(findRegisterRecipe);
 
-        List<RegisterResponseDto> hearts = findRegisterRecipe.getHearts().stream()
-                .map(heart -> registerResponseDto)
+        List<RegisterDetailInfoDto> hearts = findRegisterRecipe.getHearts().stream()
+                .map(heart -> registerDetailInfoDto)
                 .collect(Collectors.toList());
-        List<RegisterResponseDto> reviews = findRegisterRecipe.getReviews().stream()
-                .map(review -> registerResponseDto)
+        List<RegisterDetailInfoDto> reviews = findRegisterRecipe.getReviews().stream()
+                .map(review -> registerDetailInfoDto)
                 .collect(Collectors.toList());
 
-        byte[] thumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerResponseDto.getThumbnailImage());
+        byte[] thumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerDetailInfoDto.getThumbnail());
+        registerDetailInfoDto.setThumbnailByte(thumbnail);
 
-        return new Result3(heartCheck, hearts.size(), reviews.size(), new RegisterResponseDto(findRegisterRecipe), thumbnail);
+        for (int i = 0; i < registerDetailInfoDto.getImage().size(); i++) {
+            byte[] registerImage = uploadService.getRegisterProfile(findUser.getUsername(), registerDetailInfoDto.getImage().get(i));
+            registerDetailInfoDto.getImageByte().add(registerImage);
+        }
+
+        return new Result3(heartCheck, hearts.size(), reviews.size(), registerDetailInfoDto);
     }
 
     @GetMapping("/short")
@@ -188,7 +195,6 @@ public class RegisterRecipeApiController {
         private int heartCount;
         private int reviewCount;
         private T data;
-        private T thumbnail;
     }
 
     @Data
