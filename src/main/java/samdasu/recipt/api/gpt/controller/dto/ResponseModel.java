@@ -2,6 +2,7 @@ package samdasu.recipt.api.gpt.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 @Data
 @AllArgsConstructor
@@ -11,11 +12,11 @@ public class ResponseModel<T> {
     private T data;
 
     public static <T> ResponseModel<T> success(T data) {
-        return new ResponseModel<>(200, "success", data);
+        return new ResponseModel<>(HttpStatus.OK.value(), "success", data);
     }
 
     public static <T> ResponseModel<T> fail(T data) {
-        return new ResponseModel<>(0, "fail", data);
+        return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "fail", data);
     }
 
 }
