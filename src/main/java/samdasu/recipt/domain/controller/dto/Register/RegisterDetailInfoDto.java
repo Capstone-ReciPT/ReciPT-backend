@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RegisterDetailInfoDto {
+    private Long registerRecipeId;
     private String foodName;
     private String comment;
     private String category;
@@ -24,6 +25,7 @@ public class RegisterDetailInfoDto {
     private List<byte[]> imageByte = new ArrayList<>();
     private LocalDateTime lastModifiedDate;
     public RegisterDetailInfoDto(RegisterRecipe registerRecipe) {
+        registerRecipeId = registerRecipe.getRegisterId();
         foodName = registerRecipe.getFoodName();
         comment = registerRecipe.getComment();
         category = registerRecipe.getCategory();
