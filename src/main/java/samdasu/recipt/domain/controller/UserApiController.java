@@ -104,7 +104,7 @@ public class UserApiController {
 
             for (RegisterRecipeReviewResponseDto registerRecipeReviewResponseDto : registerRecipeReviewResponseDtos) {
                 byte[] recipeThumbnail = uploadService.getRegisterProfile(findUser.getUsername(), registerRecipeReviewResponseDto.getThumbnailImage());
-                registerRecipeReviewResponseDto.setRegisterRecipeThumbnailImageByte(recipeThumbnail);
+                registerRecipeReviewResponseDto.setThumbnailImageByte(recipeThumbnail);
                 responseDto.getRegisterRecipeReviewResponseDtos().add(registerRecipeReviewResponseDto);
             }
         }
