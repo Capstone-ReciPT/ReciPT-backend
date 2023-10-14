@@ -1,37 +1,35 @@
 package samdasu.recipt.domain;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.entity.User;
+import samdasu.recipt.domain.entity.enums.Authority;
 import samdasu.recipt.domain.repository.UserRepository;
+import samdasu.recipt.security.config.jwt.JwtTokenProvider;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
+@Slf4j
+@ActiveProfiles("test")
 class UserTest {
     @PersistenceContext
     EntityManager em;
 
-
-    private final UserRepository userRepository;
-
-    @Autowired
-    UserTest(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-
     @Test
     public void testEntity() {
-        User user1 = new User("user1", "id1", "pw1", 10, null);
-        User user2 = new User("user2", "id2", "pw2", 20, null);
+        User user1 = User.createUser("user1", "id1", "pw1", 10, null,  null);
+        User user2 = User.createUser("user2", "id2", "pw2", 20, null, null);
         em.persist(user1);
         em.persist(user2);
 
@@ -42,7 +40,7 @@ class UserTest {
                 .getResultList();
 
         for (User user : users) {
-            System.out.println("user.getUsername() = " + user.getUsername());
+            log.info("user.getUsername() = {}", user.getUsername());
         }
 
     }

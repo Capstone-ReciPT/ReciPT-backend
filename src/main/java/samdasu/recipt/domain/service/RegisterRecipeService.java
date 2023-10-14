@@ -160,9 +160,9 @@ public class RegisterRecipeService {
     }
 
     @Transactional
-    public void increaseViewCount(Long registerRecipeId) {
+    public List<RegisterRecipe> increaseViewCount(Long registerRecipeId) {
         RegisterRecipe registerRecipe = findById(registerRecipeId);
-        registerRecipeRepository.addRegisterRecipeViewCount(registerRecipe);
+        return registerRecipeRepository.addRegisterRecipeViewCount(registerRecipe);
     }
 
     public List<RegisterRecipe> findRegisterRecipes() {

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.domain.entity.Recipe;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,28 +21,52 @@ import static samdasu.recipt.domain.entity.QRecipe.recipe;
 public class RecipeRepositoryImpl implements RecipeCustomRepository {
     private final JPAQueryFactory queryFactory;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Override
-    public void addRecipeLikeCount(Recipe selectedRecipe) {
+    public List<Recipe> addRecipeLikeCount(Recipe selectedRecipe) {
         queryFactory.update(recipe)
                 .set(recipe.likeCount, recipe.likeCount.add(1))
                 .where(recipe.eq(selectedRecipe))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(recipe)
+                .fetch();
     }
 
     @Override
-    public void subRecipeLikeCount(Recipe selectedRecipe) {
+    public List<Recipe> subRecipeLikeCount(Recipe selectedRecipe) {
         queryFactory.update(recipe)
                 .set(recipe.likeCount, recipe.likeCount.subtract(1))
                 .where(recipe.eq(selectedRecipe))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(recipe)
+                .fetch();
     }
 
     @Override
-    public void addRecipeViewCount(Recipe selectedRecipe) {
+    public List<Recipe> addRecipeViewCount(Recipe selectedRecipe) {
         queryFactory.update(recipe)
                 .set(recipe.viewCount, recipe.viewCount.add(1))
                 .where(recipe.eq(selectedRecipe))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(recipe)
+                .fetch();
     }
 
     @Override
