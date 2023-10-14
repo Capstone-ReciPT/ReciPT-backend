@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.domain.entity.Review;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static samdasu.recipt.domain.entity.QRecipe.recipe;
@@ -17,21 +19,38 @@ import static samdasu.recipt.domain.entity.QUser.user;
 public class ReviewRepositoryImpl implements ReviewCustomRepository {
     private final JPAQueryFactory queryFactory;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Override
-    public void addReviewLikeCount(Review selectedReview) {
+    public List<Review> addReviewLikeCount(Review selectedReview) {
         queryFactory.update(review)
                 .set(review.likeCount, review.likeCount.add(1))
                 .where(review.eq(selectedReview))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(review)
+                .fetch();
     }
 
 
     @Override
-    public void subReviewLikeCount(Review selectedReview) {
+    public List<Review> subReviewLikeCount(Review selectedReview) {
         queryFactory.update(review)
                 .set(review.likeCount, review.likeCount.subtract(1))
                 .where(review.eq(selectedReview))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(review)
+                .fetch();
     }
 
     @Override

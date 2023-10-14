@@ -14,6 +14,7 @@ import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponse
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.domain.controller.dto.Review.UpdateRatingScoreRequestDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.*;
@@ -162,11 +163,19 @@ public class RegisterRecipeApiController {
     /**
      * 리뷰 저장 + 평점 갱신
      */
-    @PostMapping("/save/review/{id}")
+//    @PostMapping("/save/review/{id}")
+//    public void saveReview(Authentication authentication,
+//                           @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
+//        User findUser = userService.findUserByUsername(authentication.getName());
+//        reviewService.saveRegisterRecipeReview(findUser.getUserId(), recipeId, requestDto);
+//        registerRecipeService.updateRatingScore(recipeId, requestDto);
+//    }
+    /**
+     * 평점 갱신
+     */
+    @PostMapping("/update/score/{id}")
     public void saveReview(Authentication authentication,
-                           @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
-        User findUser = userService.findUserByUsername(authentication.getName());
-        reviewService.saveRegisterRecipeReview(findUser.getUserId(), recipeId, requestDto);
+                           @PathVariable("id") Long recipeId, @RequestBody @Valid UpdateRatingScoreRequestDto requestDto) {
         registerRecipeService.updateRatingScore(recipeId, requestDto);
     }
 

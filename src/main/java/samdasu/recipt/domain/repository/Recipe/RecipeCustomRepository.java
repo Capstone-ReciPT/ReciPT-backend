@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecipeCustomRepository {
-    void addRecipeLikeCount(Recipe recipe); //db 레시피 안에서 좋아요
+    List<Recipe> addRecipeLikeCount(Recipe recipe); //db 레시피 안에서 좋아요
 
-    void subRecipeLikeCount(Recipe recipe);
+    List<Recipe> subRecipeLikeCount(Recipe recipe);
 
-    void addRecipeViewCount(Recipe recipe); //db 레시피 안에서 좋아요
+    List<Recipe> addRecipeViewCount(Recipe recipe); //db 레시피 안에서 좋아요
 
     List<Recipe> dynamicSearching(String searchingFoodName, Integer likeCond, Long viewCond);
 

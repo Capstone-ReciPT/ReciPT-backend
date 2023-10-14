@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.domain.controller.dto.Review.UpdateRatingScoreRequestDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
 import samdasu.recipt.domain.repository.Recipe.RecipeRepository;
@@ -23,9 +24,9 @@ public class RecipeService {
      * 평점 평균 계산
      */
     @Transactional
-    public RecipeResponseDto updateRatingScore(Long recipeId, ReviewRequestDto reviewRequestDto) {
+    public RecipeResponseDto updateRatingScore(Long recipeId, UpdateRatingScoreRequestDto requestDto) {
         Recipe recipe = findById(recipeId);
-        recipe.updateRating(reviewRequestDto.getInputRatingScore());
+        recipe.updateRating(requestDto.getInputRatingScore());
 
         recipe.calcRatingScore(recipe);
 
@@ -33,6 +34,17 @@ public class RecipeService {
 
         return recipeResponseDto;
     }
+//    @Transactional
+//    public RecipeResponseDto updateRatingScore(Long recipeId, ReviewRequestDto reviewRequestDto) {
+//        Recipe recipe = findById(recipeId);
+//        recipe.updateRating(reviewRequestDto.getInputRatingScore());
+//
+//        recipe.calcRatingScore(recipe);
+//
+//        RecipeResponseDto recipeResponseDto = RecipeResponseDto.createRecipeResponseDto(recipe);
+//
+//        return recipeResponseDto;
+//    }
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     @Transactional

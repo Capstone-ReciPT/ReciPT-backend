@@ -20,6 +20,10 @@ public class RegisterDetailInfoDto {
     private String ingredient;
     private String context;
     private String thumbnail;
+    private Integer likeCount;
+    private Long viewCount;
+    private Double ratingScore;
+    private Integer ratingPeople;
     private List<String> image;
     private byte[] thumbnailByte;
     private List<byte[]> imageByte = new ArrayList<>();
@@ -31,6 +35,10 @@ public class RegisterDetailInfoDto {
         category = registerRecipe.getCategory();
         ingredient = registerRecipe.getIngredient();
         context = registerRecipe.getContext();
+        likeCount = registerRecipe.getLikeCount();
+        viewCount = registerRecipe.getViewCount();
+        ratingScore = registerRecipe.getRatingScore();
+        ratingPeople = registerRecipe.getRatingPeople();
         thumbnail = registerRecipe.getThumbnailImage();
         image = registerRecipe.getImage();
         lastModifiedDate = registerRecipe.getLastModifiedDate();
