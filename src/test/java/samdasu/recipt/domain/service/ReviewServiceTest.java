@@ -84,7 +84,7 @@ class ReviewServiceTest {
         reviewService.saveRecipeReview(user.getUserId(), recipe.getRecipeId(), reviewRequestDto);
 
         //then
-        assertThat(reviewRequestDto.getComment()).isEqualTo("계란찜은 밥이랑 먹어요");
+        assertThat(reviewRequestDto.getInputRatingScore()).isEqualTo(4.0);
     }
 
     @Test

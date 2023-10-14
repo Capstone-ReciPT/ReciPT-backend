@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.domain.controller.dto.Review.UpdateRatingScoreRequestDto;
 import samdasu.recipt.domain.entity.*;
 import samdasu.recipt.domain.entity.enums.Authority;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
@@ -51,10 +52,11 @@ class RegisterRecipeServiceTest {
                 0L, 0, 5.0, 1, null, null, user, gpt );
         em.persist(registerRecipe);
 
-        ReviewRequestDto reviewRequestDto = ReviewRequestDto.createReviewRequestDto("만두 맛있다.", 4.0);
+//        ReviewRequestDto reviewRequestDto = ReviewRequestDto.createReviewRequestDto("만두 맛있다.", 4.0);
+        UpdateRatingScoreRequestDto requestDto = UpdateRatingScoreRequestDto.createUpdateRatingScoreRequestDto(4.0);
 
         //when
-        registerRecipeService.updateRatingScore(registerRecipe.getRegisterId(), reviewRequestDto);
+        registerRecipeService.updateRatingScore(registerRecipe.getRegisterId(), requestDto);
 
         //then
         assertThat(registerRecipe.getRatingPeople()).isEqualTo(2);
