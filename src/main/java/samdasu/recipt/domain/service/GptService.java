@@ -27,13 +27,21 @@ public class GptService {
         return gpt.getGptId();
     }
 
-    public List<String> getGptRecipesByUserId(String foodName, Long userId) {
+    public List<String> getGptRecipesByFoodNameAndUserId(String foodName, Long userId) {
         User user = findUserById(userId);
         List<String> findGptRecipes = gptRepository.findByFoodNameAndUerId(foodName, user.getUserId());
         if (findGptRecipes.isEmpty()) {
-            throw new ResourceNotFoundException("Fail: 사용자가 저장한 GPT 레시피 없음!");
+            throw new ResourceNotFoundException("Fail: No Gpt Recipe info");
         }
         return findGptRecipes;
+    }
+    public Gpt getGptRecipeByUserIdAndGptId(Long userId, Long gptId) {
+        return gptRepository.findByUser_UserIdAndGptId(userId, gptId)
+                .orElseThrow(() -> new ResourceNotFoundException("Fail: No Gpt Recipe info"));
+    }
+
+    public List<Gpt> getGptRecipesByUserId(Long userId) {
+        return gptRepository.findByUser_UserId(userId);
     }
 
     public Gpt getGptRecipeByGptId(Long gptId) {

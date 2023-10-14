@@ -8,7 +8,6 @@ import samdasu.recipt.domain.entity.Gpt;
 import java.util.List;
 
 import static samdasu.recipt.domain.entity.QGpt.gpt;
-import static samdasu.recipt.domain.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,9 +17,10 @@ public class GptRepositoryImpl implements GptCustomRepository {
 
     @Override
     public List<String> findByFoodNameAndUerId(String foodName, Long userId) {
-        return queryFactory.select(gpt.foodName)
+        return queryFactory
+                .select(gpt.foodName)
                 .from(gpt)
-                .join(user)
+                .join(gpt.user)
                 .where(gpt.foodName.eq(foodName).and(gpt.user.userId.eq(userId)))
                 .fetch();
     }
