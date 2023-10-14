@@ -17,6 +17,7 @@ import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
 import samdasu.recipt.domain.entity.Gpt;
+import samdasu.recipt.domain.controller.dto.Review.UpdateRatingScoreRequestDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.User;
 import samdasu.recipt.domain.service.*;
@@ -70,9 +71,9 @@ public class RegisterRecipeApiController {
     @PostMapping("/save/gpt")
     //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
     public Result4 saveRecipeByGpt(Authentication authentication,
-                                   @RequestParam(value = "thumbnail") MultipartFile file,
-                                   @RequestParam(value = "images") MultipartFile[] files,
-                                   @Valid RegisterRequestDto requestDto) {
+                              @RequestParam(value = "thumbnail") MultipartFile file,
+                              @RequestParam(value = "images") MultipartFile[] files,
+                              @Valid RegisterRequestDto requestDto) {
         User findUser = userService.findUserByUsername(authentication.getName());
         Long registerRecipeSave = registerRecipeService.registerRecipeSaveByGpt(findUser.getUserId(), file, files, requestDto.getFoodName(), requestDto);
 
@@ -95,11 +96,11 @@ public class RegisterRecipeApiController {
 
     @PostMapping("/save/typing")
     public Result4 saveRecipeByTyping(Authentication authentication,
-                                      @RequestParam(value = "ingredients") String ingredients,
-                                      @RequestParam(value = "contexts") String contexts,
-                                      @RequestParam(value = "thumbnail") MultipartFile file,
-                                      @RequestParam(value = "images") MultipartFile[] files,
-                                      @Valid RegisterRequestDto requestDto) {
+                              @RequestParam(value = "ingredients") String ingredients,
+                              @RequestParam(value = "contexts") String contexts,
+                              @RequestParam(value = "thumbnail") MultipartFile file,
+                              @RequestParam(value = "images") MultipartFile[] files,
+                              @Valid RegisterRequestDto requestDto) {
         User findUser = userService.findUserByUsername(authentication.getName());
         Long registerRecipeSave = registerRecipeService.registerRecipeSaveByTyping(findUser.getUserId(), file, files, ingredients, contexts, requestDto);
 
@@ -184,11 +185,19 @@ public class RegisterRecipeApiController {
     /**
      * 리뷰 저장 + 평점 갱신
      */
-    @PostMapping("/save/review/{id}")
+//    @PostMapping("/save/review/{id}")
+//    public void saveReview(Authentication authentication,
+//                           @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
+//        User findUser = userService.findUserByUsername(authentication.getName());
+//        reviewService.saveRegisterRecipeReview(findUser.getUserId(), recipeId, requestDto);
+//        registerRecipeService.updateRatingScore(recipeId, requestDto);
+//    }
+    /**
+     * 평점 갱신
+     */
+    @PostMapping("/update/score/{id}")
     public void saveReview(Authentication authentication,
-                           @PathVariable("id") Long recipeId, @RequestBody @Valid ReviewRequestDto requestDto) {
-        User findUser = userService.findUserByUsername(authentication.getName());
-        reviewService.saveRegisterRecipeReview(findUser.getUserId(), recipeId, requestDto);
+                           @PathVariable("id") Long recipeId, @RequestBody @Valid UpdateRatingScoreRequestDto requestDto) {
         registerRecipeService.updateRatingScore(recipeId, requestDto);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.domain.controller.dto.Review.UpdateRatingScoreRequestDto;
 import samdasu.recipt.domain.entity.*;
 import samdasu.recipt.domain.exception.DuplicateContextException;
 import samdasu.recipt.domain.exception.ResourceNotFoundException;
@@ -35,13 +36,14 @@ public class RegisterRecipeService {
 
     @Value("${image.register.path}")
     private String registerImage;
+
     /**
      * 평점 평균 계산
      */
     @Transactional
-    public RegisterResponseDto updateRatingScore(Long registerRecipeId, ReviewRequestDto reviewRequestDto) {
+    public RegisterResponseDto updateRatingScore(Long registerRecipeId, UpdateRatingScoreRequestDto requestDto) {
         RegisterRecipe registerRecipe = findById(registerRecipeId);
-        registerRecipe.updateRating(reviewRequestDto.getInputRatingScore());
+        registerRecipe.updateRating(requestDto.getInputRatingScore());
 
         registerRecipe.calcRatingScore(registerRecipe);
 
@@ -49,6 +51,18 @@ public class RegisterRecipeService {
 
         return registerResponseDto;
     }
+
+//    @Transactional
+//    public RegisterResponseDto updateRatingScore(Long registerRecipeId, ReviewRequestDto reviewRequestDto) {
+//        RegisterRecipe registerRecipe = findById(registerRecipeId);
+//        registerRecipe.updateRating(reviewRequestDto.getInputRatingScore());
+//
+//        registerRecipe.calcRatingScore(registerRecipe);
+//
+//        RegisterResponseDto registerResponseDto = RegisterResponseDto.createRegisterResponseDto(registerRecipe);
+//
+//        return registerResponseDto;
+//    }
 
     /**
      * 레시피 등록
@@ -160,9 +174,9 @@ public class RegisterRecipeService {
     }
 
     @Transactional
-    public void increaseViewCount(Long registerRecipeId) {
+    public List<RegisterRecipe> increaseViewCount(Long registerRecipeId) {
         RegisterRecipe registerRecipe = findById(registerRecipeId);
-        registerRecipeRepository.addRegisterRecipeViewCount(registerRecipe);
+        return registerRecipeRepository.addRegisterRecipeViewCount(registerRecipe);
     }
 
     public List<RegisterRecipe> findRegisterRecipes() {

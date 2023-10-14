@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class RecipeReviewResponseDto {
-//    @NotNull
+    private Long recipeId;
     private String foodName;
     @NotNull
     private String username;
@@ -20,6 +20,7 @@ public class RecipeReviewResponseDto {
     private String recipeThumbnailImage; //식품의약처 - 썸네일 사진(마이페이지)
 
     public RecipeReviewResponseDto(Review review) {
+        recipeId = review.getRecipe().getRecipeId();
         foodName = review.getRecipe().getFoodName();
         username = review.getUser().getUsername();
         comment = review.getComment();

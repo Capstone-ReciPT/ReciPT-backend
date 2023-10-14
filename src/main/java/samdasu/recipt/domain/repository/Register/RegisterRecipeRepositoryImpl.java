@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,29 +18,49 @@ import static samdasu.recipt.domain.entity.QUser.user;
 @RequiredArgsConstructor
 public class RegisterRecipeRepositoryImpl implements RegisterCustomRepository {
     private final JPAQueryFactory queryFactory;
+    @PersistenceContext
+    EntityManager em;
 
     @Override
-    public void addRegisterRecipeLikeCount(RegisterRecipe selectedRegisterRecipe) {
+    public List<RegisterRecipe> addRegisterRecipeLikeCount(RegisterRecipe selectedRegisterRecipe) {
         queryFactory.update(registerRecipe)
                 .set(registerRecipe.likeCount, registerRecipe.likeCount.add(1))
                 .where(registerRecipe.eq(selectedRegisterRecipe))
                 .execute();
+
+        return queryFactory
+                .selectFrom(registerRecipe)
+                .fetch();
     }
 
     @Override
-    public void subRegisterRecipeLikeCount(RegisterRecipe selectedRegisterRecipe) {
+    public List<RegisterRecipe> subRegisterRecipeLikeCount(RegisterRecipe selectedRegisterRecipe) {
         queryFactory.update(registerRecipe)
                 .set(registerRecipe.likeCount, registerRecipe.likeCount.subtract(1))
                 .where(registerRecipe.eq(selectedRegisterRecipe))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(registerRecipe)
+                .fetch();
     }
 
     @Override
-    public void addRegisterRecipeViewCount(RegisterRecipe selectedRegisterRecipe) {
+    public List<RegisterRecipe> addRegisterRecipeViewCount(RegisterRecipe selectedRegisterRecipe) {
         queryFactory.update(registerRecipe)
                 .set(registerRecipe.viewCount, registerRecipe.viewCount.add(1))
                 .where(registerRecipe.eq(selectedRegisterRecipe))
                 .execute();
+
+        em.flush();
+        em.clear();
+
+        return queryFactory
+                .selectFrom(registerRecipe)
+                .fetch();
     }
 
     @Override

@@ -16,4 +16,13 @@ public class LoginDto {
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(loginId, password);
     }
+
+    public LoginDto(String loginId, String password) {
+        this.loginId = loginId;
+        this.password = password;
+    }
+
+    public static LoginDto createLoginDto(String loginId, String password) {
+        return new LoginDto(loginId, password);
+    }
 }

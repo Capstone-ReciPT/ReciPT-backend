@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import samdasu.recipt.domain.entity.Review;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class RegisterRecipeReviewResponseDto {
+    private Long registerRecipeId;
     @NotNull
     private String foodName;
     @NotNull
@@ -22,6 +22,7 @@ public class RegisterRecipeReviewResponseDto {
     private byte[] thumbnailImageByte;
 
     public RegisterRecipeReviewResponseDto(Review review) {
+        registerRecipeId = review.getRegisterRecipe().getRegisterId();
         foodName = review.getRegisterRecipe().getFoodName();
         username = review.getUser().getUsername();
         comment = review.getComment();

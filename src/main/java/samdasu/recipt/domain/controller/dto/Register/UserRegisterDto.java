@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UserRegisterDto {
+    private Long registerRecipeId;
     private String foodName;
     private String comment;
     private String category;
@@ -24,6 +25,7 @@ public class UserRegisterDto {
     private LocalDateTime lastModifiedDate;
 
     public UserRegisterDto(RegisterRecipe registerRecipe) {
+        registerRecipeId = registerRecipe.getRegisterId();
         foodName = registerRecipe.getFoodName();
         comment = registerRecipe.getComment();
         category = registerRecipe.getCategory();

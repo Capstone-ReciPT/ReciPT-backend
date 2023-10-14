@@ -5,9 +5,9 @@ import samdasu.recipt.domain.entity.Review;
 import java.util.List;
 
 public interface ReviewCustomRepository {
-    void addReviewLikeCount(Review review);
+    List<Review> addReviewLikeCount(Review review);
 
-    void subReviewLikeCount(Review review);
+    List<Review> subReviewLikeCount(Review review);
 
     List<Review> findRecipeReviews(Long selectRecipeId);
 
