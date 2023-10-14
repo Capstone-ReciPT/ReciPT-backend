@@ -8,12 +8,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import samdasu.recipt.domain.controller.dto.Gpt.GptShortResponseDto;
+import samdasu.recipt.domain.controller.dto.Gpt.GptResponseDto;
 import samdasu.recipt.domain.controller.dto.Heart.RegisterHeartDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterDetailInfoDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRequestDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterResponseDto;
 import samdasu.recipt.domain.controller.dto.Review.ReviewRequestDto;
+import samdasu.recipt.domain.entity.Gpt;
 import samdasu.recipt.domain.controller.dto.Review.UpdateRatingScoreRequestDto;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.entity.User;
@@ -40,14 +43,33 @@ public class RegisterRecipeApiController {
 
     @GetMapping("/find") //req로 foodname주면 response로 user가 gpt 테이블에 저장한 레시피의 foodName 줌
     public Result2 findGptRecipes(Authentication authentication
-                                  , @RequestParam(value = "foodName") String foodName) {
+            , @RequestParam(value = "foodName") String foodName) {
         User findUser = userService.findUserByUsername(authentication.getName());
-        List<String> findGptRecipes = gptService.getGptRecipesByUserId(foodName, findUser.getUserId());
+        List<String> findGptRecipes = gptService.getGptRecipesByFoodNameAndUserId(foodName, findUser.getUserId());
 
         return new Result2(findGptRecipes.size(), findGptRecipes);
     }
 
-    @PostMapping("/save/gpt") //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
+    @GetMapping("/show/recipes") // 사용자가 생성한 gpt 레시피들 응답(gptId, foodName, 포맷팅한생성날짜(yyyy-MM-dd HH:mm))
+    public Result2 showGptRecipes(Authentication authentication) {
+        User findUser = userService.findUserByUsername(authentication.getName());
+        List<Gpt> findGptRecipes = gptService.getGptRecipesByUserId(findUser.getUserId());
+        List<GptShortResponseDto> collect = findGptRecipes.stream()
+                .map(GptShortResponseDto::new)
+                .collect(Collectors.toList());
+        return new Result2(collect.size(), collect);
+    }
+
+    @GetMapping("/show/choice") // 사용자가 선택한 gpt 레시피 정보 응답 (foodName, ingredient, context)
+    public Result5 showSelectedGptRecipe(Authentication authentication, @RequestParam(value = "gptId") Long gptId) {
+        User findUser = userService.findUserByUsername(authentication.getName());
+        Gpt findGptRecipe = gptService.getGptRecipeByUserIdAndGptId(findUser.getUserId(), gptId);
+        GptResponseDto gptResponseDto = new GptResponseDto(findGptRecipe.getFoodName(), findGptRecipe.getIngredient(), findGptRecipe.getContext());
+        return new Result5(gptResponseDto);
+    }
+
+    @PostMapping("/save/gpt")
+    //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
     public Result4 saveRecipeByGpt(Authentication authentication,
                               @RequestParam(value = "thumbnail") MultipartFile file,
                               @RequestParam(value = "images") MultipartFile[] files,
@@ -191,12 +213,14 @@ public class RegisterRecipeApiController {
     static class Result1<T> {
         private int heartCount;
     }
+
     @Data
     @AllArgsConstructor
     static class Result2<T> {
-        private T data1;
-        private T data2;
+        private T count;
+        private T data;
     }
+
     @Data
     @AllArgsConstructor
     static class Result3<T> {
@@ -212,5 +236,11 @@ public class RegisterRecipeApiController {
         private T registerRecipe;
         private T thumbnail;
         private T images;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result5<T> {
+        private T data;
     }
 }
