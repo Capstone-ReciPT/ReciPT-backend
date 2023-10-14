@@ -12,10 +12,12 @@ import samdasu.recipt.domain.controller.dto.Recipe.RecipeHomeResponseDto;
 import samdasu.recipt.domain.controller.dto.Recipe.RecipeShortResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterHomeResponseDto;
 import samdasu.recipt.domain.controller.dto.Register.RegisterRecipeShortResponseDto;
+import samdasu.recipt.domain.controller.dto.Register.UserRegisterDto;
 import samdasu.recipt.domain.entity.Recipe;
 import samdasu.recipt.domain.entity.RegisterRecipe;
 import samdasu.recipt.domain.service.RecipeService;
 import samdasu.recipt.domain.service.RegisterRecipeService;
+import samdasu.recipt.utils.Image.UploadService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,7 @@ import static samdasu.recipt.domain.controller.constant.ControllerStandard.STAND
 public class CategoryApiController {
     private final RecipeService recipeService;
     private final RegisterRecipeService registerRecipeService;
+    private final UploadService uploadService;
 
     @GetMapping()
     public Result1 homeInfo() {
@@ -57,6 +60,11 @@ public class CategoryApiController {
 
         List<RegisterRecipe> registerRecipeCategory = registerRecipeService.findByCategory(category);
         List<RegisterRecipeShortResponseDto> registerShortResponseDtos = getRegisterRecipesByCategory(registerRecipeCategory);
+
+        for (RegisterRecipeShortResponseDto registerShortResponseDto : registerShortResponseDtos) {
+            byte[] registerThumbnail = uploadService.getRegisterProfile(registerShortResponseDto.getUsername(), registerShortResponseDto.getThumbnailImage());
+            registerShortResponseDto.setThumbnailImageByte(registerThumbnail);
+        }
 
         return new Result2(category, recipeShortResponseDtos.size(), registerShortResponseDtos.size(), recipeShortResponseDtos, registerShortResponseDtos);
     }
