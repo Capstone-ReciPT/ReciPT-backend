@@ -1,0 +1,60 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8.0
+    networks:
+      - recipt_network
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    env_file: .env
+    ports:
+      - "3308:3306"
+    environment:
+      - TZ=Asia/Seoul
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=mysqlpw
+
+  redis:
+    image: redis:alpine
+    networks:
+      - recipt_network
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  recipt:
+    image: recipt-recipt:0.0.1-SNAPSHOT
+    container_name: recipt-backend
+    volumes:
+      - ./dbRecipes.xlsx:/home/dbRecipes.xlsx
+#      - /Users/jaehyun/Pictures/IMG_0241.PNG:/home/picture/IMG_0241.PNG
+    networks:
+      - recipt_network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/reciPT?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - jwt.secret="VGhpcyBwcm9qZWN0IGlzIGNhcHN0b25lIG9mIHNhbW15dW5nIHVuaXZlcnNpdHkuIGFuZCBvdXIgdGVhbSBuYW1lIGlzIHNhbWRhc3UuIA==" # {임의의 문자열을 Base64로 인코딩한 값}
+      - jwt.refresh-token-validity-in-seconds=1209600 # 14일
+      - jwt.access-token-validity-in-seconds=43200 # 12시간
+      - excel.file.path=/home/dbRecipes.xlsx
+      - image.user.path=/home/upload/userProfile
+      - image.register.path=/home/upload/registerRecipe
+
+networks:
+  recipt_network:
+    driver: bridge
