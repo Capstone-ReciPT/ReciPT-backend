@@ -1,11 +1,13 @@
 package samdasu.recipt.domain.controller.dto.User;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
+@NoArgsConstructor
 public class LoginDto {
     @NotEmpty(message = "아이디를 입력해주세요.")
     private String loginId;

@@ -29,19 +29,19 @@ public class GptService {
 
     public List<String> getGptRecipesByFoodNameAndUserId(String foodName, Long userId) {
         User user = findUserById(userId);
-        List<String> findGptRecipes = gptRepository.findByFoodNameAndUerId(foodName, user.getUserId());
+        List<String> findGptRecipes = gptRepository.findByFoodNameAndUer(foodName, user);
         if (findGptRecipes.isEmpty()) {
             throw new ResourceNotFoundException("Fail: No Gpt Recipe info");
         }
         return findGptRecipes;
     }
-    public Gpt getGptRecipeByUserIdAndGptId(Long userId, Long gptId) {
-        return gptRepository.findByUser_UserIdAndGptId(userId, gptId)
+    public Gpt getGptRecipeByUserIdAndGptId(User user, Long gptId) {
+        return gptRepository.findByUserAndGptId(user, gptId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fail: No Gpt Recipe info"));
     }
 
-    public List<Gpt> getGptRecipesByUserId(Long userId) {
-        return gptRepository.findByUser_UserId(userId);
+    public List<Gpt> getGptRecipesByUserId(User user) {
+        return gptRepository.findByUser(user);
     }
 
     public Gpt getGptRecipeByGptId(Long gptId) {

@@ -49,7 +49,11 @@ application.properties
 ### Docker ###
 db/
 redis/
+prometheus/
+grafana/
 
+### Querydsl ###
+src/main/generated/
 
 
 

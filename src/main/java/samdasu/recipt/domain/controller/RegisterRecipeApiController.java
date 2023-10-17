@@ -53,7 +53,7 @@ public class RegisterRecipeApiController {
     @GetMapping("/show/recipes") // 사용자가 생성한 gpt 레시피들 응답(gptId, foodName, 포맷팅한생성날짜(yyyy-MM-dd HH:mm))
     public Result2 showGptRecipes(Authentication authentication) {
         User findUser = userService.findUserByUsername(authentication.getName());
-        List<Gpt> findGptRecipes = gptService.getGptRecipesByUserId(findUser.getUserId());
+        List<Gpt> findGptRecipes = gptService.getGptRecipesByUserId(findUser);
         List<GptShortResponseDto> collect = findGptRecipes.stream()
                 .map(GptShortResponseDto::new)
                 .collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class RegisterRecipeApiController {
     @GetMapping("/show/choice") // 사용자가 선택한 gpt 레시피 정보 응답 (foodName, ingredient, context)
     public Result5 showSelectedGptRecipe(Authentication authentication, @RequestParam(value = "gptId") Long gptId) {
         User findUser = userService.findUserByUsername(authentication.getName());
-        Gpt findGptRecipe = gptService.getGptRecipeByUserIdAndGptId(findUser.getUserId(), gptId);
+        Gpt findGptRecipe = gptService.getGptRecipeByUserIdAndGptId(findUser, gptId);
         GptResponseDto gptResponseDto = new GptResponseDto(findGptRecipe.getFoodName(), findGptRecipe.getIngredient(), findGptRecipe.getContext());
         return new Result5(gptResponseDto);
     }
