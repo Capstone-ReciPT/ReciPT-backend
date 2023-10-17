@@ -102,6 +102,7 @@ management:
       enabled: true
     health:
       show-details: always
+# actuator 주소 변경
   server:
     port: 9191
 
