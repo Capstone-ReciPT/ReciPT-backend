@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -68,12 +69,22 @@ public class RegisterRecipeApiController {
         return new Result5(gptResponseDto);
     }
 
+    @DeleteMapping("gpt/{gptId}")
+    public ResponseEntity<String> deleteGptRecipe(Authentication authentication, @PathVariable Long gptId) {
+        User findUser = userService.findUserByUsername(authentication.getName());
+        Gpt findGptRecipe = gptService.getGptRecipeByUserIdAndGptId(findUser.getUserId(), gptId);
+        gptService.deleteGptRecipeByGptId(findGptRecipe.getGptId());
+
+        return ResponseEntity.noContent().build();
+    }
+
+
     @PostMapping("/save/gpt")
     //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
     public Result4 saveRecipeByGpt(Authentication authentication,
-                              @RequestParam(value = "thumbnail") MultipartFile file,
-                              @RequestParam(value = "images") MultipartFile[] files,
-                              @Valid RegisterRequestDto requestDto) {
+                                   @RequestParam(value = "thumbnail") MultipartFile file,
+                                   @RequestParam(value = "images") MultipartFile[] files,
+                                   @Valid RegisterRequestDto requestDto) {
         User findUser = userService.findUserByUsername(authentication.getName());
         Long registerRecipeSave = registerRecipeService.registerRecipeSaveByGpt(findUser.getUserId(), file, files, requestDto.getFoodName(), requestDto);
 
@@ -96,11 +107,11 @@ public class RegisterRecipeApiController {
 
     @PostMapping("/save/typing")
     public Result4 saveRecipeByTyping(Authentication authentication,
-                              @RequestParam(value = "ingredients") String ingredients,
-                              @RequestParam(value = "contexts") String contexts,
-                              @RequestParam(value = "thumbnail") MultipartFile file,
-                              @RequestParam(value = "images") MultipartFile[] files,
-                              @Valid RegisterRequestDto requestDto) {
+                                      @RequestParam(value = "ingredients") String ingredients,
+                                      @RequestParam(value = "contexts") String contexts,
+                                      @RequestParam(value = "thumbnail") MultipartFile file,
+                                      @RequestParam(value = "images") MultipartFile[] files,
+                                      @Valid RegisterRequestDto requestDto) {
         User findUser = userService.findUserByUsername(authentication.getName());
         Long registerRecipeSave = registerRecipeService.registerRecipeSaveByTyping(findUser.getUserId(), file, files, ingredients, contexts, requestDto);
 
@@ -192,6 +203,7 @@ public class RegisterRecipeApiController {
 //        reviewService.saveRegisterRecipeReview(findUser.getUserId(), recipeId, requestDto);
 //        registerRecipeService.updateRatingScore(recipeId, requestDto);
 //    }
+
     /**
      * 평점 갱신
      */
