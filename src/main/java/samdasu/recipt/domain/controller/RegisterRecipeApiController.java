@@ -69,16 +69,6 @@ public class RegisterRecipeApiController {
         return new Result5(gptResponseDto);
     }
 
-    @DeleteMapping("gpt/{gptId}")
-    public ResponseEntity<String> deleteGptRecipe(Authentication authentication, @PathVariable Long gptId) {
-        User findUser = userService.findUserByUsername(authentication.getName());
-        Gpt findGptRecipe = gptService.getGptRecipeByUserIdAndGptId(findUser.getUserId(), gptId);
-        gptService.deleteGptRecipeByGptId(findGptRecipe.getGptId());
-
-        return ResponseEntity.noContent().build();
-    }
-
-
     @PostMapping("/save/gpt")
     //req로 foodName주면 response로 (썸네일 바이트파일, 제목, 설명, 카테고리, 재료 (리스트), 레시피설명(단계별 리스트), 레시피 사진(단계별 리스트)) 줌
     public Result4 saveRecipeByGpt(Authentication authentication,
