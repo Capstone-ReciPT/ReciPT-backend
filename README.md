@@ -30,7 +30,7 @@
   4. 조회한 음식의 레시피가 없는 경우
     - GPT에게 조회한 음식의 레시피를 추천 받음
   4. 스프링 시큐리티를 이용해 로그인 기능을 개발
-  5. Docker를 이용해 배포
+  5. AWS EC2를 이용해 배포
   6. 프로메테우스를 통해 메트릭 수집
   7. 그라파나를 이용해 모니터링
 
@@ -39,14 +39,14 @@
 ### 개발 환경
 
 - ![js](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-- <img src="https://img.shields.io/badge/OpenJDK-white?style=for-the-badge&logo=OpenJDK&logoColor=black">
-- <img src="https://img.shields.io/badge/JUnit5-black?style=for-the-badge&logo=JUnit5&logoColor=white">
-- ORM : JPA
+- ![js](https://img.shields.io/badge/OpenJDK-white?style=for-the-badge&logo=OpenJDK&logoColor=black)
+- ![js](https://img.shields.io/badge/JUnit5-black?style=for-the-badge&logo=JUnit5&logoColor=white)
 - ![js](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 - ![js](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
 - ![js](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 - ![js](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)
 - ![js](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+- ![js](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 - ![js](https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
 - ![js](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white)
 
