@@ -80,6 +80,9 @@
 ### 시스템 구성도
 ![](SystemConfigDiagram.png)
 
+### 발표자료
+https://docs.google.com/presentation/d/19WINOombv6tWuSj0n7uobTmS76nnY2SO9f-o3wpT8WU/edit?usp=sharing
+
 ### [ERD 분석 - Figma](https://www.figma.com/file/rJlqqSI2Ssyokn2VRqT2z3/ReciPT-%EB%B6%84%EC%84%9D?type=whiteboard&node-id=0-1&t=0inp0EkyTL42uJTP-0)
 
 ### [ERD 분석 - ERDCloud](https://www.erdcloud.com/d/Q7WxraMMoDsuDJS3j)
